@@ -74,25 +74,30 @@ export const AdminDashboard = () => {
       </div>
 
       {/* Stats Grid - Bento Style */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-3 lg:gap-6">
         {stats.map((stat, idx) => (
           <motion.div 
             key={idx}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.1 }}
-            className="bg-white rounded-[2rem] p-5 lg:p-6 shadow-sm border border-slate-200/60 relative overflow-hidden group hover:shadow-md transition-shadow"
+            className="bg-white rounded-2xl lg:rounded-[2rem] p-3.5 sm:p-4 lg:p-6 shadow-sm border border-slate-200/60 relative overflow-hidden group hover:shadow-md transition-all flex items-center lg:block gap-3 sm:gap-4 lg:gap-0"
           >
-            <div className={`w-10 h-10 lg:w-12 lg:h-12 rounded-2xl ${stat.color} flex items-center justify-center text-white mb-4 shadow-lg shadow-slate-100`}>
+            <div className={`w-10 h-10 sm:w-12 sm:h-12 lg:w-12 lg:h-12 shrink-0 rounded-xl sm:rounded-2xl ${stat.color} flex items-center justify-center text-white lg:mb-4 shadow-md`}>
               {stat.icon}
             </div>
-            <div className="space-y-1">
-              <p className="text-[10px] lg:text-xs font-bold text-slate-400 uppercase tracking-wider">{stat.label}</p>
-              <p className="text-lg lg:text-xl font-bold text-slate-900 truncate">{stat.value}</p>
+            <div className="flex-1 min-w-0">
+              <p className="text-[9px] sm:text-[10px] lg:text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5 lg:mb-1">{stat.label}</p>
+              <p className="text-base sm:text-lg lg:text-xl font-bold text-slate-900 truncate">{stat.value}</p>
             </div>
-            <div className="mt-3 flex items-center gap-1.5">
+            <div className="hidden lg:flex mt-3 items-center gap-1.5">
               <div className="w-1.5 h-1.5 bg-slate-300 rounded-full"></div>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{stat.trend}</p>
+            </div>
+            <div className="lg:hidden flex items-center justify-end pl-1 sm:pl-2">
+               <div className="bg-slate-50 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg border border-slate-100">
+                 <p className="text-[8px] sm:text-[9px] font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap">{stat.trend}</p>
+               </div>
             </div>
           </motion.div>
         ))}
