@@ -1,0 +1,86 @@
+export const initialAdmin = {
+  role: 'admin',
+  nama: 'Administrator',
+  username: 'admin',
+  password: '123',
+};
+
+export const initialSiswa = [
+  {
+    rekening: '1001',
+    nama: 'Ahmad Budi',
+    kelas: '1A',
+    saldo: 150000,
+    username: 'ahmad',
+    password: '123',
+  },
+  {
+    rekening: '1002',
+    nama: 'Siti Aminah',
+    kelas: '2B',
+    saldo: 200000,
+    username: 'siti',
+    password: '123',
+  },
+  {
+    rekening: '1003',
+    nama: 'Budi Santoso',
+    kelas: '3C',
+    saldo: 50000,
+    username: 'budi',
+    password: '123',
+  },
+];
+
+export const initialTransaksi = [
+  {
+    id_trx: 'TRX-1001-1',
+    rekening: '1001',
+    nama: 'Ahmad Budi',
+    kelas: '1A',
+    jenis: 'Setor',
+    jumlah: 100000,
+    keterangan: 'Setoran awal',
+    tanggal: new Date(Date.now() - 86400000 * 2).toISOString(),
+  },
+  {
+    id_trx: 'TRX-1002-1',
+    rekening: '1002',
+    nama: 'Siti Aminah',
+    kelas: '2B',
+    jenis: 'Setor',
+    jumlah: 250000,
+    keterangan: 'Setoran awal',
+    tanggal: new Date(Date.now() - 86400000 * 1).toISOString(),
+  },
+  {
+    id_trx: 'TRX-1002-2',
+    rekening: '1002',
+    nama: 'Siti Aminah',
+    kelas: '2B',
+    jenis: 'Tarik',
+    jumlah: 50000,
+    keterangan: 'Beli buku',
+    tanggal: new Date().toISOString(),
+  },
+  {
+    id_trx: 'TRX-1001-2',
+    rekening: '1001',
+    nama: 'Ahmad Budi',
+    kelas: '1A',
+    jenis: 'Setor',
+    jumlah: 50000,
+    keterangan: 'Uang jajan',
+    tanggal: new Date().toISOString(),
+  },
+  {
+    id_trx: 'TRX-1003-1',
+    rekening: '1003',
+    nama: 'Budi Santoso',
+    kelas: '3C',
+    jenis: 'Setor',
+    jumlah: 50000,
+    keterangan: 'Setoran awal',
+    tanggal: new Date().toISOString(),
+  },
+];

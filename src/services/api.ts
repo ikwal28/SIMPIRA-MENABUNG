@@ -1,0 +1,55 @@
+// @ts-ignore
+const GAS_URL = import.meta.env.VITE_GAS_API_URL;
+
+export const apiCall = async (data: any) => {
+  if (!GAS_URL) {
+    throw new Error("VITE_GAS_API_URL belum diatur di .env. Silakan deploy Google Apps Script dan masukkan URL-nya.");
+  }
+
+  if (!GAS_URL.startsWith("https://script.google.com/")) {
+    throw new Error("URL Google Apps Script tidak valid. Pastikan URL dimulai dengan 'https://script.google.com/macros/s/...'");
+  }
+
+  try {
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8',
+      },
+      body: JSON.stringify(data),
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+    }
+
+    const responseText = await response.text();
+    let result;
+    try {
+      result = JSON.parse(responseText);
+    } catch (e) {
+      console.error("Non-JSON API Response:", responseText);
+      if (responseText.includes("API Simpir") || responseText.includes("Google Apps Script")) {
+        throw new Error("Sistem mendeteksi respon teks dari Google Apps Script. Pastikan Anda telah melakukan Deploy ulang sebagai 'Versi Baru' dan memilih 'Akses: Siapa Saja (Anyone)'.");
+      }
+      throw new Error("Respon dari server tidak valid (Bukan JSON). Silakan periksa konfigurasi Google Apps Script Anda.");
+    }
+
+    if (result.status === 'error') {
+      if (result.message === "Action not found") {
+        throw new Error("Sistem mendeteksi bahwa Google Apps Script Anda belum diperbarui. Anda WAJIB melakukan Deploy ulang sebagai 'Versi Baru' di Google Apps Script.");
+      }
+      throw new Error(result.message);
+    }
+    return result;
+  } catch (error: any) {
+    console.error("API Error:", error);
+    
+    // Handle specific fetch errors
+    if (error.name === 'TypeError' && (error.message === 'Failed to fetch' || error.message.includes('NetworkError'))) {
+      throw new Error("Gagal terhubung ke server (Failed to fetch). Pastikan URL Google Apps Script benar, sudah di-deploy sebagai 'Anyone', dan koneksi internet Anda stabil.");
+    }
+    
+    throw error;
+  }
+};
