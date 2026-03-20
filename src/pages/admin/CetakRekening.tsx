@@ -34,18 +34,33 @@ export const AdminCetakRekening = () => {
     if (user?.role !== 'admin') return;
     const dataToPrint = selectedKelas === 'Semua' ? siswa : siswa.filter((s: any) => s.kelas.toString() === selectedKelas);
     
-    const printWindow = window.open('', '_blank');
+    const printWindow = window.open('', '_blank', 'width=800,height=600');
     if (!printWindow) return;
 
-    const container = document.createElement('div');
-    printWindow.document.body.appendChild(container);
-    const root = createRoot(container);
-    root.render(<KartuTabunganPDF siswa={dataToPrint} />);
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Cetak Kartu Tabungan</title>
+          <style>
+            body { margin: 0; padding: 0; }
+          </style>
+        </head>
+        <body>
+          <div id="root"></div>
+        </body>
+      </html>
+    `);
+    
+    const container = printWindow.document.getElementById('root');
+    if (container) {
+      const root = createRoot(container);
+      root.render(<KartuTabunganPDF siswa={dataToPrint} />);
+    }
 
     setTimeout(() => {
       printWindow.print();
-      printWindow.close();
-    }, 500);
+      // printWindow.close(); // Optional: keep open for user to review
+    }, 1000);
   };
 
   const handleCetakRekeningKoran = () => {
