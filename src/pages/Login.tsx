@@ -178,7 +178,7 @@ export const Login = () => {
       </div>
 
       {/* Right Pane - Login Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 lg:p-24 bg-gradient-to-br from-indigo-50 via-white to-emerald-50 relative overflow-hidden">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 pb-24 sm:p-12 sm:pb-24 lg:p-24 bg-gradient-to-br from-indigo-50 via-white to-emerald-50 relative overflow-hidden">
         {/* Colorful background decoration */}
         <motion.div 
           animate={{ scale: [1, 1.1, 1], rotate: [0, 90, 0] }}
@@ -342,6 +342,24 @@ export const Login = () => {
               </motion.button>
             )}
           </form>
+        </motion.div>
+
+        {/* Mobile Footer */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.1, duration: 0.8 }}
+          className="absolute bottom-6 left-0 right-0 flex justify-center z-10 lg:hidden px-6"
+        >
+          <div className="flex flex-col items-center justify-center bg-white/40 backdrop-blur-md py-3 px-8 rounded-2xl border border-white/50 shadow-sm w-full max-w-sm">
+            <div className="flex items-center gap-1.5 mb-1">
+              <ShieldCheck size={14} className="text-indigo-500" />
+              <span className="text-xs font-bold text-slate-700 tracking-widest">SIMPIRA MENABUNG</span>
+            </div>
+            <p className="text-[10px] font-medium text-slate-400 tracking-widest">
+              &copy; 2026 IKWAL PRESETIAWAN
+            </p>
+          </div>
         </motion.div>
       </div>
     </div>
