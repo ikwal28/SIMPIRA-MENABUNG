@@ -1,14 +1,59 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { User, Lock, ShieldCheck, ArrowRight, TrendingUp, Sparkles, Wallet } from 'lucide-react';
+import { User, Lock, ShieldCheck, ArrowRight, TrendingUp, Sparkles, Wallet, Download, CheckCircle2 } from 'lucide-react';
 import { motion } from 'motion/react';
+import Swal from 'sweetalert2';
 
 export const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const { login, isLoading } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  // PWA Install Logic
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isStandalone, setIsStandalone] = useState(false);
+
+  useEffect(() => {
+    // Check if app is already running in standalone mode (installed)
+    if (window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone) {
+      setIsStandalone(true);
+    }
+
+    const handleBeforeInstallPrompt = (e: Event) => {
+      // Prevent Chrome 67 and earlier from automatically showing the prompt
+      e.preventDefault();
+      // Stash the event so it can be triggered later.
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (deferredPrompt) {
+      // Show the install prompt
+      deferredPrompt.prompt();
+      // Wait for the user to respond to the prompt
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setDeferredPrompt(null);
+      }
+    } else {
+      // If deferredPrompt is null but we are in browser, it usually means it's already installed or not supported.
+      Swal.fire({
+        icon: 'info',
+        title: 'Informasi',
+        text: 'Aplikasi sudah terinstal di perangkat Anda atau browser tidak mendukung fitur instalasi.',
+        confirmButtonColor: '#4f46e5'
+      });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -277,6 +322,25 @@ export const Login = () => {
                 </span>
               )}
             </motion.button>
+
+            {/* PWA Install Button (Only visible in browser, not standalone) */}
+            {!isStandalone && (
+              <motion.button
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.9 }}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.98 }}
+                type="button"
+                onClick={handleInstallClick}
+                className="w-full mt-4 bg-white hover:bg-slate-50 text-indigo-600 border border-indigo-200 font-medium py-3.5 px-4 rounded-xl transition-all duration-200 shadow-sm flex justify-center items-center group"
+              >
+                <span className="flex items-center gap-2">
+                  <Download size={18} className="text-indigo-500 group-hover:-translate-y-0.5 transition-transform" />
+                  Instal Aplikasi
+                </span>
+              </motion.button>
+            )}
           </form>
         </motion.div>
       </div>
