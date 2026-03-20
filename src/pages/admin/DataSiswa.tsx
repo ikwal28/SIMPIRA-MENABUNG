@@ -297,7 +297,7 @@ export const AdminDataSiswa = () => {
       {/* Modal Form */}
       <AnimatePresence>
         {isModalOpen && (
-          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-[60] p-0 sm:p-4">
             <motion.div 
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
