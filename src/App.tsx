@@ -20,14 +20,12 @@ import { SiswaLayout } from './layouts/SiswaLayout';
 import { SiswaDashboard } from './pages/siswa/Dashboard';
 import { SiswaDataPribadi } from './pages/siswa/DataPribadi';
 import { SiswaRiwayat } from './pages/siswa/Riwayat';
-import { PwaInstallPrompt } from './components/PwaInstallPrompt';
 
 export default function App() {
   return (
     <DataProvider>
       <AuthProvider>
         <BrowserRouter>
-          <PwaInstallPrompt />
           <Routes>
             <Route path="/login" element={<Login />} />
             
