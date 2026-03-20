@@ -28,8 +28,8 @@ export const AdminTransaksi = () => {
 
   const filteredSiswa = siswa.filter(
     (s: any) =>
-      s.nama.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.rekening.toString().includes(searchTerm)
+      (s.nama || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (s.rekening || '').toString().includes(searchTerm)
   );
 
   const handleSubmit = async (e: React.FormEvent) => {

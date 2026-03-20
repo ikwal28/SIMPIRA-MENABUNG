@@ -28,9 +28,9 @@ export const AdminDataSiswa = () => {
 
   const filteredSiswa = siswa.filter(
     (s: any) =>
-      s.nama.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.rekening.toString().includes(searchTerm) ||
-      s.kelas.toLowerCase().includes(searchTerm.toLowerCase())
+      (s.nama || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (s.rekening || '').toString().includes(searchTerm) ||
+      (s.kelas || '').toString().toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleNipdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -303,7 +303,7 @@ export const AdminDataSiswa = () => {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="bg-white rounded-t-[2rem] sm:rounded-2xl shadow-2xl w-full max-w-md flex flex-col h-[92vh] sm:h-auto sm:max-h-[90vh] overflow-hidden"
+              className="bg-white rounded-t-[2rem] sm:rounded-2xl shadow-2xl w-full max-w-md flex flex-col max-h-[90dvh] sm:max-h-[85dvh] overflow-hidden mt-auto sm:mt-0"
             >
               <div className="px-6 py-5 border-b border-slate-100 bg-white sticky top-0 z-10 flex justify-between items-center">
                 <h2 className="text-xl font-bold text-slate-800">

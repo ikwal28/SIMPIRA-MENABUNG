@@ -24,7 +24,7 @@ export const AdminFormManual = () => {
       const sKelas = String(s.kelas || '').trim();
       const matchKelas = selectedKelas === 'Semua' || sKelas === selectedKelas;
       const matchSearch = (s.nama || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          (s.rekening || '').includes(searchQuery);
+                          (s.rekening || '').toString().includes(searchQuery);
       return matchKelas && matchSearch;
     });
   }, [siswa, selectedKelas, searchQuery]);

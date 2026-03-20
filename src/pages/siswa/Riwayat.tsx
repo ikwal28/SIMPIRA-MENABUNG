@@ -21,7 +21,7 @@ export const SiswaRiwayat = () => {
 
   const filteredTransaksi = myTransaksi.filter((trx: any) => {
     const matchJenis = filterJenis === 'Semua' || trx.jenis === filterJenis;
-    const matchTanggal = filterTanggal === '' || trx.tanggal?.startsWith(filterTanggal);
+    const matchTanggal = filterTanggal === '' || (trx.tanggal || '').startsWith(filterTanggal);
     return matchJenis && matchTanggal;
   });
 

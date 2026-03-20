@@ -39,12 +39,12 @@ export const AdminRiwayat = () => {
 
   const filteredTransaksi = transaksi.filter((trx: any) => {
     const matchSearch =
-      trx.nama?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      trx.rekening?.toString().includes(searchTerm) ||
-      trx.id_trx?.toLowerCase().includes(searchTerm.toLowerCase());
+      (trx.nama || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (trx.rekening || '').toString().includes(searchTerm) ||
+      (trx.id_trx || '').toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchJenis = filterJenis === 'Semua' || trx.jenis === filterJenis;
-    const matchTanggal = filterTanggal === '' || trx.tanggal?.startsWith(filterTanggal);
+    const matchTanggal = filterTanggal === '' || (trx.tanggal || '').startsWith(filterTanggal);
 
     return matchSearch && matchJenis && matchTanggal;
   });
