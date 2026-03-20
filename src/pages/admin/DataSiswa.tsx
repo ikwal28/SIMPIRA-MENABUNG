@@ -11,6 +11,7 @@ export const AdminDataSiswa = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSiswa, setEditingSiswa] = useState<any>(null);
   const [nipd, setNipd] = useState('');
+  const [selectedKelas, setSelectedKelas] = useState('Semua');
   const NO_INSTANSI = '10104711';
 
   useEffect(() => {
@@ -28,10 +29,12 @@ export const AdminDataSiswa = () => {
 
   const filteredSiswa = siswa.filter(
     (s: any) =>
-      (s.nama || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (s.rekening || '').toString().includes(searchTerm) ||
-      (s.kelas || '').toString().toLowerCase().includes(searchTerm.toLowerCase())
+      (selectedKelas === 'Semua' || s.kelas === selectedKelas) &&
+      ((s.nama || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+       (s.rekening || '').toString().includes(searchTerm) ||
+       (s.kelas || '').toString().toLowerCase().includes(searchTerm.toLowerCase()))
   );
+
 
   const handleNipdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
