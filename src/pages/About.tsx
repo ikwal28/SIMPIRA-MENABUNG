@@ -120,9 +120,9 @@ export const AboutPage = () => {
         animate={{ opacity: 1 }}
         className="bg-white rounded-[2.5rem] p-8 lg:p-10 border border-slate-200/60 shadow-sm flex flex-col lg:flex-row items-center gap-8 text-center lg:text-left"
       >
-        <div className="w-32 h-32 rounded-full shadow-xl shadow-indigo-200/50 border-4 border-white overflow-hidden shrink-0 ring-4 ring-indigo-50 bg-indigo-50">
+        <div className="w-32 h-32 rounded-full shadow-2xl shadow-indigo-500/20 border-4 border-white overflow-hidden shrink-0 ring-4 ring-indigo-500/20 bg-slate-100">
           <img 
-            src="https://api.dicebear.com/7.x/micah/svg?seed=Christian&backgroundColor=e0e7ff" 
+            src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=300&h=300&auto=format&fit=crop" 
             alt="Lead Developer" 
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"
