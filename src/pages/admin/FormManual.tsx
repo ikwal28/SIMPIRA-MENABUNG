@@ -15,7 +15,12 @@ export const AdminFormManual = () => {
   }, []);
 
   const classes = useMemo(() => {
-    const uniqueClasses = Array.from(new Set(siswa.map((s: any) => String(s.kelas || '').trim()))).filter(Boolean).sort();
+    const uniqueClasses = Array.from(new Set(siswa.map((s: any) => String(s.kelas || '').trim()))).filter(Boolean).sort((a, b) => {
+      const numA = parseInt(a);
+      const numB = parseInt(b);
+      if (!isNaN(numA) && !isNaN(numB)) return numB - numA; // Descending
+      return b.localeCompare(a);
+    });
     return ['Semua', ...uniqueClasses];
   }, [siswa]);
 
@@ -26,6 +31,13 @@ export const AdminFormManual = () => {
       const matchSearch = (s.nama || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
                           (s.rekening || '').toString().includes(searchQuery);
       return matchKelas && matchSearch;
+    }).sort((a: any, b: any) => {
+      const classA = parseInt(a.kelas);
+      const classB = parseInt(b.kelas);
+      if (classA !== classB) {
+        return classB - classA; // Descending order: 6 to 1
+      }
+      return a.nama.localeCompare(b.nama);
     });
   }, [siswa, selectedKelas, searchQuery]);
 
