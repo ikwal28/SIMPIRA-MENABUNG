@@ -19,47 +19,66 @@ export const KartuTabunganPDF = ({ siswa }: { siswa: any[] }) => {
         .kartu {
           width: 85.6mm;
           height: 53.98mm;
-          border-radius: 3mm;
+          border-radius: 4mm;
           position: relative;
           box-sizing: border-box;
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          border: 1px solid #e2e8f0;
+          font-family: 'Inter', sans-serif;
+          border: 1px solid rgba(255, 255, 255, 0.2);
           overflow: hidden;
-          background-image: url('https://picsum.photos/seed/school/856/540?blur=5');
-          background-size: cover;
-          background-position: center;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          background-color: #ecfdf5; /* Light Green */
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
           page-break-inside: avoid;
         }
         .kartu::before {
           content: '';
           position: absolute;
           top: 0; left: 0; right: 0; bottom: 0;
-          background: linear-gradient(135deg, rgba(96, 165, 250, 0.85) 0%, rgba(52, 211, 153, 0.85) 100%);
+          background-image: 
+            radial-gradient(circle at 100% 0%, #34d399 0%, transparent 50%),
+            radial-gradient(circle at 0% 100%, #3b82f6 0%, transparent 50%),
+            radial-gradient(circle at 50% 50%, #facc15 0%, transparent 30%);
+          opacity: 0.15;
+          z-index: 0;
+        }
+        .kartu::after {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0; height: 12mm;
+          background: linear-gradient(90deg, #3b82f6 0%, #34d399 100%);
           z-index: 0;
         }
         .card-content {
           position: relative;
           z-index: 1;
           padding: 4mm;
-          color: white;
           height: 100%;
           display: flex;
           flex-direction: column;
         }
-        .header { display: flex; align-items: center; gap: 2mm; margin-bottom: 2mm; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 1mm; }
-        .title { font-size: 2.8mm; font-weight: 500; letter-spacing: 0.3px; }
-        .subtitle { font-size: 4mm; font-weight: 800; color: #fbbf24; letter-spacing: 0.2px; }
-        .field { font-size: 2.8mm; margin-bottom: 0.5mm; display: flex; }
-        .label { font-weight: 600; width: 22mm; color: #e2e8f0; }
+        .header { display: flex; align-items: center; gap: 2mm; margin-bottom: 3mm; color: white; }
+        .title { font-size: 2.2mm; font-weight: 500; opacity: 0.9; }
+        .subtitle { font-size: 3.5mm; font-weight: 700; letter-spacing: -0.2px; }
+        .data-grid { display: grid; grid-template-columns: 1fr; gap: 1mm; margin-bottom: 2mm; }
+        .field { font-size: 2.6mm; display: flex; align-items: baseline; }
+        .label { font-weight: 600; width: 20mm; color: #475569; font-size: 2.2mm; text-transform: uppercase; }
+        .value { font-weight: 600; color: #1e293b; }
         .login-box { 
-          background: rgba(255,255,255,0.15); 
+          background: rgba(255, 255, 255, 0.6); 
           padding: 2mm; 
-          border-radius: 1.5mm; 
+          border-radius: 2mm; 
           margin-top: auto; 
-          border: 1px solid rgba(255,255,255,0.2);
+          border: 1px solid #d1fae5;
         }
-        .footer { text-align: center; font-size: 1.8mm; opacity: 0.8; margin-top: 1mm; }
+        .login-title { font-size: 2mm; font-weight: 700; color: #3b82f6; margin-bottom: 1mm; text-transform: uppercase; }
+        .footer { 
+          text-align: center; 
+          font-size: 1.6mm; 
+          color: #065f46; 
+          margin-top: 1.5mm; 
+          font-weight: 600;
+          border-top: 1px solid rgba(6, 95, 70, 0.2);
+          padding-top: 1mm;
+        }
       `}</style>
       
       <div className="kartu-container">
@@ -67,23 +86,25 @@ export const KartuTabunganPDF = ({ siswa }: { siswa: any[] }) => {
           <div key={index} className="kartu">
             <div className="card-content">
               <div className="header">
-                <ShieldCheck size={16} className="text-yellow-400" />
+                <ShieldCheck size={16} className="text-white" />
                 <div>
                   <div className="title">KARTU TABUNGAN</div>
                   <div className="subtitle">SIMPIRA MENABUNG</div>
                 </div>
               </div>
               
-              <div className="field"><span className="label">NO REK</span> : {s.rekening}</div>
-              <div className="field"><span className="label">NAMA</span> : {s.nama}</div>
-              <div className="field"><span className="label">KELAS</span> : {s.kelas}</div>
-              <div className="field"><span className="label">STATUS</span> : {s.status}</div>
-              <div className="field"><span className="label">SEKOLAH</span> : SD NEGERI 2 LAOT TADU</div>
+              <div className="data-grid">
+                <div className="field"><span className="label">NO REK</span> : <span className="value">{s.rekening}</span></div>
+                <div className="field"><span className="label">NAMA</span> : <span className="value">{s.nama}</span></div>
+                <div className="field"><span className="label">KELAS</span> : <span className="value">{s.kelas}</span></div>
+                <div className="field"><span className="label">STATUS</span> : <span className="value">{s.status}</span></div>
+                <div className="field"><span className="label">SEKOLAH</span> : <span className="value">SD NEGERI 2 LAOT TADU</span></div>
+              </div>
               
               <div className="login-box">
-                <div className="field" style={{fontSize: '2.5mm', fontWeight: 'bold', color: '#fbbf24', marginBottom: '0.5mm'}}>INFORMASI LOGIN</div>
-                <div className="field"><span className="label">USER</span> : {s.username}</div>
-                <div className="field"><span className="label">PASS</span> : {s.password}</div>
+                <div className="login-title">Informasi Login</div>
+                <div className="field"><span className="label">USER</span> : <span className="value">{s.username}</span></div>
+                <div className="field"><span className="label">PASS</span> : <span className="value">{s.password}</span></div>
               </div>
               
               <div className="footer">

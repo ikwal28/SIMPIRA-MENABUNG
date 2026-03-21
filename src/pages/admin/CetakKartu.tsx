@@ -12,7 +12,12 @@ export const AdminCetakKartu = () => {
   const [selectedKelas, setSelectedKelas] = useState('Semua');
   const [isPrinting, setIsPrinting] = useState(false);
 
-  const kelasList = ['Semua', ...Array.from(new Set(siswa.map((s: any) => s.kelas)))];
+  const kelasList = ['Semua', ...Array.from(new Set(siswa.map((s: any) => s.kelas))).sort((a: any, b: any) => {
+    const numA = parseInt(a);
+    const numB = parseInt(b);
+    if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+    return a.toString().localeCompare(b.toString());
+  })];
 
   const handlePrintKartu = () => {
     if (user?.role !== 'admin') {
