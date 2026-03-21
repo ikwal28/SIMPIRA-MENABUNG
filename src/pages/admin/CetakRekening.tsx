@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect, useRef } from 'react';
 import { DataContext } from '../../context/DataContext';
 import { AuthContext } from '../../context/AuthContext';
 import { formatRupiah } from '../../utils/format';
-import { Printer, FileText, Users, Search, CreditCard } from 'lucide-react';
+import { Printer, FileText, Users, Search } from 'lucide-react';
 import { motion } from 'motion/react';
 import { KartuTabunganPDF } from '../../components/KartuTabunganPDF';
 import { createRoot } from 'react-dom/client';
@@ -10,7 +10,7 @@ import { createRoot } from 'react-dom/client';
 export const AdminCetakRekening = () => {
   const { siswa, transaksi, fetchSiswa, fetchTransaksi, isLoadingData } = useContext(DataContext);
   const { user } = useContext(AuthContext);
-  const [activeTab, setActiveTab] = useState<'siswa' | 'kelas' | 'kartu'>('siswa');
+  const [activeTab, setActiveTab] = useState<'siswa' | 'kelas'>('siswa');
   
   // State for Cetak Rekening Koran (Siswa)
   const [selectedSiswa, setSelectedSiswa] = useState<string>('');
@@ -29,39 +29,6 @@ export const AdminCetakRekening = () => {
       (s.nama || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       (s.rekening || '').toString().includes(searchTerm)
   );
-
-  const handlePrintKartu = () => {
-    if (user?.role !== 'admin') return;
-    const dataToPrint = selectedKelas === 'Semua' ? siswa : siswa.filter((s: any) => s.kelas.toString() === selectedKelas);
-    
-    const printWindow = window.open('', '_blank', 'width=800,height=600');
-    if (!printWindow) return;
-
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Cetak Kartu Tabungan</title>
-          <style>
-            body { margin: 0; padding: 0; }
-          </style>
-        </head>
-        <body>
-          <div id="root"></div>
-        </body>
-      </html>
-    `);
-    
-    const container = printWindow.document.getElementById('root');
-    if (container) {
-      const root = createRoot(container);
-      root.render(<KartuTabunganPDF siswa={dataToPrint} />);
-    }
-
-    setTimeout(() => {
-      printWindow.print();
-      // printWindow.close(); // Optional: keep open for user to review
-    }, 1000);
-  };
 
   const handleCetakRekeningKoran = () => {
     if (!selectedSiswa) return;
@@ -297,17 +264,6 @@ export const AdminCetakRekening = () => {
             <Users size={18} />
             Laporan Saldo (Per Kelas)
           </button>
-          <button
-            onClick={() => setActiveTab('kartu')}
-            className={`flex-1 py-4 px-6 text-sm font-medium flex items-center justify-center gap-2 transition-colors ${
-              activeTab === 'kartu' 
-                ? 'text-indigo-600 border-b-2 border-indigo-600 bg-indigo-50/30' 
-                : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'
-            }`}
-          >
-            <CreditCard size={18} />
-            Cetak Kartu Tabungan
-          </button>
         </div>
 
         <div className="p-6 lg:p-8">
@@ -449,53 +405,6 @@ export const AdminCetakRekening = () => {
                   >
                     <Printer size={20} />
                     Cetak Laporan Rekening PDF
-                  </button>
-                </motion.div>
-              )}
-
-              {/* Tab: Cetak Kartu */}
-              {activeTab === 'kartu' && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="max-w-2xl mx-auto space-y-6"
-                >
-                  <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                    <h3 className="text-lg font-semibold text-slate-800 mb-4">Pilih Kelas untuk Cetak Kartu</h3>
-                    
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                      <button
-                        onClick={() => setSelectedKelas('Semua')}
-                        className={`py-3 px-4 rounded-xl text-sm font-medium border transition-all ${
-                          selectedKelas === 'Semua' 
-                            ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-500/20' 
-                            : 'bg-white text-slate-600 border-slate-200 hover:border-indigo-300 hover:bg-indigo-50'
-                        }`}
-                      >
-                        Semua Kelas
-                      </button>
-                      {[1, 2, 3, 4, 5, 6].map(num => (
-                        <button
-                          key={num}
-                          onClick={() => setSelectedKelas(num.toString())}
-                          className={`py-3 px-4 rounded-xl text-sm font-medium border transition-all ${
-                            selectedKelas === num.toString() 
-                              ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-500/20' 
-                              : 'bg-white text-slate-600 border-slate-200 hover:border-indigo-300 hover:bg-indigo-50'
-                          }`}
-                        >
-                          Kelas {num}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={handlePrintKartu}
-                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3.5 px-4 rounded-xl transition-all shadow-sm hover:shadow-indigo-500/20 flex justify-center items-center gap-2"
-                  >
-                    <Printer size={20} />
-                    Cetak Kartu Tabungan PDF
                   </button>
                 </motion.div>
               )}

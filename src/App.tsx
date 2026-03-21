@@ -14,6 +14,7 @@ import { AdminDataSiswa } from './pages/admin/DataSiswa';
 import { AdminTransaksi } from './pages/admin/Transaksi';
 import { AdminRiwayat } from './pages/admin/Riwayat';
 import { AdminCetakRekening } from './pages/admin/CetakRekening';
+import { AdminCetakKartu } from './pages/admin/CetakKartu';
 import { AdminFormManual } from './pages/admin/FormManual';
 import { AboutPage } from './pages/About';
 import { SiswaLayout } from './layouts/SiswaLayout';
@@ -36,6 +37,7 @@ export default function App() {
               <Route path="transaksi" element={<AdminTransaksi />} />
               <Route path="riwayat" element={<AdminRiwayat />} />
               <Route path="cetak" element={<AdminCetakRekening />} />
+              <Route path="cetak-kartu" element={<AdminCetakKartu />} />
               <Route path="form-manual" element={<AdminFormManual />} />
               <Route path="about" element={<AboutPage />} />
             </Route>

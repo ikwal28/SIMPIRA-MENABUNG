@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Outlet, Navigate, Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { LayoutDashboard, Users, ArrowRightLeft, History, LogOut, Menu, ShieldCheck, Bell, Printer, Info, FileText } from 'lucide-react';
+import { LayoutDashboard, Users, ArrowRightLeft, History, LogOut, Menu, ShieldCheck, Bell, Printer, Info, FileText, CreditCard } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export const AdminLayout = () => {
@@ -19,6 +19,7 @@ export const AdminLayout = () => {
     { path: '/admin/transaksi', label: 'Transaksi', icon: <ArrowRightLeft size={20} /> },
     { path: '/admin/riwayat', label: 'Riwayat', icon: <History size={20} /> },
     { path: '/admin/cetak', label: 'Cetak Rekening', icon: <Printer size={20} /> },
+    { path: '/admin/cetak-kartu', label: 'Cetak Kartu', icon: <CreditCard size={20} /> },
     { path: '/admin/form-manual', label: 'Form Manual', icon: <FileText size={20} /> },
     { path: '/admin/about', label: 'Tentang', icon: <Info size={20} /> },
   ];
@@ -169,7 +170,7 @@ export const AdminLayout = () => {
 
         {/* Bottom Navigation - Mobile Banking Style */}
         <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-slate-200 px-2 py-3 flex items-center justify-around z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
-          {navItems.filter(item => !['/admin/cetak', '/admin/form-manual'].includes(item.path)).map((item) => {
+          {navItems.filter(item => !['/admin/cetak', '/admin/cetak-kartu', '/admin/form-manual'].includes(item.path)).map((item) => {
             const isActive = location.pathname === item.path;
             return (
               <Link
@@ -186,7 +187,7 @@ export const AdminLayout = () => {
                   {item.label === 'Dashboard' ? 'DASHBOARD' : 
                    item.label === 'Data Nasabah' ? 'DATA' : 
                    item.label === 'Transaksi' ? 'TRANSAKSI' : 
-                   item.label === 'Riwayat' ? 'RIWAYAT' : 'TENTANG'}
+                   item.label === 'Riwayat' ? 'RIWAYAT' : 'ABOUT'}
                 </span>
               </Link>
             );
