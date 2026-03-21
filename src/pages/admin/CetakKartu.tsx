@@ -15,8 +15,8 @@ export const AdminCetakKartu = () => {
   const kelasList = ['Semua', ...Array.from(new Set(siswa.map((s: any) => s.kelas))).sort((a: any, b: any) => {
     const numA = parseInt(a);
     const numB = parseInt(b);
-    if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
-    return a.toString().localeCompare(b.toString());
+    if (!isNaN(numA) && !isNaN(numB)) return numB - numA; // Descending order
+    return b.toString().localeCompare(a.toString());
   })];
 
   const handlePrintKartu = () => {
@@ -26,7 +26,14 @@ export const AdminCetakKartu = () => {
     }
     
     setIsPrinting(true);
-    const dataToPrint = selectedKelas === 'Semua' ? siswa : siswa.filter((s: any) => s.kelas.toString() === selectedKelas);
+    const dataToPrint = (selectedKelas === 'Semua' ? [...siswa] : siswa.filter((s: any) => s.kelas.toString() === selectedKelas)).sort((a: any, b: any) => {
+      const classA = parseInt(a.kelas);
+      const classB = parseInt(b.kelas);
+      if (classA !== classB) {
+        return classB - classA; // Descending order: 6 to 1
+      }
+      return a.nama.localeCompare(b.nama);
+    });
     
     if (dataToPrint.length === 0) {
       Swal.fire('Info', 'Tidak ada data siswa untuk kelas yang dipilih.', 'info');

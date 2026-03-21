@@ -137,12 +137,14 @@ export const AdminCetakRekening = () => {
       dataToPrint = siswa.filter((s: any) => s.kelas.toString() === selectedKelas);
     }
 
-    // Sort by class then name
+    // Sort by class descending (6 to 1) then name
     dataToPrint.sort((a: any, b: any) => {
-      if (a.kelas === b.kelas) {
-        return a.nama.localeCompare(b.nama);
+      const classA = parseInt(a.kelas);
+      const classB = parseInt(b.kelas);
+      if (classA !== classB) {
+        return classB - classA; // Descending order: 6 to 1
       }
-      return a.kelas.toString().localeCompare(b.kelas.toString());
+      return a.nama.localeCompare(b.nama);
     });
 
     const totalSaldo = dataToPrint.reduce((sum: number, s: any) => sum + (parseFloat(s.saldo) || 0), 0);
