@@ -179,28 +179,15 @@ export const Login = () => {
 
       {/* Right Pane - Login Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 pb-24 sm:p-12 sm:pb-24 lg:p-24 bg-gradient-to-br from-indigo-50 via-white to-emerald-50 relative overflow-hidden">
-        {/* Colorful background decoration */}
+        {/* Colorful background decoration - Simplified for mobile */}
+        <div className="absolute top-[-10%] right-[-5%] w-[300px] h-[300px] lg:w-[500px] lg:h-[500px] bg-indigo-400/10 rounded-full blur-[60px] lg:blur-[80px] mix-blend-multiply" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] lg:w-[600px] lg:h-[600px] bg-emerald-400/10 rounded-full blur-[60px] lg:blur-[80px] mix-blend-multiply" />
+        
         <motion.div 
-          animate={{ scale: [1, 1.1, 1], rotate: [0, 90, 0] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-indigo-400/20 rounded-full blur-[80px] mix-blend-multiply" 
-        />
-        <motion.div 
-          animate={{ scale: [1, 1.2, 1], rotate: [0, -90, 0] }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-emerald-400/20 rounded-full blur-[80px] mix-blend-multiply" 
-        />
-        <motion.div 
-          animate={{ scale: [1, 1.15, 1], y: [0, 50, 0] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[20%] left-[20%] w-[400px] h-[400px] bg-purple-400/20 rounded-full blur-[80px] mix-blend-multiply" 
-        />
-
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-md relative z-10 bg-white/60 backdrop-blur-xl p-8 sm:p-10 rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/80"
+          className="w-full max-w-md relative z-10 bg-white/80 p-8 sm:p-10 rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/80"
         >
           <motion.div 
             initial={{ opacity: 0, y: -10 }}
@@ -226,8 +213,8 @@ export const Login = () => {
 
           <div className="mb-10">
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{ delay: 0.25 }}
               className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100/80 text-indigo-700 text-xs font-bold tracking-wide mb-6 border border-indigo-200/50"
             >
@@ -255,9 +242,9 @@ export const Login = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-5">
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
               >
                 <label className="block text-sm font-medium text-slate-700 mb-1.5">
                   Username
@@ -270,7 +257,7 @@ export const Login = () => {
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="block w-full pl-10 pr-4 py-3 bg-white/80 backdrop-blur-sm border border-slate-200/80 rounded-xl text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all sm:text-sm shadow-sm"
+                    className="block w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all sm:text-sm shadow-sm"
                     placeholder="Masukkan username Anda"
                     autoCapitalize="none"
                     autoCorrect="off"
@@ -280,9 +267,9 @@ export const Login = () => {
               </motion.div>
 
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
               >
                 <label className="block text-sm font-medium text-slate-700 mb-1.5">
                   Password
@@ -295,7 +282,7 @@ export const Login = () => {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="block w-full pl-10 pr-4 py-3 bg-white/80 backdrop-blur-sm border border-slate-200/80 rounded-xl text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all sm:text-sm shadow-sm"
+                    className="block w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all sm:text-sm shadow-sm"
                     placeholder="••••••••"
                     required
                   />
@@ -345,13 +332,8 @@ export const Login = () => {
         </motion.div>
 
         {/* Mobile Footer */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.1, duration: 0.8 }}
-          className="absolute bottom-6 left-0 right-0 flex justify-center z-10 lg:hidden px-6"
-        >
-          <div className="flex flex-col items-center justify-center bg-white/40 backdrop-blur-md py-3 px-8 rounded-2xl border border-white/50 shadow-sm w-full max-w-sm">
+        <div className="absolute bottom-6 left-0 right-0 flex justify-center z-10 lg:hidden px-6">
+          <div className="flex flex-col items-center justify-center bg-white/60 py-3 px-8 rounded-2xl border border-white/50 shadow-sm w-full max-w-sm">
             <div className="flex items-center gap-1.5 mb-1">
               <ShieldCheck size={14} className="text-indigo-500" />
               <span className="text-xs font-bold text-slate-700 tracking-widest">SIMPIRA MENABUNG</span>
@@ -360,7 +342,7 @@ export const Login = () => {
               &copy; 2026 IKWAL PRESETIAWAN
             </p>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

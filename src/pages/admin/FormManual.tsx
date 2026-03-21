@@ -15,7 +15,7 @@ export const AdminFormManual = () => {
   }, []);
 
   const classes = useMemo(() => {
-    const uniqueClasses = Array.from(new Set(siswa.map((s: any) => String(s.kelas || '').trim()))).filter(Boolean).sort((a, b) => {
+    const uniqueClasses = Array.from(new Set(siswa.map((s: any) => String(s.kelas || '').trim()))).filter(Boolean).sort((a: any, b: any) => {
       const numA = parseInt(a);
       const numB = parseInt(b);
       if (!isNaN(numA) && !isNaN(numB)) return numB - numA; // Descending
