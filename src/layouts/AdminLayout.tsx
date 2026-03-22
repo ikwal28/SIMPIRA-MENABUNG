@@ -171,7 +171,7 @@ export const AdminLayout = () => {
 
         {/* Bottom Navigation - Mobile Banking Style */}
         <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-slate-200 px-2 py-3 flex items-center justify-around z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
-          {navItems.filter(item => !['/admin/cetak', '/admin/cetak-kartu', '/admin/form-manual', '/admin/about'].includes(item.path)).map((item) => {
+          {navItems.filter(item => !['/admin/cetak', '/admin/cetak-kartu', '/admin/form-manual', '/admin/audit-log'].includes(item.path)).map((item) => {
             const isActive = location.pathname === item.path;
             return (
               <Link
@@ -188,8 +188,7 @@ export const AdminLayout = () => {
                   {item.label === 'Dashboard' ? 'DASHBOARD' : 
                    item.label === 'Data Nasabah' ? 'DATA' : 
                    item.label === 'Transaksi' ? 'TRANSAKSI' : 
-                   item.label === 'Riwayat' ? 'RIWAYAT' : 
-                   item.label === 'Audit Log' ? 'AUDIT' : 'ABOUT'}
+                   item.label === 'Riwayat' ? 'RIWAYAT' : 'ABOUT'}
                 </span>
               </Link>
             );
