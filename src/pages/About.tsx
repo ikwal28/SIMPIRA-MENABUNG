@@ -4,8 +4,8 @@ import { ShieldCheck, Cpu, Zap, Globe, Github, Mail, Instagram, Code2, Info, Cal
 
 export const AboutPage = () => {
   const appInfo = {
-    version: '2.2.0-stable',
-    updateDate: '20 Maret 2026',
+    version: '2.3.0-stable',
+    updateDate: '22 Maret 2026',
     developer: 'Ikwal Presetiawan',
     description: 'SIMPIRA MENABUNG (Simpanan Pintar Rajin Menabung) adalah platform perbankan sekolah modern yang dirancang untuk menumbuhkan budaya menabung sejak dini dengan transparansi dan keamanan tingkat tinggi.'
   };
@@ -120,12 +120,13 @@ export const AboutPage = () => {
         animate={{ opacity: 1 }}
         className="bg-white rounded-[2.5rem] p-8 lg:p-10 border border-slate-200/60 shadow-sm flex flex-col lg:flex-row items-center gap-8 text-center lg:text-left"
       >
-        <div className="w-32 h-32 rounded-full shadow-2xl shadow-indigo-500/20 border-4 border-white overflow-hidden shrink-0 ring-4 ring-indigo-500/20 bg-slate-100">
+        <div className="w-32 h-32 rounded-full shadow-2xl shadow-slate-900/40 border-4 border-white overflow-hidden shrink-0 ring-4 ring-slate-900/20 bg-slate-900 flex items-center justify-center">
           <img 
-            src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=300&h=300&auto=format&fit=crop" 
-            alt="Lead Developer" 
-            className="w-full h-full object-cover"
+            src="https://images.unsplash.com/photo-1509248961158-e54f6934749c?q=80&w=300&h=300&auto=format&fit=crop" 
+            alt="Ninja Lead Developer" 
+            className="w-full h-full object-cover brightness-110 contrast-125"
             referrerPolicy="no-referrer"
+            loading="lazy"
           />
         </div>
         <div className="space-y-2 flex-1">
