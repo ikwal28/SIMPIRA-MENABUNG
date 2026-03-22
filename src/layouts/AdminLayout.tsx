@@ -18,6 +18,7 @@ export const AdminLayout = () => {
     { path: '/admin/siswa', label: 'Data Nasabah', icon: <Users size={20} /> },
     { path: '/admin/transaksi', label: 'Transaksi', icon: <ArrowRightLeft size={20} /> },
     { path: '/admin/riwayat', label: 'Riwayat', icon: <History size={20} /> },
+    { path: '/admin/audit-log', label: 'Audit Log', icon: <ShieldCheck size={20} /> },
     { path: '/admin/cetak', label: 'Cetak Rekening', icon: <Printer size={20} /> },
     { path: '/admin/cetak-kartu', label: 'Cetak Kartu', icon: <CreditCard size={20} /> },
     { path: '/admin/form-manual', label: 'Form Manual', icon: <FileText size={20} /> },
@@ -170,24 +171,25 @@ export const AdminLayout = () => {
 
         {/* Bottom Navigation - Mobile Banking Style */}
         <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-slate-200 px-2 py-3 flex items-center justify-around z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
-          {navItems.filter(item => !['/admin/cetak', '/admin/cetak-kartu', '/admin/form-manual'].includes(item.path)).map((item) => {
+          {navItems.filter(item => !['/admin/cetak', '/admin/cetak-kartu', '/admin/form-manual', '/admin/about'].includes(item.path)).map((item) => {
             const isActive = location.pathname === item.path;
             return (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex flex-col items-center gap-1 transition-all duration-200 min-w-[64px] ${
+                className={`flex flex-col items-center gap-1 transition-all duration-200 min-w-[50px] ${
                   isActive ? 'text-indigo-600 scale-105' : 'text-slate-400 hover:text-slate-600'
                 }`}
               >
                 <div className={`${isActive ? 'text-indigo-600' : 'text-slate-400'}`}>
-                  {React.cloneElement(item.icon as React.ReactElement, { size: 22, strokeWidth: isActive ? 2.5 : 2 })}
+                  {React.cloneElement(item.icon as React.ReactElement, { size: 20, strokeWidth: isActive ? 2.5 : 2 })}
                 </div>
-                <span className={`text-[9px] font-bold uppercase tracking-tight ${isActive ? 'opacity-100' : 'opacity-70'}`}>
+                <span className={`text-[8px] font-bold uppercase tracking-tight ${isActive ? 'opacity-100' : 'opacity-70'}`}>
                   {item.label === 'Dashboard' ? 'DASHBOARD' : 
                    item.label === 'Data Nasabah' ? 'DATA' : 
                    item.label === 'Transaksi' ? 'TRANSAKSI' : 
-                   item.label === 'Riwayat' ? 'RIWAYAT' : 'ABOUT'}
+                   item.label === 'Riwayat' ? 'RIWAYAT' : 
+                   item.label === 'Audit Log' ? 'AUDIT' : 'ABOUT'}
                 </span>
               </Link>
             );

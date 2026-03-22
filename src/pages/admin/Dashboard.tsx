@@ -4,6 +4,7 @@ import { formatRupiah, formatDate } from '../../utils/format';
 import { Users, CreditCard, ArrowUpRight, ArrowDownRight, Activity, Wallet, RefreshCw, TrendingUp, TrendingDown, ShieldCheck } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { motion } from 'motion/react';
+import { Link } from 'react-router-dom';
 
 export const AdminDashboard = () => {
   const { siswa, transaksi, fetchSiswa, fetchTransaksi, isLoadingData, refreshAll } = useContext(DataContext);
@@ -13,16 +14,16 @@ export const AdminDashboard = () => {
     fetchTransaksi(undefined, undefined, false, 100); // Fetch only last 100 for dashboard
   }, []);
 
-  const totalSaldo = siswa.reduce((sum: number, s: any) => sum + s.saldo, 0);
+  const totalSaldo = siswa.reduce((sum: number, s: any) => sum + (parseFloat(s.saldo) || 0), 0);
   const totalSiswa = siswa.length;
 
   const totalSetor = transaksi
     .filter((t: any) => t.jenis === 'Setor')
-    .reduce((sum: number, t: any) => sum + t.jumlah, 0);
+    .reduce((sum: number, t: any) => sum + (parseFloat(t.jumlah) || 0), 0);
 
   const totalTarik = transaksi
     .filter((t: any) => t.jenis === 'Tarik')
-    .reduce((sum: number, t: any) => sum + t.jumlah, 0);
+    .reduce((sum: number, t: any) => sum + (parseFloat(t.jumlah) || 0), 0);
 
   // Prepare chart data (group by date)
   const chartDataMap = new Map();
@@ -34,8 +35,8 @@ export const AdminDashboard = () => {
       chartDataMap.set(dateStr, { name: dateStr, Setor: 0, Tarik: 0 });
     }
     const current = chartDataMap.get(dateStr);
-    if (t.jenis === 'Setor') current.Setor += t.jumlah;
-    if (t.jenis === 'Tarik') current.Tarik += t.jumlah;
+    if (t.jenis === 'Setor') current.Setor += (parseFloat(t.jumlah) || 0);
+    if (t.jenis === 'Tarik') current.Tarik += (parseFloat(t.jumlah) || 0);
   });
   
   const chartData = Array.from(chartDataMap.values()).slice(-14); // Last 14 days with activity
@@ -205,9 +206,9 @@ export const AdminDashboard = () => {
           <p className="text-sm text-indigo-100 opacity-80 mt-1">Seluruh data nasabah dan transaksi dienkripsi secara otomatis dan dipantau 24/7 untuk menjamin integritas data sekolah.</p>
         </div>
         <div className="sm:ml-auto">
-          <button className="px-6 py-3 bg-white text-indigo-600 rounded-2xl font-bold text-sm hover:bg-indigo-50 transition-colors shadow-lg shadow-black/10">
+          <Link to="/admin/audit-log" className="px-6 py-3 bg-white text-indigo-600 rounded-2xl font-bold text-sm hover:bg-indigo-50 transition-colors shadow-lg shadow-black/10 inline-block">
             Audit Log
-          </button>
+          </Link>
         </div>
       </div>
     </div>

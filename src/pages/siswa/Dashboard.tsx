@@ -14,7 +14,7 @@ export const SiswaDashboard = () => {
   useEffect(() => {
     refreshUser();
     if (user?.rekening) {
-      fetchTransaksi(user.rekening);
+      fetchTransaksi(user.rekening, undefined, false, 20);
     }
   }, [user?.rekening]);
 

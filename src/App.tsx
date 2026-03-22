@@ -13,6 +13,7 @@ import { AdminDashboard } from './pages/admin/Dashboard';
 import { AdminDataSiswa } from './pages/admin/DataSiswa';
 import { AdminTransaksi } from './pages/admin/Transaksi';
 import { AdminRiwayat } from './pages/admin/Riwayat';
+import { AdminAuditLog } from './pages/admin/AuditLog';
 import { AdminCetakRekening } from './pages/admin/CetakRekening';
 import { AdminCetakKartu } from './pages/admin/CetakKartu';
 import { AdminFormManual } from './pages/admin/FormManual';
@@ -36,6 +37,7 @@ export default function App() {
               <Route path="siswa" element={<AdminDataSiswa />} />
               <Route path="transaksi" element={<AdminTransaksi />} />
               <Route path="riwayat" element={<AdminRiwayat />} />
+              <Route path="audit-log" element={<AdminAuditLog />} />
               <Route path="cetak" element={<AdminCetakRekening />} />
               <Route path="cetak-kartu" element={<AdminCetakKartu />} />
               <Route path="form-manual" element={<AdminFormManual />} />

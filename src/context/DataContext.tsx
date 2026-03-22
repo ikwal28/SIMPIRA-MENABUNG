@@ -7,11 +7,13 @@ export const DataContext = createContext<any>(null);
 export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [siswa, setSiswa] = useState<any[]>([]);
   const [transaksi, setTransaksi] = useState<any[]>([]);
+  const [auditLogs, setAuditLogs] = useState<any[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(false);
 
   // Cache refs
   const lastFetchSiswa = useRef<number>(0);
   const lastFetchTransaksi = useRef<number>(0);
+  const lastFetchAuditLogs = useRef<number>(0);
   // Cache duration reduced to 30 seconds for better responsiveness
   const CACHE_DURATION = 30 * 1000; 
 
@@ -88,11 +90,32 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const fetchAuditLogs = async (force = false) => {
+    const now = Date.now();
+    if (!force && auditLogs.length > 0 && (now - lastFetchAuditLogs.current < CACHE_DURATION)) {
+      return;
+    }
+
+    if (auditLogs.length === 0) setIsLoadingData(true);
+    
+    try {
+      const res = await apiCall({ action: 'getAuditLogs' });
+      setAuditLogs(res.data || []);
+      lastFetchAuditLogs.current = Date.now();
+    } catch (error: any) {
+      console.error("Fetch Audit Logs Error:", error);
+      // Don't show alert for audit logs to avoid interrupting user flow if not supported yet
+    } finally {
+      setIsLoadingData(false);
+    }
+  };
+
   const refreshAll = async () => {
     setIsLoadingData(true);
     await Promise.all([
       fetchSiswa(true),
-      fetchTransaksi(undefined, undefined, true)
+      fetchTransaksi(undefined, undefined, true),
+      fetchAuditLogs(true)
     ]);
     setIsLoadingData(false);
   };
@@ -104,6 +127,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
       
       // Immediate background refresh for all menus
       refreshAll();
+      logAction('Tambah Nasabah', `Menambahkan nasabah baru: ${newSiswa.nama} (${newSiswa.rekening})`);
 
       Swal.fire({
         icon: 'success',
@@ -127,6 +151,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
       
       // Immediate background refresh for all menus
       refreshAll();
+      logAction('Update Nasabah', `Memperbarui data nasabah: ${rekening}`);
 
       Swal.fire({
         icon: 'success',
@@ -150,6 +175,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
       
       // Immediate background refresh for all menus
       refreshAll();
+      logAction('Hapus Nasabah', `Menghapus nasabah dengan rekening: ${rekening}`);
 
       Swal.fire({
         icon: 'success',
@@ -207,6 +233,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
       
       // Immediate background refresh for all menus (Saldo & Riwayat)
       refreshAll();
+      logAction('Hapus Transaksi', `Menghapus transaksi ID: ${idTrx}`);
       
       Swal.fire({
         icon: 'success',
@@ -223,14 +250,34 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const logAction = async (action: string, details: string, adminName?: string) => {
+    try {
+      await apiCall({ 
+        action: 'logAudit', 
+        payload: { 
+          action, 
+          details, 
+          admin: adminName || 'Admin',
+          timestamp: new Date().toISOString()
+        } 
+      });
+      fetchAuditLogs(true);
+    } catch (error) {
+      console.error("Log Action Error:", error);
+    }
+  };
+
   return (
     <DataContext.Provider
       value={{
         siswa,
         transaksi,
+        auditLogs,
         isLoadingData,
         fetchSiswa,
         fetchTransaksi,
+        fetchAuditLogs,
+        logAction,
         refreshAll,
         addSiswa,
         updateSiswa,

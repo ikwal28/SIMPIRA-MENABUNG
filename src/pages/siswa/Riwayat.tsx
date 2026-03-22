@@ -10,12 +10,17 @@ export const SiswaRiwayat = () => {
   const { transaksi, fetchTransaksi, isLoadingData } = useContext(DataContext);
   const [filterJenis, setFilterJenis] = useState('Semua');
   const [filterTanggal, setFilterTanggal] = useState('');
+  const [limit, setLimit] = useState(50);
 
   useEffect(() => {
     if (user?.rekening) {
-      fetchTransaksi(user.rekening);
+      fetchTransaksi(user.rekening, undefined, false, limit);
     }
-  }, [user]);
+  }, [user, limit]);
+
+  const handleLoadMore = () => {
+    setLimit(prev => prev + 50);
+  };
 
   const myTransaksi = transaksi.filter((t: any) => t.rekening?.toString() === user?.rekening?.toString());
 
@@ -119,6 +124,18 @@ export const SiswaRiwayat = () => {
               </div>
             )}
           </div>
+
+          {filteredTransaksi.length >= limit && (
+            <div className="mt-8 text-center pb-4">
+              <button
+                onClick={handleLoadMore}
+                disabled={isLoadingData}
+                className="px-8 py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-2xl font-bold transition-all shadow-sm border border-emerald-100 disabled:opacity-50"
+              >
+                {isLoadingData ? 'Memuat...' : 'Muat Lebih Banyak'}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -12,11 +12,16 @@ export const AdminDataSiswa = () => {
   const [editingSiswa, setEditingSiswa] = useState<any>(null);
   const [nipd, setNipd] = useState('');
   const [selectedKelas, setSelectedKelas] = useState('Semua');
+  const [limit, setLimit] = useState(50);
   const NO_INSTANSI = '10104711';
 
   useEffect(() => {
     fetchSiswa();
   }, []);
+
+  const handleLoadMore = () => {
+    setLimit(prev => prev + 50);
+  };
 
   const [formData, setFormData] = useState({
     rekening: '',
@@ -35,6 +40,8 @@ export const AdminDataSiswa = () => {
        (s.kelas || '').toString().toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+
+  const displayedSiswa = filteredSiswa.slice(0, limit);
 
   const handleNipdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -221,8 +228,8 @@ export const AdminDataSiswa = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {filteredSiswa.length > 0 ? (
-                filteredSiswa.map((s: any, index: number) => (
+              {displayedSiswa.length > 0 ? (
+                displayedSiswa.map((s: any, index: number) => (
                   <tr key={index} className="hover:bg-slate-50/80 transition-colors group">
                     <td className="px-6 py-4 font-mono text-sm text-slate-600 font-medium">{s.rekening}</td>
                     <td className="px-6 py-4">
@@ -295,6 +302,18 @@ export const AdminDataSiswa = () => {
             </tbody>
           </table>
         </div>
+
+        {filteredSiswa.length > limit && (
+          <div className="p-6 border-t border-slate-100 text-center">
+            <button
+              onClick={handleLoadMore}
+              disabled={isLoadingData}
+              className="px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-medium transition-colors disabled:opacity-50"
+            >
+              {isLoadingData ? 'Memuat...' : 'Muat Lebih Banyak'}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Modal Form */}

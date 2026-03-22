@@ -68,6 +68,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser({ ...response.data, role: response.role, sessionId });
       localStorage.setItem('lastActivity', Date.now().toString());
       
+      // Log admin login
+      if (response.role === 'admin') {
+        apiCall({
+          action: 'logAudit',
+          payload: {
+            action: 'Login Admin',
+            details: `Admin ${response.data.nama} berhasil masuk ke sistem.`,
+            admin: response.data.nama,
+            timestamp: new Date().toISOString()
+          }
+        }).catch(console.error);
+      }
+      
       Swal.fire({
         title: 'Berhasil Masuk',
         html: `
