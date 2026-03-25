@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AnimatePresence } from 'motion/react';
 import { DataProvider } from './context/DataContext';
 import { AuthProvider } from './context/AuthContext';
 import { Login } from './pages/Login';
@@ -22,11 +23,25 @@ import { SiswaLayout } from './layouts/SiswaLayout';
 import { SiswaDashboard } from './pages/siswa/Dashboard';
 import { SiswaDataPribadi } from './pages/siswa/DataPribadi';
 import { SiswaRiwayat } from './pages/siswa/Riwayat';
+import { SplashScreen } from './components/SplashScreen';
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSplash(false);
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <DataProvider>
       <AuthProvider>
+        <AnimatePresence mode="wait">
+          {showSplash && <SplashScreen key="splash" />}
+        </AnimatePresence>
+        
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<Login />} />
