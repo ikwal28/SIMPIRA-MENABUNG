@@ -26,14 +26,20 @@ import { SiswaRiwayat } from './pages/siswa/Riwayat';
 import { SplashScreen } from './components/SplashScreen';
 
 export default function App() {
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(() => {
+    // Check if splash has already been shown in this session
+    return !sessionStorage.getItem('hasShownSplash');
+  });
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSplash(false);
-    }, 5000);
-    return () => clearTimeout(timer);
-  }, []);
+    if (showSplash) {
+      const timer = setTimeout(() => {
+        setShowSplash(false);
+        sessionStorage.setItem('hasShownSplash', 'true');
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [showSplash]);
 
   return (
     <DataProvider>
