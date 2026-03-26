@@ -16,13 +16,13 @@ export const AdminLayout = () => {
   const navItems = [
     { path: '/admin', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
     { path: '/admin/siswa', label: 'Data Nasabah', icon: <Users size={20} /> },
-    { path: '/admin/manajemen-kelas', label: 'Kenaikan Kelas', icon: <GraduationCap size={20} /> },
     { path: '/admin/transaksi', label: 'Transaksi', icon: <ArrowRightLeft size={20} /> },
     { path: '/admin/riwayat', label: 'Riwayat', icon: <History size={20} /> },
     { path: '/admin/audit-log', label: 'Audit Log', icon: <ShieldCheck size={20} /> },
     { path: '/admin/cetak', label: 'Cetak Rekening', icon: <Printer size={20} /> },
     { path: '/admin/cetak-kartu', label: 'Cetak Kartu', icon: <CreditCard size={20} /> },
     { path: '/admin/form-manual', label: 'Form Manual', icon: <FileText size={20} /> },
+    { path: '/admin/manajemen-kelas', label: 'Kenaikan Kelas', icon: <GraduationCap size={20} /> },
     { path: '/admin/about', label: 'Tentang', icon: <Info size={20} /> },
   ];
 

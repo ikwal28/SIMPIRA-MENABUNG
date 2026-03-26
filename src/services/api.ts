@@ -36,8 +36,9 @@ export const apiCall = async (data: any) => {
     }
 
     if (result.status === 'error') {
-      if (result.message === "Action not found") {
-        throw new Error("Sistem mendeteksi bahwa Google Apps Script Anda belum diperbarui. Anda WAJIB melakukan Deploy ulang sebagai 'Versi Baru' di Google Apps Script.");
+      const msg = result.message || "";
+      if (msg.toLowerCase().includes("action") && msg.toLowerCase().includes("not found")) {
+        throw new Error(`Sistem mendeteksi bahwa Google Apps Script Anda belum diperbarui (Error: ${msg}). Anda WAJIB menyalin kode terbaru, lalu melakukan Deploy ulang sebagai 'Deployment Baru' (New Deployment) atau 'Versi Baru' di Google Apps Script.`);
       }
       throw new Error(result.message);
     }
