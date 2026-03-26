@@ -281,6 +281,46 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         refreshAll,
         addSiswa,
         updateSiswa,
+        bulkUpdateSiswa: async (updates: any[]) => {
+          showProcessingModal();
+          try {
+            await apiCall({ action: 'bulkUpdateSiswa', payload: updates });
+            refreshAll();
+            logAction('Kenaikan Kelas', `Memproses kenaikan kelas/kelulusan untuk ${updates.length} siswa`);
+            Swal.fire({
+              icon: 'success',
+              title: 'Berhasil!',
+              text: 'Proses kenaikan kelas berhasil diselesaikan',
+              timer: 2000,
+              showConfirmButton: false
+            });
+            return true;
+          } catch (error: any) {
+            refreshAll();
+            Swal.fire('Gagal', error.message, 'error');
+            return false;
+          }
+        },
+        deleteLulusan: async () => {
+          showProcessingModal();
+          try {
+            await apiCall({ action: 'deleteLulusan' });
+            refreshAll();
+            logAction('Hapus Lulusan', `Membersihkan data siswa yang sudah lulus`);
+            Swal.fire({
+              icon: 'success',
+              title: 'Berhasil!',
+              text: 'Data lulusan berhasil dihapus dengan bersih',
+              timer: 2000,
+              showConfirmButton: false
+            });
+            return true;
+          } catch (error: any) {
+            refreshAll();
+            Swal.fire('Gagal', error.message, 'error');
+            return false;
+          }
+        },
         deleteSiswa,
         addTransaksi,
         deleteTransaksi,

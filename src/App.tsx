@@ -12,6 +12,7 @@ import { Login } from './pages/Login';
 import { AdminLayout } from './layouts/AdminLayout';
 import { AdminDashboard } from './pages/admin/Dashboard';
 import { AdminDataSiswa } from './pages/admin/DataSiswa';
+import { AdminManajemenKelas } from './pages/admin/ManajemenKelas';
 import { AdminTransaksi } from './pages/admin/Transaksi';
 import { AdminRiwayat } from './pages/admin/Riwayat';
 import { AdminAuditLog } from './pages/admin/AuditLog';
@@ -56,6 +57,7 @@ export default function App() {
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="siswa" element={<AdminDataSiswa />} />
+              <Route path="manajemen-kelas" element={<AdminManajemenKelas />} />
               <Route path="transaksi" element={<AdminTransaksi />} />
               <Route path="riwayat" element={<AdminRiwayat />} />
               <Route path="audit-log" element={<AdminAuditLog />} />

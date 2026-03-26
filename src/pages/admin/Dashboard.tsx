@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { DataContext } from '../../context/DataContext';
 import { formatRupiah, formatDate } from '../../utils/format';
-import { Users, CreditCard, ArrowUpRight, ArrowDownRight, Activity, Wallet, RefreshCw, TrendingUp, TrendingDown, ShieldCheck } from 'lucide-react';
+import { Users, CreditCard, ArrowUpRight, ArrowDownRight, Activity, Wallet, RefreshCw, TrendingUp, TrendingDown, ShieldCheck, GraduationCap, ChevronRight } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
@@ -194,6 +194,51 @@ export const AdminDashboard = () => {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Quick Actions & Info */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <Link 
+          to="/admin/manajemen-kelas" 
+          className="bg-white p-6 rounded-[2rem] border border-slate-200/60 shadow-sm hover:shadow-md transition-all group flex items-center gap-5"
+        >
+          <div className="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+            <GraduationCap size={28} />
+          </div>
+          <div className="flex-1">
+            <h3 className="font-bold text-slate-900">Kenaikan Kelas</h3>
+            <p className="text-xs text-slate-500 mt-0.5">Proses kenaikan tingkat & kelulusan tahunan.</p>
+          </div>
+          <ChevronRight size={20} className="text-slate-300 group-hover:text-indigo-500 transition-colors" />
+        </Link>
+
+        <Link 
+          to="/admin/siswa" 
+          className="bg-white p-6 rounded-[2rem] border border-slate-200/60 shadow-sm hover:shadow-md transition-all group flex items-center gap-5"
+        >
+          <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+            <Users size={28} />
+          </div>
+          <div className="flex-1">
+            <h3 className="font-bold text-slate-900">Data Nasabah</h3>
+            <p className="text-xs text-slate-500 mt-0.5">Kelola informasi dan status siswa.</p>
+          </div>
+          <ChevronRight size={20} className="text-slate-300 group-hover:text-emerald-500 transition-colors" />
+        </Link>
+
+        <Link 
+          to="/admin/transaksi" 
+          className="bg-white p-6 rounded-[2rem] border border-slate-200/60 shadow-sm hover:shadow-md transition-all group flex items-center gap-5"
+        >
+          <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+            <ArrowUpRight size={28} />
+          </div>
+          <div className="flex-1">
+            <h3 className="font-bold text-slate-900">Transaksi Baru</h3>
+            <p className="text-xs text-slate-500 mt-0.5">Input setoran atau tarikan tunai.</p>
+          </div>
+          <ChevronRight size={20} className="text-slate-300 group-hover:text-amber-500 transition-colors" />
+        </Link>
       </div>
 
       {/* Security Info - Admin View */}

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Outlet, Navigate, Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { LayoutDashboard, Users, ArrowRightLeft, History, LogOut, Menu, ShieldCheck, Bell, Printer, Info, FileText, CreditCard } from 'lucide-react';
+import { LayoutDashboard, Users, ArrowRightLeft, History, LogOut, Menu, ShieldCheck, Bell, Printer, Info, FileText, CreditCard, GraduationCap } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export const AdminLayout = () => {
@@ -16,6 +16,7 @@ export const AdminLayout = () => {
   const navItems = [
     { path: '/admin', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
     { path: '/admin/siswa', label: 'Data Nasabah', icon: <Users size={20} /> },
+    { path: '/admin/manajemen-kelas', label: 'Kenaikan Kelas', icon: <GraduationCap size={20} /> },
     { path: '/admin/transaksi', label: 'Transaksi', icon: <ArrowRightLeft size={20} /> },
     { path: '/admin/riwayat', label: 'Riwayat', icon: <History size={20} /> },
     { path: '/admin/audit-log', label: 'Audit Log', icon: <ShieldCheck size={20} /> },
