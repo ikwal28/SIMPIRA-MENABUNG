@@ -1,5 +1,6 @@
 import React, { useState, useContext, useMemo } from 'react';
 import { DataContext } from '../../context/DataContext';
+import { apiCall } from '../../services/api';
 import { formatRupiah } from '../../utils/format';
 import { 
   GraduationCap, 
@@ -13,7 +14,8 @@ import {
   FileSpreadsheet,
   Users,
   Info,
-  ShieldAlert
+  ShieldAlert,
+  RefreshCw
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Swal from 'sweetalert2';
@@ -24,6 +26,24 @@ export const AdminManajemenKelas = () => {
   const [step, setStep] = useState(1);
   const [hasDownloaded, setHasDownloaded] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [apiStatus, setApiStatus] = useState<'idle' | 'checking' | 'ok' | 'error'>('idle');
+
+  const checkApi = async () => {
+    setApiStatus('checking');
+    try {
+      const res = await apiCall({ action: 'ping' });
+      if (res.version === '3.0.0') {
+        setApiStatus('ok');
+        Swal.fire('Berhasil', 'API terhubung! Versi: ' + res.version, 'success');
+      } else {
+        setApiStatus('error');
+        Swal.fire('Versi Salah', 'API terhubung tapi versinya lama (' + (res.version || 'Unknown') + '). Mohon Deploy Ulang.', 'warning');
+      }
+    } catch (error: any) {
+      setApiStatus('error');
+      Swal.fire('Error', error.message, 'error');
+    }
+  };
 
   // Filter only active students for promotion
   const activeSiswa = useMemo(() => siswa.filter((s: any) => s.status === 'AKTIF' || !s.status), [siswa]);
@@ -159,6 +179,26 @@ export const AdminManajemenKelas = () => {
             Manajemen Kenaikan Kelas
           </h1>
           <p className="text-slate-500 mt-1">Kelola siklus tahunan kenaikan tingkat dan kelulusan nasabah.</p>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <button 
+            onClick={checkApi}
+            disabled={apiStatus === 'checking'}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+              apiStatus === 'ok' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+              apiStatus === 'error' ? 'bg-rose-50 text-rose-700 border border-rose-200' :
+              'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+            }`}
+          >
+            <RefreshCw size={16} className={apiStatus === 'checking' ? 'animate-spin' : ''} />
+            {apiStatus === 'checking' ? 'Mengecek...' : apiStatus === 'ok' ? 'API OK (V3)' : 'Cek Koneksi API'}
+          </button>
+          
+          <div className="bg-indigo-50 text-indigo-700 px-4 py-2 rounded-xl text-sm font-medium border border-indigo-100 flex items-center gap-2">
+            <Users size={16} />
+            {activeSiswa.length} Siswa Aktif
+          </div>
         </div>
       </div>
 
