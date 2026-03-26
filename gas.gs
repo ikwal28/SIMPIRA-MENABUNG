@@ -163,7 +163,7 @@ function bulkUpdateSiswa(updates) {
   const statusIdx = getIdx("Status");
 
   if (rekIdx === -1 || kelasIdx === -1 || statusIdx === -1) {
-    return { status: "error", message: "Struktur kolom Siswa tidak lengkap" };
+    return { status: "error", message: "Struktur kolom Siswa tidak lengkap (Rekening/Kelas/Status tidak ditemukan)" };
   }
 
   const updateMap = new Map();
@@ -194,13 +194,19 @@ function deleteLulusan() {
   
   const dataSiswa = sheetSiswa.getDataRange().getValues();
   const headersSiswa = dataSiswa[0];
-  const statusIdx = headersSiswa.findIndex(h => safeString(h).toLowerCase().trim() === "status");
-  const rekIdx = headersSiswa.findIndex(h => safeString(h).toLowerCase().trim() === "rekening");
+  const getIdxS = (name) => headersSiswa.findIndex(h => safeString(h).toLowerCase().trim() === name.toLowerCase());
+  
+  const statusIdx = getIdxS("Status");
+  const rekIdxS = getIdxS("Rekening");
+
+  if (statusIdx === -1 || rekIdxS === -1) {
+    return { status: "error", message: "Kolom Status atau Rekening tidak ditemukan di sheet Siswa" };
+  }
 
   const reksToDelete = [];
   for (let i = 1; i < dataSiswa.length; i++) {
     if (safeString(dataSiswa[i][statusIdx]) === "LULUS") {
-      reksToDelete.push(safeString(dataSiswa[i][rekIdx]));
+      reksToDelete.push(safeString(dataSiswa[i][rekIdxS]));
     }
   }
 
@@ -210,9 +216,14 @@ function deleteLulusan() {
 
   // Delete transactions
   const dataTrx = sheetTrx.getDataRange().getValues();
-  for (let j = dataTrx.length - 1; j >= 1; j--) {
-    if (reksToDelete.includes(safeString(dataTrx[j][1]))) {
-      sheetTrx.deleteRow(j + 1);
+  const headersTrx = dataTrx[0];
+  const rekIdxT = headersTrx.findIndex(h => safeString(h).toLowerCase().trim() === "rekening");
+  
+  if (rekIdxT !== -1) {
+    for (let j = dataTrx.length - 1; j >= 1; j--) {
+      if (reksToDelete.includes(safeString(dataTrx[j][rekIdxT]))) {
+        sheetTrx.deleteRow(j + 1);
+      }
     }
   }
 
@@ -228,6 +239,8 @@ function deleteLulusan() {
 
 function logAudit(payload) {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("AuditLog");
+  if (!sheet) return { status: "error", message: "Sheet AuditLog tidak ditemukan" };
+  
   sheet.appendRow([
     payload.timestamp || new Date().toISOString(),
     payload.admin || "Admin",
@@ -238,7 +251,8 @@ function logAudit(payload) {
 }
 
 function getAuditLogs() {
-  return { status: "success", data: getSheetData("AuditLog").reverse().slice(0, 200) };
+  const logs = getSheetData("AuditLog");
+  return { status: "success", data: logs.reverse().slice(0, 200) };
 }
 
 function login(username, password, role) {
@@ -287,6 +301,8 @@ function prosesTransaksi(payload) {
   const kelasIndex = getIdx("Kelas");
   const statusIndex = getIdx("Status");
   
+  if (rekIndex === -1 || saldoIndex === -1) return { status: "error", message: "Struktur kolom Siswa tidak valid" };
+
   let rowIndex = -1;
   let currentSaldo = 0;
   const targetRek = safeString(payload.rekening);
@@ -309,8 +325,8 @@ function prosesTransaksi(payload) {
   trxSheet.appendRow([
     "TRX-" + targetRek + "-" + new Date().getTime(),
     targetRek,
-    siswaData[rowIndex-1][namaIndex],
-    siswaData[rowIndex-1][kelasIndex],
+    namaIndex !== -1 ? siswaData[rowIndex-1][namaIndex] : "",
+    kelasIndex !== -1 ? siswaData[rowIndex-1][kelasIndex] : "",
     payload.jenis,
     jumlah,
     payload.keterangan || "",
@@ -326,30 +342,43 @@ function deleteTransaksi(idTrx) {
   const trxSheet = ss.getSheetByName("Transaksi");
   const trxData = trxSheet.getDataRange().getValues();
   const trxHeaders = trxData[0];
-  const idTrxIdx = trxHeaders.findIndex(h => safeString(h).toLowerCase().trim() === "id_trx");
+  const getIdxT = (name) => trxHeaders.findIndex(h => safeString(h).toLowerCase().trim() === name.toLowerCase());
+  
+  const idTrxIdx = getIdxT("id_trx");
+  const rekIdxT = getIdxT("rekening");
+  const jenisIdxT = getIdxT("jenis");
+  const jumlahIdxT = getIdxT("jumlah");
+  
+  if (idTrxIdx === -1 || rekIdxT === -1 || jenisIdxT === -1 || jumlahIdxT === -1) {
+    return { status: "error", message: "Struktur kolom Transaksi tidak valid" };
+  }
   
   let trxRow = -1;
   for (let i = 1; i < trxData.length; i++) {
     if (safeString(trxData[i][idTrxIdx]) === safeString(idTrx)) {
       trxRow = i + 1;
-      const rek = safeString(trxData[i][1]);
-      const jenis = safeString(trxData[i][4]);
-      const jumlah = parseFloat(trxData[i][5]);
+      const rek = safeString(trxData[i][rekIdxT]);
+      const jenis = safeString(trxData[i][jenisIdxT]);
+      const jumlah = parseFloat(trxData[i][jumlahIdxT]);
       
       const siswaData = siswaSheet.getDataRange().getValues();
-      const rekIdx = siswaData[0].findIndex(h => safeString(h).toLowerCase().trim() === "rekening");
-      const saldoIdx = siswaData[0].findIndex(h => safeString(h).toLowerCase().trim() === "saldo");
+      const sHeaders = siswaData[0];
+      const getIdxS = (name) => sHeaders.findIndex(h => safeString(h).toLowerCase().trim() === name.toLowerCase());
+      const sRekIdx = getIdxS("rekening");
+      const sSaldoIdx = getIdxS("saldo");
       
-      for (let j = 1; j < siswaData.length; j++) {
-        if (safeString(siswaData[j][rekIdx]) === rek) {
-          const curSaldo = parseFloat(siswaData[j][saldoIdx]);
-          const newSaldo = jenis.toLowerCase().includes("setor") ? curSaldo - jumlah : curSaldo + jumlah;
-          siswaSheet.getRange(j + 1, saldoIdx + 1).setValue(newSaldo);
-          break;
+      if (sRekIdx !== -1 && sSaldoIdx !== -1) {
+        for (let j = 1; j < siswaData.length; j++) {
+          if (safeString(siswaData[j][sRekIdx]) === rek) {
+            const curSaldo = parseFloat(siswaData[j][sSaldoIdx]) || 0;
+            const newSaldo = jenis.toLowerCase().includes("setor") ? curSaldo - jumlah : curSaldo + jumlah;
+            siswaSheet.getRange(j + 1, sSaldoIdx + 1).setValue(newSaldo);
+            break;
+          }
         }
       }
       trxSheet.deleteRow(trxRow);
-      return { status: "success", message: "Transaksi dihapus" };
+      return { status: "success", message: "Transaksi dihapus dan saldo disesuaikan" };
     }
   }
   return { status: "error", message: "Transaksi tidak ditemukan" };

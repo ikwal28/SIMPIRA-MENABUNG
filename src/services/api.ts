@@ -37,8 +37,10 @@ export const apiCall = async (data: any) => {
 
     if (result.status === 'error') {
       const msg = result.message || "";
+      const maskedUrl = GAS_URL ? `${GAS_URL.substring(0, 35)}...${GAS_URL.substring(GAS_URL.length - 10)}` : "URL Kosong";
+      
       if (msg.toLowerCase().includes("action") && msg.toLowerCase().includes("not found")) {
-        throw new Error(`Sistem mendeteksi bahwa Google Apps Script Anda belum diperbarui (Error: ${msg}). Anda WAJIB menyalin kode terbaru, lalu melakukan Deploy ulang sebagai 'Deployment Baru' (New Deployment) atau 'Versi Baru' di Google Apps Script.`);
+        throw new Error(`Sistem mendeteksi API lama (Error: ${msg}).\n\nURL Aktif: ${maskedUrl}\n\nSOLUSI: Di Google Apps Script, Anda WAJIB klik 'Deploy' > 'New Deployment' (Deployment Baru) dan salin URL yang baru muncul ke Settings aplikasi ini.`);
       }
       throw new Error(result.message);
     }
