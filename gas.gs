@@ -1,23 +1,6 @@
 /**
  * GOOGLE APPS SCRIPT - SIMPIRA MENABUNG (PRO VERSION)
  * Update: Fitur Kenaikan Kelas, Bulk Update, & Audit Log
- * 
- * CARA DEPLOY:
- * 1. Buka Google Spreadsheet baru
- * 2. Klik Ekstensi > Apps Script
- * 3. Hapus semua kode bawaan, paste kode ini
- * 4. Klik Simpan (ikon disket)
- * 5. Pilih fungsi `setup` di dropdown atas, lalu klik Jalankan (Run)
- *    - Beri izin akses (Review Permissions -> Advanced -> Go to script)
- * 6. Klik tombol "Terapkan" (Deploy) > "Deployment baru" (New deployment)
- * 7. Pilih jenis: "Aplikasi Web" (Web app)
- * 8. Setelan:
- *    - Deskripsi: API Simpira
- *    - Jalankan sebagai: Saya (Me)
- *    - Siapa yang memiliki akses: Siapa saja (Anyone)
- * 9. Klik Terapkan (Deploy)
- * 10. Copy "URL Aplikasi Web" dan masukkan ke file .env di project React Anda:
- *     VITE_GAS_API_URL="URL_YANG_DICOPY"
  */
 
 function setup() {
@@ -38,415 +21,337 @@ function setup() {
     siswaSheet = ss.insertSheet("Siswa");
     siswaSheet.appendRow(["Rekening", "Nama", "Kelas", "Saldo", "Username", "Password", "Status"]);
     siswaSheet.getRange("A1:G1").setFontWeight("bold").setBackground("#c9daf8");
-    
-    // Dummy Data
-    siswaSheet.appendRow(["1001", "Ahmad Budi", "1", 150000, "ahmad", "123", "AKTIF"]);
-    siswaSheet.appendRow(["1002", "Siti Aminah", "2", 200000, "siti", "123", "AKTIF"]);
-  } else {
-    // Pastikan kolom G adalah Status
-    const statusHeader = siswaSheet.getRange("G1").getValue();
-    if (safeString(statusHeader).toLowerCase() !== "status") {
-      siswaSheet.getRange("G1").setValue("Status").setFontWeight("bold").setBackground("#c9daf8");
-      const lastRow = siswaSheet.getLastRow();
-      if (lastRow > 1) {
-        const defaultStatus = Array(lastRow - 1).fill(["AKTIF"]);
-        siswaSheet.getRange(2, 7, lastRow - 1, 1).setValues(defaultStatus);
-      }
-    }
   }
   
   // 3. Transaksi Sheet
-  let trxSheet = ss.getSheetByName("Transaksi");
-  if (!trxSheet) {
-    trxSheet = ss.insertSheet("Transaksi");
-    trxSheet.appendRow(["ID_TRX", "Rekening", "Nama", "Kelas", "Jenis", "Jumlah", "Keterangan", "Tanggal", "Petugas"]);
-    trxSheet.getRange("A1:I1").setFontWeight("bold").setBackground("#fff2cc");
+  let transSheet = ss.getSheetByName("Transaksi");
+  if (!transSheet) {
+    transSheet = ss.insertSheet("Transaksi");
+    transSheet.appendRow(["ID", "Tanggal", "Rekening", "Nama", "Tipe", "Jumlah", "Keterangan", "Admin"]);
+    transSheet.getRange("A1:H1").setFontWeight("bold").setBackground("#fff2cc");
   }
-
+  
   // 4. Audit Log Sheet
   let auditSheet = ss.getSheetByName("AuditLog");
   if (!auditSheet) {
     auditSheet = ss.insertSheet("AuditLog");
-    auditSheet.appendRow(["Timestamp", "Admin", "Action", "Details"]);
+    auditSheet.appendRow(["Tanggal", "Admin", "Aksi", "Detail"]);
     auditSheet.getRange("A1:D1").setFontWeight("bold").setBackground("#ead1dc");
   }
 }
 
-function safeString(val) {
-  return val === null || val === undefined ? "" : val.toString().trim();
-}
-
 function doPost(e) {
   try {
-    setup();
+    setup(); // Ensure sheets exist
     const data = JSON.parse(e.postData.contents);
     const action = data.action;
     let result = {};
 
-    if (action === "login") {
-      result = login(data.username, data.password, data.role);
+    if (action === "ping") {
+      result = { status: "success", version: "2.1.0", message: "API Simpira Aktif" };
     } else if (action === "loginV2") {
       result = loginV2(data.username, data.password);
     } else if (action === "getSiswa") {
-      result = getSiswa();
+      result = { status: "success", data: getSheetData("Siswa") };
     } else if (action === "getSiswaByUser") {
       result = getSiswaByUser(data.username);
-    } else if (action === "transaksi") {
-      result = prosesTransaksi(data.payload);
-    } else if (action === "deleteTransaksi") {
-      result = deleteTransaksi(data.idTrx);
     } else if (action === "getTransaksi") {
-      result = getTransaksi(data.rekening, data.tanggal, data.limit);
-    } else if (action === "addSiswa" || action === "addSiswaV2") {
-      result = addSiswa(data.payload);
-    } else if (action === "updateSiswa" || action === "updateSiswaV2") {
-      result = updateSiswa(data.rekening, data.payload);
+      result = { status: "success", data: getSheetData("Transaksi") };
+    } else if (action === "getAuditLogs") {
+      result = { status: "success", data: getSheetData("AuditLog") };
+    } else if (action === "addSiswaV2") {
+      result = addSiswaV2(data.siswa);
+    } else if (action === "updateSiswaV2") {
+      result = updateSiswaV2(data.rekening, data.siswa);
     } else if (action === "deleteSiswa") {
       result = deleteSiswa(data.rekening);
-    } 
-    // --- ACTION BARU ---
-    else if (action === "bulkUpdateSiswa") {
-      result = bulkUpdateSiswa(data.payload);
+    } else if (action === "bulkUpdateSiswa") {
+      result = bulkUpdateSiswa(data.updates);
     } else if (action === "deleteLulusan") {
       result = deleteLulusan();
+    } else if (action === "transaksi") {
+      result = transaksi(data.trans);
+    } else if (action === "deleteTransaksi") {
+      result = deleteTransaksi(data.id);
     } else if (action === "logAudit") {
-      result = logAudit(data.payload);
-    } else if (action === "getAuditLogs") {
-      result = getAuditLogs();
-    } else if (action === "ping") {
-      result = { status: "success", version: "3.0.0" };
+      result = logAudit(data.admin, data.aksi, data.detail);
     } else {
       result = { status: "error", message: "Action '" + action + "' not found." };
     }
 
     return ContentService.createTextOutput(JSON.stringify(result))
       .setMimeType(ContentService.MimeType.JSON);
+
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Server Error: " + error.message }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput(JSON.stringify({ 
+      status: "error", 
+      message: "Server Error: " + error.toString() 
+    })).setMimeType(ContentService.MimeType.JSON);
   }
 }
 
-function doGet(e) {
-  return ContentService.createTextOutput("API Simpira Menabung Berjalan Normal")
-    .setMimeType(ContentService.MimeType.TEXT);
+// --- UTILITIES ---
+
+function safeString(val) {
+  if (val === null || val === undefined) return "";
+  return String(val).toLowerCase().trim();
 }
 
-// --- CORE FUNCTIONS ---
-
 function getSheetData(sheetName) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(sheetName);
   if (!sheet) return [];
+  
   const data = sheet.getDataRange().getValues();
   if (data.length <= 1) return [];
+  
   const headers = data[0];
   const rows = data.slice(1);
+  
   return rows.map(row => {
-    let obj = {};
+    const obj = {};
     headers.forEach((header, index) => {
-      if (header) obj[safeString(header).toLowerCase().trim()] = row[index];
+      obj[safeString(header)] = row[index];
     });
     return obj;
   });
 }
 
-function bulkUpdateSiswa(updates) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const sheet = ss.getSheetByName("Siswa");
-  const range = sheet.getDataRange();
-  const data = range.getValues();
-  const headers = data[0];
-  
-  const getIdx = (name) => headers.findIndex(h => safeString(h).toLowerCase().trim() === name.toLowerCase());
-  const rekIdx = getIdx("Rekening");
-  const kelasIdx = getIdx("Kelas");
-  const statusIdx = getIdx("Status");
-
-  if (rekIdx === -1 || kelasIdx === -1 || statusIdx === -1) {
-    return { status: "error", message: "Struktur kolom Siswa tidak lengkap (Rekening/Kelas/Status tidak ditemukan)" };
-  }
-
-  const updateMap = new Map();
-  updates.forEach(u => updateMap.set(safeString(u.rekening), u));
-
-  let count = 0;
-  for (let i = 1; i < data.length; i++) {
-    const rek = safeString(data[i][rekIdx]);
-    if (updateMap.has(rek)) {
-      const u = updateMap.get(rek);
-      data[i][kelasIdx] = u.kelas;
-      data[i][statusIdx] = u.status;
-      count++;
-    }
-  }
-
-  if (count > 0) {
-    range.setValues(data);
-  }
-  
-  return { status: "success", message: "Update massal " + count + " siswa berhasil" };
-}
-
-function deleteLulusan() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const sheetSiswa = ss.getSheetByName("Siswa");
-  const sheetTrx = ss.getSheetByName("Transaksi");
-  
-  const dataSiswa = sheetSiswa.getDataRange().getValues();
-  const headersSiswa = dataSiswa[0];
-  const getIdxS = (name) => headersSiswa.findIndex(h => safeString(h).toLowerCase().trim() === name.toLowerCase());
-  
-  const statusIdx = getIdxS("Status");
-  const rekIdxS = getIdxS("Rekening");
-
-  if (statusIdx === -1 || rekIdxS === -1) {
-    return { status: "error", message: "Kolom Status atau Rekening tidak ditemukan di sheet Siswa" };
-  }
-
-  const reksToDelete = [];
-  for (let i = 1; i < dataSiswa.length; i++) {
-    if (safeString(dataSiswa[i][statusIdx]) === "LULUS") {
-      reksToDelete.push(safeString(dataSiswa[i][rekIdxS]));
-    }
-  }
-
-  if (reksToDelete.length === 0) {
-    return { status: "success", message: "Tidak ada data lulusan untuk dibersihkan" };
-  }
-
-  // Delete transactions
-  const dataTrx = sheetTrx.getDataRange().getValues();
-  const headersTrx = dataTrx[0];
-  const rekIdxT = headersTrx.findIndex(h => safeString(h).toLowerCase().trim() === "rekening");
-  
-  if (rekIdxT !== -1) {
-    for (let j = dataTrx.length - 1; j >= 1; j--) {
-      if (reksToDelete.includes(safeString(dataTrx[j][rekIdxT]))) {
-        sheetTrx.deleteRow(j + 1);
-      }
-    }
-  }
-
-  // Delete students
-  for (let i = dataSiswa.length - 1; i >= 1; i--) {
-    if (safeString(dataSiswa[i][statusIdx]) === "LULUS") {
-      sheetSiswa.deleteRow(i + 1);
-    }
-  }
-
-  return { status: "success", message: "Data lulusan (" + reksToDelete.length + " siswa) dibersihkan" };
-}
-
-function logAudit(payload) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("AuditLog");
-  if (!sheet) return { status: "error", message: "Sheet AuditLog tidak ditemukan" };
-  
-  sheet.appendRow([
-    payload.timestamp || new Date().toISOString(),
-    payload.admin || "Admin",
-    payload.action,
-    payload.details
-  ]);
-  return { status: "success" };
-}
-
-function getAuditLogs() {
-  const logs = getSheetData("AuditLog");
-  return { status: "success", data: logs.reverse().slice(0, 200) };
-}
-
-function login(username, password, role) {
-  const sheetName = role === 'admin' ? 'Admin' : 'Siswa';
-  const users = getSheetData(sheetName);
-  const u = safeString(username);
-  const p = safeString(password);
-  const user = users.find(userObj => safeString(userObj.username) === u && safeString(userObj.password) === p);
-  if (user) return { status: "success", role: role, data: user };
-  return { status: "error", message: "Username atau password salah" };
-}
+// --- CORE FUNCTIONS ---
 
 function loginV2(username, password) {
   const u = safeString(username);
   const p = safeString(password);
-  const admins = getSheetData('Admin');
+  
+  // Check Admin
+  const admins = getSheetData("Admin");
   const admin = admins.find(a => safeString(a.username) === u && safeString(a.password) === p);
   if (admin) return { status: "success", role: "admin", data: admin };
-  const siswas = getSheetData('Siswa');
+  
+  // Check Siswa
+  const siswas = getSheetData("Siswa");
   const siswa = siswas.find(s => safeString(s.username) === u && safeString(s.password) === p);
-  if (siswa) return { status: "success", role: "siswa", data: siswa };
+  if (siswa) {
+    if (safeString(siswa.status) === "nonaktif") {
+      return { status: "error", message: "Akun Anda dinonaktifkan. Hubungi Admin." };
+    }
+    return { status: "success", role: "siswa", data: siswa };
+  }
+  
   return { status: "error", message: "Username atau password salah" };
-}
-
-function getSiswa() {
-  return { status: "success", data: getSheetData("Siswa") };
 }
 
 function getSiswaByUser(username) {
   const u = safeString(username);
-  const siswa = getSheetData("Siswa").find(s => safeString(s.username) === u);
-  if (siswa) return { status: "success", data: siswa };
+  const siswas = getSheetData("Siswa");
+  const siswa = siswas.find(s => safeString(s.username) === u);
+  return { status: "success", data: siswa };
+}
+
+function addSiswaV2(siswa) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName("Siswa");
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  
+  const newRow = headers.map(h => {
+    const key = safeString(h);
+    return siswa[key] !== undefined ? siswa[key] : "";
+  });
+  
+  sheet.appendRow(newRow);
+  return { status: "success", message: "Siswa berhasil ditambahkan" };
+}
+
+function updateSiswaV2(rekening, updates) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName("Siswa");
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const rekIdx = headers.findIndex(h => safeString(h) === "rekening");
+  
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][rekIdx]) === String(rekening)) {
+      headers.forEach((h, idx) => {
+        const key = safeString(h);
+        if (updates[key] !== undefined) {
+          sheet.getRange(i + 1, idx + 1).setValue(updates[key]);
+        }
+      });
+      return { status: "success", message: "Data siswa diperbarui" };
+    }
+  }
   return { status: "error", message: "Siswa tidak ditemukan" };
 }
 
-function prosesTransaksi(payload) {
+function bulkUpdateSiswa(updates) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const siswaSheet = ss.getSheetByName("Siswa");
-  const trxSheet = ss.getSheetByName("Transaksi");
-  const siswaData = siswaSheet.getDataRange().getValues();
-  const headers = siswaData[0];
-  const getIdx = (name) => headers.findIndex(h => safeString(h).toLowerCase().trim() === name.toLowerCase());
-  const rekIndex = getIdx("Rekening");
-  const saldoIndex = getIdx("Saldo");
-  const namaIndex = getIdx("Nama");
-  const kelasIndex = getIdx("Kelas");
-  const statusIndex = getIdx("Status");
+  const sheet = ss.getSheetByName("Siswa");
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const rekIdx = headers.findIndex(h => safeString(h) === "rekening");
+  const kelasIdx = headers.findIndex(h => safeString(h) === "kelas");
+  const statusIdx = headers.findIndex(h => safeString(h) === "status");
   
-  if (rekIndex === -1 || saldoIndex === -1) return { status: "error", message: "Struktur kolom Siswa tidak valid" };
-
-  let rowIndex = -1;
-  let currentSaldo = 0;
-  const targetRek = safeString(payload.rekening);
-  
-  for (let i = 1; i < siswaData.length; i++) {
-    if (safeString(siswaData[i][rekIndex]) === targetRek) {
-      if (safeString(siswaData[i][statusIndex]) === "LULUS") return { status: "error", message: "Nasabah sudah LULUS" };
-      rowIndex = i + 1;
-      currentSaldo = parseFloat(siswaData[i][saldoIndex]) || 0;
-      break;
+  let count = 0;
+  updates.forEach(upd => {
+    for (let i = 1; i < data.length; i++) {
+      if (String(data[i][rekIdx]) === String(upd.rekening)) {
+        if (upd.kelas !== undefined) sheet.getRange(i + 1, kelasIdx + 1).setValue(upd.kelas);
+        if (upd.status !== undefined) sheet.getRange(i + 1, statusIdx + 1).setValue(upd.status);
+        count++;
+        break;
+      }
     }
-  }
+  });
   
-  if (rowIndex === -1) return { status: "error", message: "Rekening tidak ditemukan" };
-  const jumlah = parseFloat(payload.jumlah);
-  if (payload.jenis === "Tarik" && currentSaldo < jumlah) return { status: "error", message: "Saldo tidak mencukupi" };
-  const newSaldo = payload.jenis === "Setor" ? currentSaldo + jumlah : currentSaldo - jumlah;
-  siswaSheet.getRange(rowIndex, saldoIndex + 1).setValue(newSaldo);
-  
-  trxSheet.appendRow([
-    "TRX-" + targetRek + "-" + new Date().getTime(),
-    targetRek,
-    namaIndex !== -1 ? siswaData[rowIndex-1][namaIndex] : "",
-    kelasIndex !== -1 ? siswaData[rowIndex-1][kelasIndex] : "",
-    payload.jenis,
-    jumlah,
-    payload.keterangan || "",
-    payload.tanggal || new Date().toISOString(),
-    payload.petugas || "Admin"
-  ]);
-  return { status: "success", message: "Transaksi berhasil", newSaldo: newSaldo };
+  return { status: "success", message: count + " siswa diperbarui" };
 }
 
-function deleteTransaksi(idTrx) {
+function deleteLulusan() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const siswaSheet = ss.getSheetByName("Siswa");
-  const trxSheet = ss.getSheetByName("Transaksi");
-  const trxData = trxSheet.getDataRange().getValues();
-  const trxHeaders = trxData[0];
-  const getIdxT = (name) => trxHeaders.findIndex(h => safeString(h).toLowerCase().trim() === name.toLowerCase());
+  const transSheet = ss.getSheetByName("Transaksi");
   
-  const idTrxIdx = getIdxT("id_trx");
-  const rekIdxT = getIdxT("rekening");
-  const jenisIdxT = getIdxT("jenis");
-  const jumlahIdxT = getIdxT("jumlah");
+  if (!siswaSheet) return { status: "error", message: "Sheet Siswa tidak ditemukan" };
   
-  if (idTrxIdx === -1 || rekIdxT === -1 || jenisIdxT === -1 || jumlahIdxT === -1) {
-    return { status: "error", message: "Struktur kolom Transaksi tidak valid" };
-  }
+  const data = siswaSheet.getDataRange().getValues();
+  const headers = data[0];
+  const rekIdx = headers.findIndex(h => safeString(h) === "rekening");
+  const statusIdx = headers.findIndex(h => safeString(h) === "status");
   
-  let trxRow = -1;
-  for (let i = 1; i < trxData.length; i++) {
-    if (safeString(trxData[i][idTrxIdx]) === safeString(idTrx)) {
-      trxRow = i + 1;
-      const rek = safeString(trxData[i][rekIdxT]);
-      const jenis = safeString(trxData[i][jenisIdxT]);
-      const jumlah = parseFloat(trxData[i][jumlahIdxT]);
+  let count = 0;
+  // Iterate backwards to safely delete rows
+  for (let i = data.length - 1; i >= 1; i--) {
+    if (safeString(data[i][statusIdx]) === "lulus") {
+      const rek = String(data[i][rekIdx]);
       
-      const siswaData = siswaSheet.getDataRange().getValues();
-      const sHeaders = siswaData[0];
-      const getIdxS = (name) => sHeaders.findIndex(h => safeString(h).toLowerCase().trim() === name.toLowerCase());
-      const sRekIdx = getIdxS("rekening");
-      const sSaldoIdx = getIdxS("saldo");
-      
-      if (sRekIdx !== -1 && sSaldoIdx !== -1) {
-        for (let j = 1; j < siswaData.length; j++) {
-          if (safeString(siswaData[j][sRekIdx]) === rek) {
-            const curSaldo = parseFloat(siswaData[j][sSaldoIdx]) || 0;
-            const newSaldo = jenis.toLowerCase().includes("setor") ? curSaldo - jumlah : curSaldo + jumlah;
-            siswaSheet.getRange(j + 1, sSaldoIdx + 1).setValue(newSaldo);
-            break;
+      // 1. Hapus Riwayat Transaksi Siswa Tersebut
+      if (transSheet) {
+        const transData = transSheet.getDataRange().getValues();
+        if (transData.length > 1) {
+          const tHeaders = transData[0];
+          const tRekIdx = tHeaders.findIndex(h => safeString(h) === "rekening");
+          
+          for (let j = transData.length - 1; j >= 1; j--) {
+            if (String(transData[j][tRekIdx]) === rek) {
+              transSheet.deleteRow(j + 1);
+            }
           }
         }
       }
-      trxSheet.deleteRow(trxRow);
-      return { status: "success", message: "Transaksi dihapus dan saldo disesuaikan" };
+      
+      // 2. Hapus Data Siswa
+      siswaSheet.deleteRow(i + 1);
+      count++;
     }
   }
-  return { status: "error", message: "Transaksi tidak ditemukan" };
-}
-
-function getTransaksi(rekening, tanggal, limit) {
-  const trx = getSheetData("Transaksi");
-  let filtered = trx;
-  if (rekening) filtered = filtered.filter(t => safeString(t.rekening) === safeString(rekening));
-  if (tanggal) filtered = filtered.filter(t => safeString(t.tanggal).startsWith(safeString(tanggal)));
-  filtered.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
-  return { status: "success", data: filtered.slice(0, limit || 500) };
-}
-
-function addSiswa(payload) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Siswa");
-  const data = sheet.getDataRange().getValues();
-  const rekIdx = data[0].findIndex(h => safeString(h).toLowerCase().trim() === "rekening");
-  if (data.some(row => safeString(row[rekIdx]) === safeString(payload.rekening))) return { status: "error", message: "Rekening terdaftar" };
   
-  const headers = data[0];
-  const newRow = new Array(headers.length).fill("");
-  const setVal = (name, val) => {
-    const idx = headers.findIndex(h => safeString(h).toLowerCase().trim() === name.toLowerCase());
-    if (idx !== -1) newRow[idx] = val;
-  };
-  setVal("Rekening", payload.rekening);
-  setVal("Nama", payload.nama);
-  setVal("Kelas", payload.kelas);
-  setVal("Saldo", 0);
-  setVal("Username", payload.username);
-  setVal("Password", payload.password);
-  setVal("Status", payload.status || "AKTIF");
-  sheet.appendRow(newRow);
-  return { status: "success", message: "Siswa ditambahkan" };
-}
-
-function updateSiswa(rekening, payload) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Siswa");
-  const data = sheet.getDataRange().getValues();
-  const headers = data[0];
-  const rekIdx = headers.findIndex(h => safeString(h).toLowerCase().trim() === "rekening");
-  for (let i = 1; i < data.length; i++) {
-    if (safeString(data[i][rekIdx]) === safeString(rekening)) {
-      const setVal = (name, val) => {
-        const idx = headers.findIndex(h => safeString(h).toLowerCase().trim() === name.toLowerCase());
-        if (idx !== -1 && val !== undefined) sheet.getRange(i + 1, idx + 1).setValue(val);
-      };
-      setVal("Nama", payload.nama);
-      setVal("Kelas", payload.kelas);
-      setVal("Username", payload.username);
-      setVal("Password", payload.password);
-      setVal("Status", payload.status);
-      return { status: "success", message: "Data diupdate" };
-    }
-  }
-  return { status: "error", message: "Siswa tidak ditemukan" };
+  return { status: "success", message: count + " data lulusan dan riwayatnya berhasil dihapus" };
 }
 
 function deleteSiswa(rekening) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Siswa");
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName("Siswa");
   const data = sheet.getDataRange().getValues();
-  const rekIdx = data[0].findIndex(h => safeString(h).toLowerCase().trim() === "rekening");
+  const rekIdx = data[0].findIndex(h => safeString(h) === "rekening");
+  
   for (let i = 1; i < data.length; i++) {
-    if (safeString(data[i][rekIdx]) === safeString(rekening)) {
+    if (String(data[i][rekIdx]) === String(rekening)) {
       sheet.deleteRow(i + 1);
       return { status: "success", message: "Siswa dihapus" };
     }
   }
   return { status: "error", message: "Siswa tidak ditemukan" };
+}
+
+function transaksi(trans) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const siswaSheet = ss.getSheetByName("Siswa");
+  const transSheet = ss.getSheetByName("Transaksi");
+  
+  const sData = siswaSheet.getDataRange().getValues();
+  const sHeaders = sData[0];
+  const rekIdx = sHeaders.findIndex(h => safeString(h) === "rekening");
+  const saldoIdx = sHeaders.findIndex(h => safeString(h) === "saldo");
+  
+  for (let i = 1; i < sData.length; i++) {
+    if (String(sData[i][rekIdx]) === String(trans.rekening)) {
+      const currentSaldo = Number(sData[i][saldoIdx]) || 0;
+      const amount = Number(trans.jumlah);
+      let newSaldo = currentSaldo;
+      
+      if (trans.tipe === "SETOR") newSaldo += amount;
+      else if (trans.tipe === "TARIK") {
+        if (currentSaldo < amount) return { status: "error", message: "Saldo tidak mencukupi" };
+        newSaldo -= amount;
+      }
+      
+      // Update Saldo
+      siswaSheet.getRange(i + 1, saldoIdx + 1).setValue(newSaldo);
+      
+      // Record Transaction
+      const tHeaders = transSheet.getRange(1, 1, 1, transSheet.getLastColumn()).getValues()[0];
+      const newTRow = tHeaders.map(h => {
+        const key = safeString(h);
+        if (key === "id") return "TRX" + Date.now();
+        if (key === "tanggal") return new Date();
+        return trans[key] !== undefined ? trans[key] : "";
+      });
+      transSheet.appendRow(newTRow);
+      
+      return { status: "success", message: "Transaksi berhasil", newSaldo: newSaldo };
+    }
+  }
+  return { status: "error", message: "Rekening tidak ditemukan" };
+}
+
+function deleteTransaksi(id) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const transSheet = ss.getSheetByName("Transaksi");
+  const siswaSheet = ss.getSheetByName("Siswa");
+  
+  const tData = transSheet.getDataRange().getValues();
+  const tHeaders = tData[0];
+  const idIdx = tHeaders.findIndex(h => safeString(h) === "id");
+  const rekIdx = tHeaders.findIndex(h => safeString(h) === "rekening");
+  const tipeIdx = tHeaders.findIndex(h => safeString(h) === "tipe");
+  const jumlahIdx = tHeaders.findIndex(h => safeString(h) === "jumlah");
+  
+  for (let i = 1; i < tData.length; i++) {
+    if (String(tData[i][idIdx]) === String(id)) {
+      const rek = tData[i][rekIdx];
+      const tipe = tData[i][tipeIdx];
+      const jumlah = Number(tData[i][jumlahIdx]);
+      
+      // Revert Saldo
+      const sData = siswaSheet.getDataRange().getValues();
+      const sHeaders = sData[0];
+      const sRekIdx = sHeaders.findIndex(h => safeString(h) === "rekening");
+      const sSaldoIdx = sHeaders.findIndex(h => safeString(h) === "saldo");
+      
+      for (let j = 1; j < sData.length; j++) {
+        if (String(sData[j][sRekIdx]) === String(rek)) {
+          let currentSaldo = Number(sData[j][sSaldoIdx]) || 0;
+          if (tipe === "SETOR") currentSaldo -= jumlah;
+          else if (tipe === "TARIK") currentSaldo += jumlah;
+          siswaSheet.getRange(j + 1, sSaldoIdx + 1).setValue(currentSaldo);
+          break;
+        }
+      }
+      
+      transSheet.deleteRow(i + 1);
+      return { status: "success", message: "Transaksi dibatalkan" };
+    }
+  }
+  return { status: "error", message: "Transaksi tidak ditemukan" };
+}
+
+function logAudit(admin, aksi, detail) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName("AuditLog");
+  if (sheet) {
+    sheet.appendRow([new Date(), admin, aksi, detail]);
+    return { status: "success" };
+  }
+  return { status: "error" };
 }

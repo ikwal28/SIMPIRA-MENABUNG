@@ -43,8 +43,8 @@ export default function App() {
   }, [showSplash]);
 
   return (
-    <DataProvider>
-      <AuthProvider>
+    <AuthProvider>
+      <DataProvider>
         <AnimatePresence mode="wait">
           {showSplash && <SplashScreen key="splash" />}
         </AnimatePresence>
@@ -79,7 +79,7 @@ export default function App() {
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
         </BrowserRouter>
-      </AuthProvider>
-    </DataProvider>
+      </DataProvider>
+    </AuthProvider>
   );
 }
