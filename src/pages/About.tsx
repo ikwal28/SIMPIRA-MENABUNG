@@ -4,7 +4,7 @@ import { ShieldCheck, Cpu, Zap, Globe, Github, Mail, Instagram, Code2, Info, Cal
 
 export const AboutPage = () => {
   const appInfo = {
-    version: '3.2.1-stable',
+    version: '3.2.2-stable',
     updateDate: '27 Maret 2026',
     developer: 'Ikwal Presetiawan',
     description: 'SIMPIRA MENABUNG (Simpanan Pintar Rajin Menabung) adalah platform perbankan sekolah modern yang dirancang untuk menumbuhkan budaya menabung sejak dini dengan transparansi dan keamanan tingkat tinggi.'

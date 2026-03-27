@@ -32,7 +32,7 @@ export const AdminManajemenKelas = () => {
     setApiStatus('checking');
     try {
       const res = await apiCall({ action: 'ping' });
-      if (res.version === '3.0.0') {
+      if (res.version === '3.2.2') {
         setApiStatus('ok');
         Swal.fire('Berhasil', 'API terhubung! Versi: ' + res.version, 'success');
       } else {
