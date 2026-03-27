@@ -1,11 +1,11 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { ShieldCheck, Cpu, Zap, Globe, Github, Mail, Instagram, Code2, Info, Calendar, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Cpu, Zap, Globe, Github, Mail, Instagram, Code2, Info, Calendar, CheckCircle2, RefreshCw } from 'lucide-react';
 
 export const AboutPage = () => {
   const appInfo = {
-    version: '2.3.0-stable',
-    updateDate: '22 Maret 2026',
+    version: '3.2.0-stable',
+    updateDate: '27 Maret 2026',
     developer: 'Ikwal Presetiawan',
     description: 'SIMPIRA MENABUNG (Simpanan Pintar Rajin Menabung) adalah platform perbankan sekolah modern yang dirancang untuk menumbuhkan budaya menabung sejak dini dengan transparansi dan keamanan tingkat tinggi.'
   };
@@ -150,11 +150,31 @@ export const AboutPage = () => {
             </button>
           </div>
         </div>
-        <div className="lg:border-l border-slate-100 lg:pl-8 flex flex-col items-center lg:items-end gap-2">
-          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Lisensi Aplikasi</p>
-          <div className="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-mono">
-            Apache License 2.0
+        <div className="lg:border-l border-slate-100 lg:pl-8 flex flex-col items-center lg:items-end gap-6">
+          <div className="flex flex-col items-center lg:items-end gap-2">
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Lisensi Aplikasi</p>
+            <div className="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-mono">
+              Apache License 2.0
+            </div>
           </div>
+          <button 
+            onClick={() => {
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(registrations => {
+                  for(let registration of registrations) {
+                    registration.update();
+                  }
+                  window.location.reload();
+                });
+              } else {
+                window.location.reload();
+              }
+            }}
+            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all shadow-lg shadow-indigo-200"
+          >
+            <RefreshCw size={14} />
+            Update App
+          </button>
         </div>
       </motion.div>
 

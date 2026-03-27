@@ -27,8 +27,8 @@ function setup() {
   let transSheet = ss.getSheetByName("Transaksi");
   if (!transSheet) {
     transSheet = ss.insertSheet("Transaksi");
-    transSheet.appendRow(["ID", "Tanggal", "Rekening", "Nama", "Tipe", "Jumlah", "Keterangan", "Admin"]);
-    transSheet.getRange("A1:H1").setFontWeight("bold").setBackground("#fff2cc");
+    transSheet.appendRow(["ID_TRX", "Tanggal", "Rekening", "Nama", "Kelas", "Jenis", "Jumlah", "Keterangan", "Petugas"]);
+    transSheet.getRange("A1:I1").setFontWeight("bold").setBackground("#fff2cc");
   }
   
   // 4. Audit Log Sheet
@@ -43,12 +43,13 @@ function setup() {
 function doPost(e) {
   try {
     setup(); // Ensure sheets exist
-    const data = JSON.parse(e.postData.contents);
-    const action = data.action;
+    const requestData = JSON.parse(e.postData.contents);
+    const data = requestData.payload || requestData;
+    const action = requestData.action || data.action;
     let result = {};
 
     if (action === "ping") {
-      result = { status: "success", version: "2.1.0", message: "API Simpira Aktif" };
+      result = { status: "success", version: "3.2.0", message: "API Simpira Aktif" };
     } else if (action === "loginV2") {
       result = loginV2(data.username, data.password);
     } else if (action === "getSiswa") {
@@ -60,9 +61,9 @@ function doPost(e) {
     } else if (action === "getAuditLogs") {
       result = { status: "success", data: getSheetData("AuditLog") };
     } else if (action === "addSiswaV2") {
-      result = addSiswaV2(data.siswa);
+      result = addSiswaV2(data.siswa || data);
     } else if (action === "updateSiswaV2") {
-      result = updateSiswaV2(data.rekening, data.siswa);
+      result = updateSiswaV2(data.rekening, data.siswa || data);
     } else if (action === "deleteSiswa") {
       result = deleteSiswa(data.rekening);
     } else if (action === "bulkUpdateSiswa") {
@@ -70,7 +71,7 @@ function doPost(e) {
     } else if (action === "deleteLulusan") {
       result = deleteLulusan();
     } else if (action === "transaksi") {
-      result = transaksi(data.trans);
+      result = transaksi(data.trans || data);
     } else if (action === "deleteTransaksi") {
       result = deleteTransaksi(data.id);
     } else if (action === "logAudit") {
@@ -85,7 +86,7 @@ function doPost(e) {
   } catch (error) {
     return ContentService.createTextOutput(JSON.stringify({ 
       status: "error", 
-      message: "Server Error: " + error.toString() 
+      message: "Server Error V3.2: " + error.toString() 
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
@@ -111,7 +112,16 @@ function getSheetData(sheetName) {
   return rows.map(row => {
     const obj = {};
     headers.forEach((header, index) => {
-      obj[safeString(header)] = row[index];
+      const key = safeString(header);
+      obj[key] = row[index];
+      
+      // Aliases for frontend compatibility
+      if (key === "tipe") obj["jenis"] = row[index];
+      if (key === "jenis") obj["tipe"] = row[index];
+      if (key === "id") obj["id_trx"] = row[index];
+      if (key === "id_trx") obj["id"] = row[index];
+      if (key === "admin") obj["petugas"] = row[index];
+      if (key === "petugas") obj["admin"] = row[index];
     });
     return obj;
   });
@@ -273,6 +283,8 @@ function transaksi(trans) {
   const sHeaders = sData[0];
   const rekIdx = sHeaders.findIndex(h => safeString(h) === "rekening");
   const saldoIdx = sHeaders.findIndex(h => safeString(h) === "saldo");
+  const namaIdx = sHeaders.findIndex(h => safeString(h) === "nama");
+  const kelasIdx = sHeaders.findIndex(h => safeString(h) === "kelas");
   
   for (let i = 1; i < sData.length; i++) {
     if (String(sData[i][rekIdx]) === String(trans.rekening)) {
@@ -280,10 +292,15 @@ function transaksi(trans) {
       const amount = Number(trans.jumlah);
       let newSaldo = currentSaldo;
       
-      if (trans.tipe === "SETOR") newSaldo += amount;
-      else if (trans.tipe === "TARIK") {
+      const jenis = safeString(trans.jenis || trans.tipe).toUpperCase();
+      
+      if (jenis === "SETOR" || jenis === "SETORAN") {
+        newSaldo += amount;
+      } else if (jenis === "TARIK" || jenis === "PENARIKAN") {
         if (currentSaldo < amount) return { status: "error", message: "Saldo tidak mencukupi" };
         newSaldo -= amount;
+      } else {
+        return { status: "error", message: "Jenis transaksi tidak valid: " + jenis };
       }
       
       // Update Saldo
@@ -293,8 +310,12 @@ function transaksi(trans) {
       const tHeaders = transSheet.getRange(1, 1, 1, transSheet.getLastColumn()).getValues()[0];
       const newTRow = tHeaders.map(h => {
         const key = safeString(h);
-        if (key === "id") return "TRX" + Date.now();
+        if (key === "id" || key === "id_trx") return "TRX" + Date.now();
         if (key === "tanggal") return new Date();
+        if (key === "nama" && !trans.nama) return sData[i][namaIdx];
+        if (key === "kelas") return sData[i][kelasIdx];
+        if (key === "jenis" || key === "tipe") return trans.jenis || trans.tipe;
+        if (key === "admin" || key === "petugas") return trans.petugas || trans.admin;
         return trans[key] !== undefined ? trans[key] : "";
       });
       transSheet.appendRow(newTRow);

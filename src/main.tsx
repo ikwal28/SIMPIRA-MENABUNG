@@ -8,6 +8,10 @@ import { registerSW } from 'virtual:pwa-register';
 if ('serviceWorker' in navigator) {
   registerSW({
     immediate: true,
+    onNeedRefresh() {
+      console.log('New content available, reloading...');
+      window.location.reload();
+    },
     onRegistered(r) {
       // Check for updates every 10 minutes
       r && setInterval(() => {
