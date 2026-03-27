@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { ShieldCheck, Cpu, Zap, Globe, Github, Mail, Instagram, Code2, Info, Calendar, CheckCircle2, RefreshCw } from 'lucide-react';
+import { ShieldCheck, Cpu, Zap, Globe, Github, Mail, Instagram, Code2, Info, Calendar, CheckCircle2 } from 'lucide-react';
 
 export const AboutPage = () => {
   const appInfo = {
@@ -157,24 +157,6 @@ export const AboutPage = () => {
               Apache License 2.0
             </div>
           </div>
-          <button 
-            onClick={() => {
-              if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.getRegistrations().then(registrations => {
-                  for(let registration of registrations) {
-                    registration.update();
-                  }
-                  window.location.reload();
-                });
-              } else {
-                window.location.reload();
-              }
-            }}
-            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all shadow-lg shadow-indigo-200"
-          >
-            <RefreshCw size={14} />
-            Update App
-          </button>
         </div>
       </motion.div>
 

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Outlet, Navigate, Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { LayoutDashboard, Users, ArrowRightLeft, History, LogOut, Menu, ShieldCheck, Bell, Printer, Info, FileText, CreditCard, GraduationCap, RefreshCw } from 'lucide-react';
+import { LayoutDashboard, Users, ArrowRightLeft, History, LogOut, Menu, ShieldCheck, Bell, Printer, Info, FileText, CreditCard, GraduationCap } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export const AdminLayout = () => {
@@ -130,28 +130,6 @@ export const AdminLayout = () => {
               <Bell size={20} />
               <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
             </button>
-            <div className="h-6 w-px bg-slate-200 hidden lg:block"></div>
-            
-            <button 
-              onClick={() => {
-                if ('serviceWorker' in navigator) {
-                  navigator.serviceWorker.getRegistrations().then(registrations => {
-                    for (let registration of registrations) {
-                      registration.unregister();
-                    }
-                    window.location.reload();
-                  });
-                } else {
-                  window.location.reload();
-                }
-              }}
-              className="p-2 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-all flex items-center gap-2"
-              title="Muat Ulang Aplikasi (Clear Cache)"
-            >
-              <RefreshCw size={20} />
-              <span className="text-xs font-bold hidden sm:block">Refresh App</span>
-            </button>
-
             <div className="h-6 w-px bg-slate-200 hidden lg:block"></div>
             
             <div className="flex items-center gap-2 p-1.5 sm:p-2 sm:pr-4 bg-slate-50 sm:bg-transparent border border-slate-200 sm:border-transparent rounded-2xl sm:rounded-full transition-all">
