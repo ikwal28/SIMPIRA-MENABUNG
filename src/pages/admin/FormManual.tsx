@@ -218,7 +218,7 @@ export const AdminFormManual = () => {
             onChange={(e) => setSelectedKelas(e.target.value)}
             className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all appearance-none"
           >
-            {classes.map(c => (
+            {classes.map((c: any) => (
               <option key={c} value={c}>{c === 'Semua' ? 'Semua Kelas' : `Kelas ${c}`}</option>
             ))}
           </select>

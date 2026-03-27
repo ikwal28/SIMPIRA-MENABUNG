@@ -6,38 +6,62 @@ export const AuthContext = createContext<any>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<any>(() => {
-    const saved = localStorage.getItem('user');
-    return saved ? JSON.parse(saved) : null;
+    try {
+      const saved = localStorage.getItem('user');
+      return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+      console.error("AuthContext: Failed to parse user from localStorage", e);
+      localStorage.removeItem('user');
+      return null;
+    }
   });
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
+      try {
+        localStorage.setItem('user', JSON.stringify(user));
+      } catch (e) {
+        console.error("AuthContext: Failed to set user in localStorage", e);
+      }
       // Inactivity and Tab Closure logic
       const checkSession = () => {
-        const lastActivity = parseInt(localStorage.getItem('lastActivity') || '0');
-        const now = Date.now();
-        if (now - lastActivity > 10 * 60 * 1000) {
-          forceLogout();
+        try {
+          const lastActivity = parseInt(localStorage.getItem('lastActivity') || '0');
+          const now = Date.now();
+          if (now - lastActivity > 10 * 60 * 1000) {
+            forceLogout();
+          }
+        } catch (e) {
+          console.error("AuthContext: Failed to access localStorage in checkSession", e);
         }
       };
       const interval = setInterval(checkSession, 60000); // Check every minute
       
-      const updateActivity = () => localStorage.setItem('lastActivity', Date.now().toString());
+      const updateActivity = () => {
+        try {
+          localStorage.setItem('lastActivity', Date.now().toString());
+        } catch (e) {
+          console.error("AuthContext: Failed to set lastActivity in localStorage", e);
+        }
+      };
       window.addEventListener('mousemove', updateActivity);
       window.addEventListener('keydown', updateActivity);
       window.addEventListener('click', updateActivity);
       window.addEventListener('scroll', updateActivity);
 
       const handleVisibilityChange = () => {
-        if (document.hidden) {
-          localStorage.setItem('tabClosedAt', Date.now().toString());
-        } else {
-          const tabClosedAt = parseInt(localStorage.getItem('tabClosedAt') || '0');
-          if (Date.now() - tabClosedAt > 3 * 60 * 1000) {
-            forceLogout();
+        try {
+          if (document.hidden) {
+            localStorage.setItem('tabClosedAt', Date.now().toString());
+          } else {
+            const tabClosedAt = parseInt(localStorage.getItem('tabClosedAt') || '0');
+            if (Date.now() - tabClosedAt > 3 * 60 * 1000) {
+              forceLogout();
+            }
           }
+        } catch (e) {
+          console.error("AuthContext: Failed to access localStorage in handleVisibilityChange", e);
         }
       };
       document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -50,7 +74,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         document.removeEventListener('visibilitychange', handleVisibilityChange);
       };
     } else {
-      localStorage.removeItem('user');
+      try {
+        localStorage.removeItem('user');
+      } catch (e) {
+        console.error("AuthContext: Failed to remove user from localStorage", e);
+      }
     }
   }, [user]);
 
@@ -66,7 +94,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Generate a simple session ID
       const sessionId = Date.now().toString();
       setUser({ ...response.data, role: response.role, sessionId });
-      localStorage.setItem('lastActivity', Date.now().toString());
+      try {
+        localStorage.setItem('lastActivity', Date.now().toString());
+      } catch (e) {
+        console.error("AuthContext: Failed to set lastActivity in login", e);
+      }
       
       // Log admin login
       if (response.role === 'admin') {
@@ -151,9 +183,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     if (result.isConfirmed || !user) {
       setUser(null);
-      localStorage.removeItem('user');
-      localStorage.removeItem('lastActivity');
-      localStorage.removeItem('tabClosedAt');
+      try {
+        localStorage.removeItem('user');
+        localStorage.removeItem('lastActivity');
+        localStorage.removeItem('tabClosedAt');
+      } catch (e) {
+        console.error("AuthContext: Failed to remove items from localStorage in logout", e);
+      }
       
       if (result.isConfirmed) {
         Swal.fire({
@@ -172,9 +208,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const forceLogout = () => {
     setUser(null);
-    localStorage.removeItem('user');
-    localStorage.removeItem('lastActivity');
-    localStorage.removeItem('tabClosedAt');
+    try {
+      localStorage.removeItem('user');
+      localStorage.removeItem('lastActivity');
+      localStorage.removeItem('tabClosedAt');
+    } catch (e) {
+      console.error("AuthContext: Failed to remove items from localStorage in forceLogout", e);
+    }
     Swal.fire({
       title: 'Sesi Berakhir',
       text: 'Sesi Anda telah berakhir demi keamanan.',

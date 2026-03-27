@@ -183,7 +183,7 @@ export const AdminLayout = () => {
                 }`}
               >
                 <div className={`${isActive ? 'text-indigo-600' : 'text-slate-400'}`}>
-                  {React.cloneElement(item.icon as React.ReactElement, { size: 20, strokeWidth: isActive ? 2.5 : 2 })}
+                  {React.cloneElement(item.icon as any, { size: 20, strokeWidth: isActive ? 2.5 : 2 })}
                 </div>
                 <span className={`text-[8px] font-bold uppercase tracking-tight ${isActive ? 'opacity-100' : 'opacity-70'}`}>
                   {item.label === 'Dashboard' ? 'DASHBOARD' : 

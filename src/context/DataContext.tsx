@@ -131,7 +131,14 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const fetchDashboardStats = async () => {
     try {
       const res = await apiCall({ action: 'getDashboardStats' });
-      setDashboardStats(res);
+      if (res && res.status === 'success') {
+        setDashboardStats({
+          totalSaldo: res.totalSaldo || 0,
+          totalSiswa: res.totalSiswa || 0,
+          totalSetor: res.totalSetor || 0,
+          totalTarik: res.totalTarik || 0
+        });
+      }
     } catch (error) {
       console.error("Fetch Dashboard Stats Error:", error);
     }

@@ -28,27 +28,36 @@ import { SplashScreen } from './components/SplashScreen';
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(() => {
-    // Check if splash has already been shown in this session
-    return !sessionStorage.getItem('hasShownSplash');
+    try {
+      // Check if splash has already been shown in this session
+      return !sessionStorage.getItem('hasShownSplash');
+    } catch (e) {
+      console.error("App: Failed to access sessionStorage", e);
+      return true;
+    }
   });
 
   useEffect(() => {
-    const CURRENT_VERSION = '3.2.1';
-    const savedVersion = localStorage.getItem('app_version');
-    if (savedVersion && savedVersion !== CURRENT_VERSION) {
-      localStorage.setItem('app_version', CURRENT_VERSION);
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(registrations => {
-          for(let registration of registrations) {
-            registration.update();
-          }
-          setTimeout(() => window.location.reload(), 1000);
-        });
-      } else {
-        window.location.reload();
+    try {
+      const CURRENT_VERSION = '3.2.1';
+      const savedVersion = localStorage.getItem('app_version');
+      if (savedVersion && savedVersion !== CURRENT_VERSION) {
+        localStorage.setItem('app_version', CURRENT_VERSION);
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(registrations => {
+            for(let registration of registrations) {
+              registration.update();
+            }
+            setTimeout(() => window.location.reload(), 1000);
+          });
+        } else {
+          window.location.reload();
+        }
+      } else if (!savedVersion) {
+        localStorage.setItem('app_version', CURRENT_VERSION);
       }
-    } else if (!savedVersion) {
-      localStorage.setItem('app_version', CURRENT_VERSION);
+    } catch (e) {
+      console.error("App: Failed to access localStorage", e);
     }
   }, []);
 
@@ -56,7 +65,11 @@ export default function App() {
     if (showSplash) {
       const timer = setTimeout(() => {
         setShowSplash(false);
-        sessionStorage.setItem('hasShownSplash', 'true');
+        try {
+          sessionStorage.setItem('hasShownSplash', 'true');
+        } catch (e) {
+          console.error("App: Failed to set sessionStorage", e);
+        }
       }, 5000);
       return () => clearTimeout(timer);
     }
