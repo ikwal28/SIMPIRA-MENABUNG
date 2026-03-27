@@ -86,7 +86,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         html: `
           <div class="text-center space-y-3">
             <div class="w-20 h-20 mx-auto rounded-full bg-indigo-50 flex items-center justify-center border-4 border-white shadow-lg overflow-hidden">
-              <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=neutral" alt="Avatar" class="w-full h-full object-cover" />
+              <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=modern-user-123" alt="Avatar" class="w-full h-full object-cover" />
             </div>
             <div>
               <p class="text-slate-500 text-sm">Selamat datang kembali,</p>
@@ -128,7 +128,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       html: `
         <div class="text-center space-y-4">
           <div class="w-20 h-20 mx-auto rounded-full bg-slate-50 flex items-center justify-center border-4 border-white shadow-lg overflow-hidden">
-            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=neutral" alt="Avatar" class="w-full h-full object-cover" />
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=modern-user-123" alt="Avatar" class="w-full h-full object-cover" />
           </div>
           <div>
             <h3 class="text-lg font-bold text-slate-900">Hallo, ${user?.nama?.split(' ')[0] || 'Pengguna'}</h3>

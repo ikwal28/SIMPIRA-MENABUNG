@@ -18,12 +18,12 @@ export const AdminLayout = () => {
     { path: '/admin/siswa', label: 'Data Nasabah', icon: <Users size={20} /> },
     { path: '/admin/transaksi', label: 'Transaksi', icon: <ArrowRightLeft size={20} /> },
     { path: '/admin/riwayat', label: 'Riwayat', icon: <History size={20} /> },
-    { path: '/admin/audit-log', label: 'Audit Log', icon: <ShieldCheck size={20} /> },
     { path: '/admin/cetak', label: 'Cetak Rekening', icon: <Printer size={20} /> },
     { path: '/admin/cetak-kartu', label: 'Cetak Kartu', icon: <CreditCard size={20} /> },
     { path: '/admin/form-manual', label: 'Form Manual', icon: <FileText size={20} /> },
     { path: '/admin/manajemen-kelas', label: 'Kenaikan Kelas', icon: <GraduationCap size={20} /> },
     { path: '/admin/about', label: 'Tentang', icon: <Info size={20} /> },
+    { path: '/admin/audit-log', label: 'Audit Log', icon: <ShieldCheck size={20} /> },
   ];
 
   return (
@@ -53,7 +53,7 @@ export const AdminLayout = () => {
           <div className="flex items-center gap-3 px-2">
             <div className="w-12 h-12 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-indigo-400 font-bold text-lg shadow-inner overflow-hidden">
               <img 
-                src="https://api.dicebear.com/7.x/avataaars/svg?seed=neutral" 
+                src="https://api.dicebear.com/7.x/avataaars/svg?seed=modern-user-123" 
                 alt="Avatar" 
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
@@ -135,7 +135,7 @@ export const AdminLayout = () => {
             <div className="flex items-center gap-2 p-1.5 sm:p-2 sm:pr-4 bg-slate-50 sm:bg-transparent border border-slate-200 sm:border-transparent rounded-2xl sm:rounded-full transition-all">
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl sm:rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-md shadow-indigo-600/20 overflow-hidden">
                 <img 
-                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=neutral" 
+                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=modern-user-123" 
                   alt="Avatar" 
                   className="w-full h-full object-cover"
                   referrerPolicy="no-referrer"
@@ -172,7 +172,7 @@ export const AdminLayout = () => {
 
         {/* Bottom Navigation - Mobile Banking Style */}
         <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-slate-200 px-2 py-3 flex items-center justify-around z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
-          {navItems.filter(item => !['/admin/cetak', '/admin/cetak-kartu', '/admin/form-manual', '/admin/audit-log'].includes(item.path)).map((item) => {
+          {navItems.filter(item => ['/admin', '/admin/siswa', '/admin/transaksi', '/admin/riwayat', '/admin/about'].includes(item.path)).map((item) => {
             const isActive = location.pathname === item.path;
             return (
               <Link

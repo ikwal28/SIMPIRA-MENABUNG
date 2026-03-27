@@ -106,7 +106,7 @@ export const AdminDashboard = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Chart Section */}
-        <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-200/60 p-6 lg:p-8 lg:col-span-2 overflow-hidden">
+        <div className="hidden lg:block bg-white rounded-[2.5rem] shadow-sm border border-slate-200/60 p-6 lg:p-8 lg:col-span-2 overflow-hidden">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-lg font-bold text-slate-900 flex items-center gap-3">
               <div className="p-2 bg-indigo-50 rounded-xl text-indigo-600">
@@ -152,7 +152,7 @@ export const AdminDashboard = () => {
         </div>
 
         {/* Recent Transactions List */}
-        <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-200/60 overflow-hidden flex flex-col">
+        <div className="hidden lg:flex bg-white rounded-[2.5rem] shadow-sm border border-slate-200/60 overflow-hidden flex-col">
           <div className="p-6 lg:p-8 flex items-center justify-between border-b border-slate-50">
             <h2 className="text-lg font-bold text-slate-900 flex items-center gap-3">
               <div className="p-2 bg-slate-50 rounded-xl text-slate-600">
@@ -197,7 +197,7 @@ export const AdminDashboard = () => {
       </div>
 
       {/* Quick Actions & Info */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="hidden lg:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <Link 
           to="/admin/manajemen-kelas" 
           className="bg-white p-6 rounded-[2rem] border border-slate-200/60 shadow-sm hover:shadow-md transition-all group flex items-center gap-5"
@@ -242,7 +242,7 @@ export const AdminDashboard = () => {
       </div>
 
       {/* Security Info - Admin View */}
-      <div className="bg-indigo-600 rounded-[2rem] p-6 lg:p-8 text-white flex flex-col sm:flex-row items-center gap-6 shadow-xl shadow-indigo-900/20">
+      <div className="hidden lg:flex bg-indigo-600 rounded-[2rem] p-6 lg:p-8 text-white flex-col sm:flex-row items-center gap-6 shadow-xl shadow-indigo-900/20">
         <div className="w-16 h-16 rounded-[1.5rem] bg-white/20 flex items-center justify-center shrink-0">
           <ShieldCheck size={32} />
         </div>

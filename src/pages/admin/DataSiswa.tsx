@@ -236,7 +236,7 @@ export const AdminDataSiswa = () => {
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0">
                           <img 
-                            src="https://api.dicebear.com/7.x/avataaars/svg?seed=neutral" 
+                            src="https://api.dicebear.com/7.x/avataaars/svg?seed=modern-user-123" 
                             alt="Avatar" 
                             className="w-full h-full object-cover"
                             referrerPolicy="no-referrer"

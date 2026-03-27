@@ -29,7 +29,7 @@ export const SiswaDataPribadi = () => {
             <div className="w-24 h-24 bg-white rounded-2xl p-2 shadow-lg shadow-slate-200/50 overflow-hidden">
               <div className="w-full h-full bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600 font-bold text-4xl uppercase overflow-hidden">
                 <img 
-                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=neutral" 
+                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=modern-user-123" 
                   alt="Avatar" 
                   className="w-full h-full object-cover"
                   referrerPolicy="no-referrer"
