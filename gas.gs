@@ -93,9 +93,9 @@ function doPost(e) {
     } else if (action === "getAuditLogs") {
       result = { status: "success", data: getSheetData("AuditLog") };
     } else if (action === "addSiswaV2") {
-      result = addSiswaV2(data.siswa || data);
+      result = addSiswaV2(data.payload || data.siswa || data);
     } else if (action === "updateSiswaV2") {
-      result = updateSiswaV2(data.rekening, data.siswa || data);
+      result = updateSiswaV2(data.rekening, data.payload || data.siswa || data);
     } else if (action === "deleteSiswa") {
       result = deleteSiswa(data.rekening);
     } else if (action === "bulkUpdateSiswa") {
@@ -105,7 +105,7 @@ function doPost(e) {
     } else if (action === "transaksi") {
       result = transaksi(data.trans || data);
     } else if (action === "deleteTransaksi") {
-      result = deleteTransaksi(data.id);
+      result = deleteTransaksi(data.idTrx || data.id);
     } else if (action === "logAudit") {
       result = logAudit(data.admin, data.aksi, data.detail);
     } else {
@@ -195,9 +195,19 @@ function addSiswaV2(siswa) {
   const sheet = ss.getSheetByName("Siswa");
   const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
   
+  // Create a normalized version of siswa keys
+  const normalizedSiswa = {};
+  Object.keys(siswa).forEach(k => {
+    normalizedSiswa[safeString(k)] = siswa[k];
+  });
+
+  if (!normalizedSiswa.rekening) {
+    return { status: "error", message: "Nomor rekening wajib diisi" };
+  }
+
   const newRow = headers.map(h => {
     const key = safeString(h);
-    return siswa[key] !== undefined ? siswa[key] : "";
+    return normalizedSiswa[key] !== undefined ? normalizedSiswa[key] : "";
   });
   
   sheet.appendRow(newRow);
@@ -213,10 +223,16 @@ function updateSiswaV2(rekening, updates) {
   
   for (let i = 1; i < data.length; i++) {
     if (String(data[i][rekIdx]) === String(rekening)) {
+      // Create a normalized version of updates keys
+      const normalizedUpdates = {};
+      Object.keys(updates).forEach(k => {
+        normalizedUpdates[safeString(k)] = updates[k];
+      });
+
       headers.forEach((h, idx) => {
         const key = safeString(h);
-        if (updates[key] !== undefined) {
-          sheet.getRange(i + 1, idx + 1).setValue(updates[key]);
+        if (normalizedUpdates[key] !== undefined) {
+          sheet.getRange(i + 1, idx + 1).setValue(normalizedUpdates[key]);
         }
       });
       return { status: "success", message: "Data siswa diperbarui" };
@@ -358,6 +374,7 @@ function deleteTransaksi(id) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const transSheet = ss.getSheetByName("Transaksi");
   const siswaSheet = ss.getSheetByName("Siswa");
+  if (!transSheet || !siswaSheet) return { status: "error", message: "Sheet Transaksi atau Siswa tidak ditemukan" };
   
   const tData = transSheet.getDataRange().getValues();
   const tHeaders = tData[0];
@@ -372,10 +389,14 @@ function deleteTransaksi(id) {
   });
   const jumlahIdx = tHeaders.findIndex(h => safeString(h) === "jumlah");
   
+  if (idIdx === -1 || rekIdx === -1 || tipeIdx === -1 || jumlahIdx === -1) {
+    return { status: "error", message: "Struktur kolom sheet Transaksi tidak valid" };
+  }
+  
   for (let i = 1; i < tData.length; i++) {
     if (String(tData[i][idIdx]) === String(id)) {
       const rek = tData[i][rekIdx];
-      const tipe = tData[i][tipeIdx];
+      const tipe = safeString(tData[i][tipeIdx]).toUpperCase();
       const jumlah = Number(tData[i][jumlahIdx]);
       
       // Revert Saldo
@@ -387,8 +408,8 @@ function deleteTransaksi(id) {
       for (let j = 1; j < sData.length; j++) {
         if (String(sData[j][sRekIdx]) === String(rek)) {
           let currentSaldo = Number(sData[j][sSaldoIdx]) || 0;
-          if (tipe === "SETOR") currentSaldo -= jumlah;
-          else if (tipe === "TARIK") currentSaldo += jumlah;
+          if (tipe === "SETOR" || tipe === "SETORAN") currentSaldo -= jumlah;
+          else if (tipe === "TARIK" || tipe === "PENARIKAN") currentSaldo += jumlah;
           siswaSheet.getRange(j + 1, sSaldoIdx + 1).setValue(currentSaldo);
           break;
         }
