@@ -7,23 +7,18 @@ import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 
 export const AdminDashboard = () => {
-  const { siswa, transaksi, fetchSiswa, fetchTransaksi, isLoadingData, refreshAll } = useContext(DataContext);
+  const { siswa, transaksi, dashboardStats, fetchSiswa, fetchTransaksi, fetchDashboardStats, isLoadingData, refreshAll } = useContext(DataContext);
 
   useEffect(() => {
     fetchSiswa();
     fetchTransaksi(undefined, undefined, false, 100); // Fetch only last 100 for dashboard
+    fetchDashboardStats();
   }, []);
 
-  const totalSaldo = siswa.reduce((sum: number, s: any) => sum + (parseFloat(s.saldo) || 0), 0);
-  const totalSiswa = siswa.length;
-
-  const totalSetor = transaksi
-    .filter((t: any) => t.jenis === 'Setor')
-    .reduce((sum: number, t: any) => sum + (parseFloat(t.jumlah) || 0), 0);
-
-  const totalTarik = transaksi
-    .filter((t: any) => t.jenis === 'Tarik')
-    .reduce((sum: number, t: any) => sum + (parseFloat(t.jumlah) || 0), 0);
+  const totalSaldo = dashboardStats.totalSaldo || 0;
+  const totalSiswa = dashboardStats.totalSiswa || 0;
+  const totalSetor = dashboardStats.totalSetor || 0;
+  const totalTarik = dashboardStats.totalTarik || 0;
 
   // Prepare chart data (group by date)
   const chartDataMap = new Map();

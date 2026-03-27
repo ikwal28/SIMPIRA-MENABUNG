@@ -7,6 +7,13 @@ export const DataContext = createContext<any>(null);
 export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [siswa, setSiswa] = useState<any[]>([]);
   const [transaksi, setTransaksi] = useState<any[]>([]);
+  const [totalTransaksi, setTotalTransaksi] = useState<number>(0);
+  const [dashboardStats, setDashboardStats] = useState<any>({
+    totalSaldo: 0,
+    totalSiswa: 0,
+    totalSetor: 0,
+    totalTarik: 0
+  });
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(false);
 
@@ -57,29 +64,30 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const fetchTransaksi = async (rekening?: string, tanggal?: string, force = false, limit = 500) => {
+  const fetchTransaksi = async (rekening?: string, tanggal?: string, force = false, limit = 500, offset = 0, append = false) => {
     const now = Date.now();
     
     // Background refresh logic
-    if (!force && !rekening && !tanggal && transaksi.length > 0 && (now - lastFetchTransaksi.current < CACHE_DURATION)) {
+    if (!force && !rekening && !tanggal && !append && transaksi.length > 0 && (now - lastFetchTransaksi.current < CACHE_DURATION)) {
       return;
     }
 
-    if (transaksi.length === 0) setIsLoadingData(true);
+    if (transaksi.length === 0 && !append) setIsLoadingData(true);
     
     try {
-      const res = await apiCall({ action: 'getTransaksi', rekening, tanggal, limit });
+      const res = await apiCall({ action: 'getTransaksi', rekening, tanggal, limit, offset });
       
-      // Update main transaction list with fetched data
-      const sortedData = (res.data || []).sort((a: any, b: any) => {
-        const dateA = new Date(a.tanggal).getTime();
-        const dateB = new Date(b.tanggal).getTime();
-        return dateB - dateA;
-      });
-      setTransaksi(sortedData);
+      const newData = res.data || [];
+      setTotalTransaksi(res.total || newData.length);
+
+      if (append) {
+        setTransaksi(prev => [...prev, ...newData]);
+      } else {
+        setTransaksi(newData);
+      }
       
       // Only update the "last full fetch" timestamp if it was a full fetch
-      if (!rekening && !tanggal) {
+      if (!rekening && !tanggal && !append) {
         lastFetchTransaksi.current = Date.now();
       }
     } catch (error: any) {
@@ -120,12 +128,22 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const fetchDashboardStats = async () => {
+    try {
+      const res = await apiCall({ action: 'getDashboardStats' });
+      setDashboardStats(res);
+    } catch (error) {
+      console.error("Fetch Dashboard Stats Error:", error);
+    }
+  };
+
   const refreshAll = async () => {
     setIsLoadingData(true);
     await Promise.all([
       fetchSiswa(true),
-      fetchTransaksi(undefined, undefined, true),
-      fetchAuditLogs(true)
+      fetchTransaksi(undefined, undefined, true, 100), // Only fetch last 100 for dashboard
+      fetchAuditLogs(true),
+      fetchDashboardStats()
     ]);
     setIsLoadingData(false);
   };
@@ -282,11 +300,14 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
       value={{
         siswa,
         transaksi,
+        totalTransaksi,
+        dashboardStats,
         auditLogs,
         isLoadingData,
         fetchSiswa,
         fetchTransaksi,
         fetchAuditLogs,
+        fetchDashboardStats,
         logAction,
         refreshAll,
         addSiswa,

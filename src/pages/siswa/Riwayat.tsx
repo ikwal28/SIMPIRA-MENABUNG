@@ -7,19 +7,24 @@ import { motion } from 'motion/react';
 
 export const SiswaRiwayat = () => {
   const { user } = useContext(AuthContext);
-  const { transaksi, fetchTransaksi, isLoadingData } = useContext(DataContext);
+  const { transaksi, totalTransaksi, fetchTransaksi, isLoadingData } = useContext(DataContext);
   const [filterJenis, setFilterJenis] = useState('Semua');
   const [filterTanggal, setFilterTanggal] = useState('');
-  const [limit, setLimit] = useState(50);
+  const [offset, setOffset] = useState(0);
+  const LIMIT_PER_PAGE = 50;
 
   useEffect(() => {
     if (user?.rekening) {
-      fetchTransaksi(user.rekening, undefined, false, limit);
+      fetchTransaksi(user.rekening, undefined, false, LIMIT_PER_PAGE, 0, false);
     }
-  }, [user, limit]);
+  }, [user?.rekening]);
 
   const handleLoadMore = () => {
-    setLimit(prev => prev + 50);
+    if (user?.rekening) {
+      const nextOffset = offset + LIMIT_PER_PAGE;
+      setOffset(nextOffset);
+      fetchTransaksi(user.rekening, undefined, true, LIMIT_PER_PAGE, nextOffset, true);
+    }
   };
 
   const myTransaksi = transaksi.filter((t: any) => t.rekening?.toString() === user?.rekening?.toString());
@@ -75,7 +80,7 @@ export const SiswaRiwayat = () => {
 
         <div className="p-6">
           <div className="space-y-4">
-            {isLoadingData ? (
+            {isLoadingData && transaksi.length === 0 ? (
                <div className="text-center py-12 text-slate-500">
                  <span className="animate-spin inline-block rounded-full h-8 w-8 border-b-2 border-emerald-500 mb-4"></span>
                  <p>Memuat riwayat transaksi...</p>
@@ -125,7 +130,7 @@ export const SiswaRiwayat = () => {
             )}
           </div>
 
-          {filteredTransaksi.length >= limit && (
+          {transaksi.length < totalTransaksi && (
             <div className="mt-8 text-center pb-4">
               <button
                 onClick={handleLoadMore}

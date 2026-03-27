@@ -5,19 +5,22 @@ import { Search, Filter, ArrowUpRight, ArrowDownRight, Download, Trash2, Activit
 import Swal from 'sweetalert2';
 
 export const AdminRiwayat = () => {
-  const { transaksi, fetchTransaksi, isLoadingData, deleteTransaksi, refreshAll } = useContext(DataContext);
+  const { transaksi, totalTransaksi, fetchTransaksi, isLoadingData, deleteTransaksi, refreshAll } = useContext(DataContext);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterJenis, setFilterJenis] = useState('Semua');
   const [filterTanggal, setFilterTanggal] = useState('');
 
-  const [limit, setLimit] = useState(100);
+  const [offset, setOffset] = useState(0);
+  const LIMIT_PER_PAGE = 50;
 
   useEffect(() => {
-    fetchTransaksi(undefined, undefined, false, limit);
-  }, [limit]);
+    fetchTransaksi(undefined, undefined, false, LIMIT_PER_PAGE, 0, false);
+  }, []);
 
   const handleLoadMore = () => {
-    setLimit(prev => prev + 100);
+    const nextOffset = offset + LIMIT_PER_PAGE;
+    setOffset(nextOffset);
+    fetchTransaksi(undefined, undefined, true, LIMIT_PER_PAGE, nextOffset, true);
   };
 
   const handleDelete = async (idTrx: string) => {
@@ -182,7 +185,7 @@ export const AdminRiwayat = () => {
           </table>
         </div>
 
-        {filteredTransaksi.length >= limit && (
+        {transaksi.length < totalTransaksi && (
           <div className="p-6 border-t border-slate-100 text-center">
             <button
               onClick={handleLoadMore}

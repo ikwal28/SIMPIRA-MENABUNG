@@ -89,9 +89,11 @@ function doPost(e) {
     } else if (action === "getSiswaByUser") {
       result = getSiswaByUser(data.username);
     } else if (action === "getTransaksi") {
-      result = { status: "success", data: getSheetData("Transaksi") };
+      result = getFilteredTransaksi(data.rekening, data.limit, data.offset);
     } else if (action === "getAuditLogs") {
       result = { status: "success", data: getSheetData("AuditLog") };
+    } else if (action === "getDashboardStats") {
+      result = getDashboardStats();
     } else if (action === "addSiswaV2") {
       result = addSiswaV2(data.payload || data.siswa || data);
     } else if (action === "updateSiswaV2") {
@@ -128,6 +130,107 @@ function doPost(e) {
 function safeString(val) {
   if (val === null || val === undefined) return "";
   return String(val).toLowerCase().trim();
+}
+
+function getFilteredTransaksi(rekening, limit, offset) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName("Transaksi");
+  if (!sheet) return { status: "success", data: [] };
+  
+  const data = sheet.getDataRange().getValues();
+  if (data.length <= 1) return { status: "success", data: [] };
+  
+  const headers = data[0];
+  const rows = data.slice(1);
+  
+  // Reverse to get newest first
+  rows.reverse();
+  
+  let filteredRows = rows;
+  if (rekening) {
+    const rekIdx = headers.findIndex(h => safeString(h) === "rekening");
+    if (rekIdx !== -1) {
+      filteredRows = rows.filter(row => String(row[rekIdx]) === String(rekening));
+    }
+  }
+  
+  const totalCount = filteredRows.length;
+  
+  let start = parseInt(offset) || 0;
+  let end = limit ? start + parseInt(limit) : filteredRows.length;
+  
+  const pagedRows = filteredRows.slice(start, end);
+  
+  const resultData = pagedRows.map(row => {
+    const obj = {};
+    headers.forEach((header, index) => {
+      const key = safeString(header);
+      obj[key] = row[index];
+      
+      // Aliases
+      if (key === "tipe") obj["jenis"] = row[index];
+      if (key === "jenis") obj["tipe"] = row[index];
+      if (key === "id") obj["id_trx"] = row[index];
+      if (key === "id_trx") obj["id"] = row[index];
+      if (key === "admin") obj["petugas"] = row[index];
+      if (key === "petugas") obj["admin"] = row[index];
+    });
+    return obj;
+  });
+  
+  return { 
+    status: "success", 
+    data: resultData,
+    total: totalCount,
+    limit: limit,
+    offset: offset
+  };
+}
+
+function getDashboardStats() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const transSheet = ss.getSheetByName("Transaksi");
+  const siswaSheet = ss.getSheetByName("Siswa");
+  
+  let totalSetor = 0;
+  let totalTarik = 0;
+  let totalSaldo = 0;
+  let totalSiswa = 0;
+  
+  if (siswaSheet) {
+    const sData = siswaSheet.getDataRange().getValues();
+    if (sData.length > 1) {
+      const sHeaders = sData[0];
+      const sSaldoIdx = sHeaders.findIndex(h => safeString(h) === "saldo");
+      totalSiswa = sData.length - 1;
+      for (let i = 1; i < sData.length; i++) {
+        totalSaldo += Number(sData[i][sSaldoIdx]) || 0;
+      }
+    }
+  }
+  
+  if (transSheet) {
+    const tData = transSheet.getDataRange().getValues();
+    if (tData.length > 1) {
+      const tHeaders = tData[0];
+      const tJenisIdx = tHeaders.findIndex(h => safeString(h) === "jenis");
+      const tJumlahIdx = tHeaders.findIndex(h => safeString(h) === "jumlah");
+      for (let i = 1; i < tData.length; i++) {
+        const jenis = safeString(tData[i][tJenisIdx]);
+        const jumlah = Number(tData[i][tJumlahIdx]) || 0;
+        if (jenis === "setor" || jenis === "setoran") totalSetor += jumlah;
+        if (jenis === "tarik" || jenis === "penarikan") totalTarik += jumlah;
+      }
+    }
+  }
+  
+  return {
+    status: "success",
+    totalSaldo,
+    totalSiswa,
+    totalSetor,
+    totalTarik
+  };
 }
 
 function getSheetData(sheetName) {
