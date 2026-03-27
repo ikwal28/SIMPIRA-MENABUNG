@@ -19,12 +19,17 @@ export const AdminAuditLog = () => {
   };
 
   const filteredLogs = auditLogs.filter((log: any) => {
+    const admin = String(log.admin || '');
+    const action = String(log.action || '');
+    const details = String(log.details || '');
+    const search = String(searchTerm || '').toLowerCase();
+
     const matchSearch =
-      (log.admin || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (log.action || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (log.details || '').toLowerCase().includes(searchTerm.toLowerCase());
+      admin.toLowerCase().includes(search) ||
+      action.toLowerCase().includes(search) ||
+      details.toLowerCase().includes(search);
     
-    const matchAction = filterAction === 'Semua' || log.action?.includes(filterAction);
+    const matchAction = filterAction === 'Semua' || action.includes(filterAction);
 
     return matchSearch && matchAction;
   });

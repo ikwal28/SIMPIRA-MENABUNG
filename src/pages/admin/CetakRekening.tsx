@@ -24,11 +24,12 @@ export const AdminCetakRekening = () => {
     fetchTransaksi();
   }, []);
 
-  const filteredSiswa = siswa.filter(
-    (s: any) =>
-      (s.nama || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (s.rekening || '').toString().includes(searchTerm)
-  );
+  const filteredSiswa = siswa.filter((s: any) => {
+    const name = String(s.nama || '');
+    const search = String(searchTerm || '').toLowerCase();
+    return name.toLowerCase().includes(search) ||
+      String(s.rekening || '').includes(searchTerm);
+  });
 
   const handleCetakRekeningKoran = () => {
     if (!selectedSiswa) return;

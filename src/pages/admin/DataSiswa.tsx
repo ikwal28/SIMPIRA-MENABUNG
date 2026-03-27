@@ -32,13 +32,16 @@ export const AdminDataSiswa = () => {
     status: 'AKTIF'
   });
 
-  const filteredSiswa = siswa.filter(
-    (s: any) =>
-      (selectedKelas === 'Semua' || s.kelas === selectedKelas) &&
-      ((s.nama || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-       (s.rekening || '').toString().includes(searchTerm) ||
-       (s.kelas || '').toString().toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const filteredSiswa = siswa.filter((s: any) => {
+    const name = String(s.nama || '');
+    const kelas = String(s.kelas || '');
+    const search = String(searchTerm || '').toLowerCase();
+
+    return (selectedKelas === 'Semua' || s.kelas === selectedKelas) &&
+      (name.toLowerCase().includes(search) ||
+       String(s.rekening || '').includes(searchTerm) ||
+       kelas.toLowerCase().includes(search));
+  });
 
 
   const displayedSiswa = filteredSiswa.slice(0, limit);

@@ -41,10 +41,14 @@ export const AdminRiwayat = () => {
   };
 
   const filteredTransaksi = transaksi.filter((trx: any) => {
+    const name = String(trx.nama || '');
+    const idTrx = String(trx.id_trx || '');
+    const search = String(searchTerm || '').toLowerCase();
+
     const matchSearch =
-      (trx.nama || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (trx.rekening || '').toString().includes(searchTerm) ||
-      (trx.id_trx || '').toLowerCase().includes(searchTerm.toLowerCase());
+      name.toLowerCase().includes(search) ||
+      String(trx.rekening || '').includes(searchTerm) ||
+      idTrx.toLowerCase().includes(search);
     
     const matchJenis = filterJenis === 'Semua' || trx.jenis === filterJenis;
     const matchTanggal = filterTanggal === '' || (trx.tanggal || '').startsWith(filterTanggal);

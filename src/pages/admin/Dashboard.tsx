@@ -22,10 +22,13 @@ export const AdminDashboard = () => {
 
   // Prepare chart data (group by date)
   const chartDataMap = new Map();
-  const sortedTransaksi = [...transaksi].sort((a, b) => new Date(a.tanggal).getTime() - new Date(b.tanggal).getTime());
+  const sortedTransaksi = [...transaksi]
+    .filter(t => t.tanggal && !isNaN(new Date(t.tanggal).getTime()))
+    .sort((a, b) => new Date(a.tanggal).getTime() - new Date(b.tanggal).getTime());
   
   sortedTransaksi.forEach(t => {
-    const dateStr = new Date(t.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+    const date = new Date(t.tanggal);
+    const dateStr = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
     if (!chartDataMap.has(dateStr)) {
       chartDataMap.set(dateStr, { name: dateStr, Setor: 0, Tarik: 0 });
     }

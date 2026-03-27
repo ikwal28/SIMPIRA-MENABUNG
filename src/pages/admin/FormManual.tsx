@@ -28,8 +28,10 @@ export const AdminFormManual = () => {
     return siswa.filter((s: any) => {
       const sKelas = String(s.kelas || '').trim();
       const matchKelas = selectedKelas === 'Semua' || sKelas === selectedKelas;
-      const matchSearch = (s.nama || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          (s.rekening || '').toString().includes(searchQuery);
+      const name = String(s.nama || '');
+      const search = String(searchQuery || '').toLowerCase();
+      const matchSearch = name.toLowerCase().includes(search) || 
+                          String(s.rekening || '').includes(searchQuery);
       return matchKelas && matchSearch;
     }).sort((a: any, b: any) => {
       const classA = parseInt(a.kelas);
