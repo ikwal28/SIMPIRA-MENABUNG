@@ -89,7 +89,7 @@ function doPost(e) {
     } else if (action === "getSiswaByUser") {
       result = getSiswaByUser(data.username);
     } else if (action === "getTransaksi") {
-      result = getFilteredTransaksi(data.rekening, data.limit, data.offset);
+      result = getFilteredTransaksi(data.rekening, data.limit, data.offset, data.tanggal);
     } else if (action === "getAuditLogs") {
       result = { status: "success", data: getSheetData("AuditLog") };
     } else if (action === "getDashboardStats") {
@@ -132,7 +132,7 @@ function safeString(val) {
   return String(val).toLowerCase().trim();
 }
 
-function getFilteredTransaksi(rekening, limit, offset) {
+function getFilteredTransaksi(rekening, limit, offset, tanggal) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName("Transaksi");
   if (!sheet) return { status: "success", data: [] };
@@ -147,10 +147,30 @@ function getFilteredTransaksi(rekening, limit, offset) {
   rows.reverse();
   
   let filteredRows = rows;
+  
+  // Filter by rekening
   if (rekening) {
     const rekIdx = headers.findIndex(h => safeString(h) === "rekening");
     if (rekIdx !== -1) {
-      filteredRows = rows.filter(row => String(row[rekIdx]) === String(rekening));
+      filteredRows = filteredRows.filter(row => String(row[rekIdx]) === String(rekening));
+    }
+  }
+  
+  // Filter by tanggal (YYYY-MM-DD)
+  if (tanggal) {
+    const tglIdx = headers.findIndex(h => safeString(h) === "tanggal");
+    if (tglIdx !== -1) {
+      filteredRows = filteredRows.filter(row => {
+        const rowDate = row[tglIdx];
+        if (!rowDate) return false;
+        try {
+          const d = new Date(rowDate);
+          const isoDate = d.toISOString().split('T')[0];
+          return isoDate === tanggal;
+        } catch (e) {
+          return false;
+        }
+      });
     }
   }
   
@@ -213,7 +233,7 @@ function getDashboardStats() {
     const tData = transSheet.getDataRange().getValues();
     if (tData.length > 1) {
       const tHeaders = tData[0];
-      const tJenisIdx = tHeaders.findIndex(h => safeString(h) === "jenis");
+      const tJenisIdx = tHeaders.findIndex(h => safeString(h) === "jenis" || safeString(h) === "tipe");
       const tJumlahIdx = tHeaders.findIndex(h => safeString(h) === "jumlah");
       for (let i = 1; i < tData.length; i++) {
         const jenis = safeString(tData[i][tJenisIdx]);
@@ -445,18 +465,26 @@ function transaksi(trans) {
       const tPetugas = trans.petugas || trans.admin || "Admin";
       const tJenis = trans.jenis || trans.tipe;
       
+      const normalizedTrans = {};
+      Object.keys(trans).forEach(k => {
+        normalizedTrans[safeString(k)] = trans[k];
+      });
+
       const newTRow = tHeaders.map(h => {
         const key = safeString(h);
         if (key === "id" || key === "id_trx") return idTrx;
-        if (key === "tanggal") return new Date();
-        if (key === "rekening") return trans.rekening;
+        if (key === "tanggal") {
+          const tDate = normalizedTrans["tanggal"] || normalizedTrans["date"];
+          return tDate ? new Date(tDate) : new Date();
+        }
+        if (key === "rekening") return normalizedTrans["rekening"];
         if (key === "nama") return tNama;
         if (key === "kelas") return tKelas;
         if (key === "jenis" || key === "tipe") return tJenis;
         if (key === "jumlah") return amount;
-        if (key === "keterangan") return trans.keterangan || "";
+        if (key === "keterangan") return normalizedTrans["keterangan"] || "";
         if (key === "admin" || key === "petugas") return tPetugas;
-        return trans[key] !== undefined ? trans[key] : "";
+        return normalizedTrans[key] !== undefined ? normalizedTrans[key] : "";
       });
       
       transSheet.appendRow(newTRow);
@@ -529,7 +557,16 @@ function logAudit(admin, aksi, detail) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName("AuditLog");
   if (sheet) {
-    sheet.appendRow([new Date(), admin, aksi, detail]);
+    const headers = sheet.getRange(1, 1, 1, Math.max(1, sheet.getLastColumn())).getValues()[0];
+    const newRow = headers.map(h => {
+      const key = safeString(h);
+      if (key === "tanggal" || key === "timestamp") return new Date();
+      if (key === "admin" || key === "petugas") return admin || "Admin";
+      if (key === "aksi" || key === "action") return aksi || "";
+      if (key === "detail" || key === "details" || key === "keterangan") return detail || "";
+      return "";
+    });
+    sheet.appendRow(newRow);
     return { status: "success" };
   }
   return { status: "error" };
