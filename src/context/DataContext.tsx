@@ -71,7 +71,12 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
       const res = await apiCall({ action: 'getTransaksi', rekening, tanggal, limit });
       
       // Update main transaction list with fetched data
-      setTransaksi(res.data || []);
+      const sortedData = (res.data || []).sort((a: any, b: any) => {
+        const dateA = new Date(a.tanggal).getTime();
+        const dateB = new Date(b.tanggal).getTime();
+        return dateB - dateA;
+      });
+      setTransaksi(sortedData);
       
       // Only update the "last full fetch" timestamp if it was a full fetch
       if (!rekening && !tanggal) {
@@ -100,7 +105,12 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     
     try {
       const res = await apiCall({ action: 'getAuditLogs' });
-      setAuditLogs(res.data || []);
+      const sortedLogs = (res.data || []).sort((a: any, b: any) => {
+        const dateA = new Date(a.timestamp).getTime();
+        const dateB = new Date(b.timestamp).getTime();
+        return dateB - dateA;
+      });
+      setAuditLogs(sortedLogs);
       lastFetchAuditLogs.current = Date.now();
     } catch (error: any) {
       console.error("Fetch Audit Logs Error:", error);
