@@ -40,6 +40,36 @@ function setup() {
   }
 }
 
+/**
+ * Fungsi untuk update massal data siswa (Kenaikan Kelas/Kelulusan)
+ */
+function bulkUpdateSiswa(updates) {
+  if (!updates || !Array.isArray(updates)) {
+    return { status: "error", message: "Data updates tidak valid atau bukan array" };
+  }
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName("Siswa");
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const rekIdx = headers.findIndex(h => safeString(h) === "rekening");
+  const kelasIdx = headers.findIndex(h => safeString(h) === "kelas");
+  const statusIdx = headers.findIndex(h => safeString(h) === "status");
+  
+  let count = 0;
+  updates.forEach(upd => {
+    for (let i = 1; i < data.length; i++) {
+      if (String(data[i][rekIdx]) === String(upd.rekening)) {
+        if (upd.kelas !== undefined) sheet.getRange(i + 1, kelasIdx + 1).setValue(upd.kelas);
+        if (upd.status !== undefined) sheet.getRange(i + 1, statusIdx + 1).setValue(upd.status);
+        count++;
+        break;
+      }
+    }
+  });
+  
+  return { status: "success", message: count + " siswa diperbarui" };
+}
+
 function doPost(e) {
   try {
     setup(); // Ensure sheets exist
@@ -49,7 +79,9 @@ function doPost(e) {
     let result = {};
 
     if (action === "ping") {
-      result = { status: "success", version: "3.2.0", message: "API Simpira Aktif" };
+      result = { status: "success", version: "3.2.1", message: "API Simpira Aktif" };
+    } else if (action === "checkVersion") {
+      result = { status: "success", version: "3.2.1", timestamp: Date.now() };
     } else if (action === "loginV2") {
       result = loginV2(data.username, data.password);
     } else if (action === "getSiswa") {
@@ -67,7 +99,7 @@ function doPost(e) {
     } else if (action === "deleteSiswa") {
       result = deleteSiswa(data.rekening);
     } else if (action === "bulkUpdateSiswa") {
-      result = bulkUpdateSiswa(data.updates);
+      result = bulkUpdateSiswa(data.updates || data);
     } else if (action === "deleteLulusan") {
       result = deleteLulusan();
     } else if (action === "transaksi") {
@@ -86,7 +118,7 @@ function doPost(e) {
   } catch (error) {
     return ContentService.createTextOutput(JSON.stringify({ 
       status: "error", 
-      message: "Server Error V3.2: " + error.toString() 
+      message: "Server Error V3.2.1: " + error.toString() 
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
@@ -193,30 +225,6 @@ function updateSiswaV2(rekening, updates) {
   return { status: "error", message: "Siswa tidak ditemukan" };
 }
 
-function bulkUpdateSiswa(updates) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const sheet = ss.getSheetByName("Siswa");
-  const data = sheet.getDataRange().getValues();
-  const headers = data[0];
-  const rekIdx = headers.findIndex(h => safeString(h) === "rekening");
-  const kelasIdx = headers.findIndex(h => safeString(h) === "kelas");
-  const statusIdx = headers.findIndex(h => safeString(h) === "status");
-  
-  let count = 0;
-  updates.forEach(upd => {
-    for (let i = 1; i < data.length; i++) {
-      if (String(data[i][rekIdx]) === String(upd.rekening)) {
-        if (upd.kelas !== undefined) sheet.getRange(i + 1, kelasIdx + 1).setValue(upd.kelas);
-        if (upd.status !== undefined) sheet.getRange(i + 1, statusIdx + 1).setValue(upd.status);
-        count++;
-        break;
-      }
-    }
-  });
-  
-  return { status: "success", message: count + " siswa diperbarui" };
-}
-
 function deleteLulusan() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const siswaSheet = ss.getSheetByName("Siswa");
@@ -279,6 +287,10 @@ function transaksi(trans) {
   const siswaSheet = ss.getSheetByName("Siswa");
   const transSheet = ss.getSheetByName("Transaksi");
   
+  if (!siswaSheet || !transSheet) {
+    return { status: "error", message: "Sheet Siswa atau Transaksi tidak ditemukan" };
+  }
+
   const sData = siswaSheet.getDataRange().getValues();
   const sHeaders = sData[0];
   const rekIdx = sHeaders.findIndex(h => safeString(h) === "rekening");
@@ -303,24 +315,40 @@ function transaksi(trans) {
         return { status: "error", message: "Jenis transaksi tidak valid: " + jenis };
       }
       
-      // Update Saldo
+      // Update Saldo di Sheet Siswa
       siswaSheet.getRange(i + 1, saldoIdx + 1).setValue(newSaldo);
       
-      // Record Transaction
+      // Record Transaction di Sheet Transaksi
       const tHeaders = transSheet.getRange(1, 1, 1, transSheet.getLastColumn()).getValues()[0];
+      const idTrx = "TRX" + Date.now();
+      const tNama = trans.nama || sData[i][namaIdx];
+      const tKelas = trans.kelas || sData[i][kelasIdx];
+      const tPetugas = trans.petugas || trans.admin || "Admin";
+      const tJenis = trans.jenis || trans.tipe;
+      
       const newTRow = tHeaders.map(h => {
         const key = safeString(h);
-        if (key === "id" || key === "id_trx") return "TRX" + Date.now();
+        if (key === "id" || key === "id_trx") return idTrx;
         if (key === "tanggal") return new Date();
-        if (key === "nama" && !trans.nama) return sData[i][namaIdx];
-        if (key === "kelas") return sData[i][kelasIdx];
-        if (key === "jenis" || key === "tipe") return trans.jenis || trans.tipe;
-        if (key === "admin" || key === "petugas") return trans.petugas || trans.admin;
+        if (key === "rekening") return trans.rekening;
+        if (key === "nama") return tNama;
+        if (key === "kelas") return tKelas;
+        if (key === "jenis" || key === "tipe") return tJenis;
+        if (key === "jumlah") return amount;
+        if (key === "keterangan") return trans.keterangan || "";
+        if (key === "admin" || key === "petugas") return tPetugas;
         return trans[key] !== undefined ? trans[key] : "";
       });
+      
       transSheet.appendRow(newTRow);
       
-      return { status: "success", message: "Transaksi berhasil", newSaldo: newSaldo };
+      return { 
+        status: "success", 
+        message: "Transaksi berhasil", 
+        newSaldo: newSaldo,
+        id_trx: idTrx,
+        kelas: tKelas
+      };
     }
   }
   return { status: "error", message: "Rekening tidak ditemukan" };
@@ -333,9 +361,15 @@ function deleteTransaksi(id) {
   
   const tData = transSheet.getDataRange().getValues();
   const tHeaders = tData[0];
-  const idIdx = tHeaders.findIndex(h => safeString(h) === "id");
+  const idIdx = tHeaders.findIndex(h => {
+    const key = safeString(h);
+    return key === "id" || key === "id_trx";
+  });
   const rekIdx = tHeaders.findIndex(h => safeString(h) === "rekening");
-  const tipeIdx = tHeaders.findIndex(h => safeString(h) === "tipe");
+  const tipeIdx = tHeaders.findIndex(h => {
+    const key = safeString(h);
+    return key === "tipe" || key === "jenis";
+  });
   const jumlahIdx = tHeaders.findIndex(h => safeString(h) === "jumlah");
   
   for (let i = 1; i < tData.length; i++) {

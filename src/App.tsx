@@ -33,6 +33,26 @@ export default function App() {
   });
 
   useEffect(() => {
+    const CURRENT_VERSION = '3.2.1';
+    const savedVersion = localStorage.getItem('app_version');
+    if (savedVersion && savedVersion !== CURRENT_VERSION) {
+      localStorage.setItem('app_version', CURRENT_VERSION);
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+          for(let registration of registrations) {
+            registration.update();
+          }
+          setTimeout(() => window.location.reload(), 1000);
+        });
+      } else {
+        window.location.reload();
+      }
+    } else if (!savedVersion) {
+      localStorage.setItem('app_version', CURRENT_VERSION);
+    }
+  }, []);
+
+  useEffect(() => {
     if (showSplash) {
       const timer = setTimeout(() => {
         setShowSplash(false);
