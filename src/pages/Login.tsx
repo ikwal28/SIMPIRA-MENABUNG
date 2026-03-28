@@ -69,7 +69,7 @@ export const Login = () => {
   };
 
   return (
-    <div className="h-screen h-[100dvh] w-full flex font-sans bg-white overflow-hidden fixed inset-0">
+    <div className="h-screen h-[100dvh] w-full flex font-sans bg-slate-50 overflow-hidden fixed inset-0">
       {/* Left Pane - Branding & Visuals */}
       <div className="hidden lg:flex lg:w-1/2 bg-slate-900 relative overflow-hidden flex-col justify-between p-12 h-full">
         <motion.div 
