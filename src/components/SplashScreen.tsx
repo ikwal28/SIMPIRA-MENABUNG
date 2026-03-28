@@ -78,7 +78,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.6 }}
             transition={{ delay: 0.6, duration: 0.6 }}
-            className="text-[10px] uppercase tracking-[0.4em] font-bold text-slate-400"
+            className="text-[10px] uppercase tracking-[0.4em] font-bold text-slate-300"
           >
             Simpanan Pintar Rajin menabung
           </motion.p>

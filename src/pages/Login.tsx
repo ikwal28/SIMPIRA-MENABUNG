@@ -161,7 +161,7 @@ export const Login = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
-              className="text-slate-400 text-lg max-w-md leading-relaxed"
+              className="text-slate-300 text-lg max-w-md leading-relaxed"
             >
               Platform perbankan digital modern untuk SD Negeri 2 Laot Tadu. Kelola tabungan dengan aman, transparan, dan profesional.
             </motion.p>
