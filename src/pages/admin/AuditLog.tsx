@@ -48,8 +48,11 @@ export const AdminAuditLog = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Audit Log Sistem</h1>
-          <p className="text-slate-500 mt-1">Rekaman jejak digital seluruh aktivitas administratif SIMPIRA MENABUNG.</p>
+          <h2 className="text-xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
+            <ShieldCheck className="text-emerald-600" size={24} />
+            Audit Log Sistem
+          </h2>
+          <p className="text-sm text-slate-500 mt-1">Rekaman jejak digital seluruh aktivitas administratif SIMPIRA MENABUNG.</p>
         </div>
         <div className="flex items-center gap-3">
           <button 

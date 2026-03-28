@@ -16,6 +16,7 @@ import { AdminManajemenKelas } from './pages/admin/ManajemenKelas';
 import { AdminTransaksi } from './pages/admin/Transaksi';
 import { AdminRiwayat } from './pages/admin/Riwayat';
 import { AdminAuditLog } from './pages/admin/AuditLog';
+import { AdminPengaturan } from './pages/admin/Pengaturan';
 import { AdminCetakRekening } from './pages/admin/CetakRekening';
 import { AdminCetakKartu } from './pages/admin/CetakKartu';
 import { AdminFormManual } from './pages/admin/FormManual';
@@ -90,14 +91,19 @@ export default function App() {
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="siswa" element={<AdminDataSiswa />} />
-              <Route path="manajemen-kelas" element={<AdminManajemenKelas />} />
               <Route path="transaksi" element={<AdminTransaksi />} />
               <Route path="riwayat" element={<AdminRiwayat />} />
-              <Route path="audit-log" element={<AdminAuditLog />} />
               <Route path="cetak" element={<AdminCetakRekening />} />
               <Route path="cetak-kartu" element={<AdminCetakKartu />} />
               <Route path="form-manual" element={<AdminFormManual />} />
               <Route path="about" element={<AboutPage />} />
+              
+              {/* Pengaturan Routes */}
+              <Route path="pengaturan" element={<AdminPengaturan />}>
+                <Route index element={<Navigate to="manajemen-kelas" replace />} />
+                <Route path="manajemen-kelas" element={<AdminManajemenKelas />} />
+                <Route path="audit-log" element={<AdminAuditLog />} />
+              </Route>
             </Route>
 
             {/* Siswa Routes */}

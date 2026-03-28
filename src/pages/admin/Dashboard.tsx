@@ -197,7 +197,7 @@ export const AdminDashboard = () => {
       {/* Quick Actions & Info */}
       <div className="hidden lg:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <Link 
-          to="/admin/manajemen-kelas" 
+          to="/admin/pengaturan/manajemen-kelas" 
           className="bg-white p-6 rounded-[2rem] border border-slate-200/60 shadow-sm hover:shadow-md transition-all group flex items-center gap-5"
         >
           <div className="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
@@ -249,7 +249,7 @@ export const AdminDashboard = () => {
           <p className="text-sm text-indigo-100 opacity-80 mt-1">Seluruh data nasabah dan transaksi dienkripsi secara otomatis dan dipantau 24/7 untuk menjamin integritas data sekolah.</p>
         </div>
         <div className="sm:ml-auto">
-          <Link to="/admin/audit-log" className="px-6 py-3 bg-white text-indigo-600 rounded-2xl font-bold text-sm hover:bg-indigo-50 transition-colors shadow-lg shadow-black/10 inline-block">
+          <Link to="/admin/pengaturan/audit-log" className="px-6 py-3 bg-white text-indigo-600 rounded-2xl font-bold text-sm hover:bg-indigo-50 transition-colors shadow-lg shadow-black/10 inline-block">
             Audit Log
           </Link>
         </div>

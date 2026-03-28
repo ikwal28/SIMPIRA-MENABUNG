@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Outlet, Navigate, Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { LayoutDashboard, Users, ArrowRightLeft, History, LogOut, Menu, ShieldCheck, Bell, Printer, Info, FileText, CreditCard, GraduationCap } from 'lucide-react';
+import { LayoutDashboard, Users, ArrowRightLeft, History, LogOut, Menu, ShieldCheck, Bell, Printer, Info, FileText, CreditCard, Settings } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export const AdminLayout = () => {
@@ -21,9 +21,8 @@ export const AdminLayout = () => {
     { path: '/admin/cetak', label: 'Cetak Rekening', icon: <Printer size={20} /> },
     { path: '/admin/cetak-kartu', label: 'Cetak Kartu', icon: <CreditCard size={20} /> },
     { path: '/admin/form-manual', label: 'Form Manual', icon: <FileText size={20} /> },
-    { path: '/admin/manajemen-kelas', label: 'Kenaikan Kelas', icon: <GraduationCap size={20} /> },
+    { path: '/admin/pengaturan', label: 'Pengaturan', icon: <Settings size={20} /> },
     { path: '/admin/about', label: 'Tentang', icon: <Info size={20} /> },
-    { path: '/admin/audit-log', label: 'Audit Log', icon: <ShieldCheck size={20} /> },
   ];
 
   return (
@@ -70,7 +69,7 @@ export const AdminLayout = () => {
           <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Menu Utama</p>
           <nav className="space-y-1.5 flex-1">
             {navItems.map((item) => {
-              const isActive = location.pathname === item.path;
+              const isActive = location.pathname === item.path || (item.path === '/admin/pengaturan' && location.pathname.startsWith('/admin/pengaturan'));
               return (
                 <Link
                   key={item.path}
@@ -121,7 +120,9 @@ export const AdminLayout = () => {
               <span className="font-bold text-slate-900 tracking-tight">SIMPIRA <span className="text-indigo-600">MENABUNG</span></span>
             </div>
             <h2 className="text-xl font-bold text-slate-800 hidden lg:block tracking-tight">
-              {navItems.find(item => item.path === location.pathname)?.label || 'Panel Administrator'}
+              {location.pathname.startsWith('/admin/pengaturan') 
+                ? 'Pengaturan Sistem' 
+                : navItems.find(item => item.path === location.pathname)?.label || 'Panel Administrator'}
             </h2>
           </div>
           

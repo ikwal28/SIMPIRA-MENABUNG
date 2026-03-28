@@ -171,14 +171,14 @@ export const AdminManajemenKelas = () => {
   };
 
   return (
-    <div className="space-y-8 pb-20">
+    <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-3">
-            <GraduationCap className="text-indigo-600" size={32} />
+          <h2 className="text-xl font-bold text-slate-800 tracking-tight flex items-center gap-2">
+            <GraduationCap className="text-indigo-600" size={24} />
             Manajemen Kenaikan Kelas
-          </h1>
-          <p className="text-slate-500 mt-1">Kelola siklus tahunan kenaikan tingkat dan kelulusan nasabah.</p>
+          </h2>
+          <p className="text-sm text-slate-500 mt-1">Kelola siklus tahunan kenaikan tingkat dan kelulusan nasabah.</p>
         </div>
         
         <div className="flex items-center gap-2">
