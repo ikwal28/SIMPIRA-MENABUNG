@@ -113,12 +113,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }).catch(console.error);
       }
       
+      const avatarUrl = response.role === 'admin' 
+        ? "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=200&auto=format&fit=crop"
+        : "https://api.dicebear.com/7.x/avataaars/svg?seed=modern-user-123";
+
       Swal.fire({
         title: 'Berhasil Masuk',
         html: `
           <div class="text-center space-y-3">
             <div class="w-20 h-20 mx-auto rounded-full bg-indigo-50 flex items-center justify-center border-4 border-white shadow-lg overflow-hidden">
-              <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=modern-user-123" alt="Avatar" class="w-full h-full object-cover" />
+              <img src="${avatarUrl}" alt="Avatar" class="w-full h-full object-cover" referrerPolicy="no-referrer" />
             </div>
             <div>
               <p class="text-slate-500 text-sm">Selamat datang kembali,</p>
@@ -155,12 +159,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = async () => {
+    const avatarUrl = user?.role === 'admin' 
+      ? "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=200&auto=format&fit=crop"
+      : "https://api.dicebear.com/7.x/avataaars/svg?seed=modern-user-123";
+
     const result = await Swal.fire({
       title: 'Konfirmasi Keluar',
       html: `
         <div class="text-center space-y-4">
           <div class="w-20 h-20 mx-auto rounded-full bg-slate-50 flex items-center justify-center border-4 border-white shadow-lg overflow-hidden">
-            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=modern-user-123" alt="Avatar" class="w-full h-full object-cover" />
+            <img src="${avatarUrl}" alt="Avatar" class="w-full h-full object-cover" referrerPolicy="no-referrer" />
           </div>
           <div>
             <h3 class="text-lg font-bold text-slate-900">Hallo, ${user?.nama?.split(' ')[0] || 'Pengguna'}</h3>

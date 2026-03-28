@@ -52,7 +52,7 @@ export const AdminLayout = () => {
           <div className="flex items-center gap-3 px-2">
             <div className="w-12 h-12 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-indigo-400 font-bold text-lg shadow-inner overflow-hidden">
               <img 
-                src="https://api.dicebear.com/7.x/avataaars/svg?seed=modern-user-123" 
+                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=200&auto=format&fit=crop" 
                 alt="Avatar" 
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
@@ -136,7 +136,7 @@ export const AdminLayout = () => {
             <div className="flex items-center gap-2 p-1.5 sm:p-2 sm:pr-4 bg-slate-50 sm:bg-transparent border border-slate-200 sm:border-transparent rounded-2xl sm:rounded-full transition-all">
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl sm:rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-md shadow-indigo-600/20 overflow-hidden">
                 <img 
-                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=modern-user-123" 
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=200&auto=format&fit=crop" 
                   alt="Avatar" 
                   className="w-full h-full object-cover"
                   referrerPolicy="no-referrer"
