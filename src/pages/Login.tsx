@@ -69,7 +69,7 @@ export const Login = () => {
   };
 
   return (
-    <div className="h-screen h-[100dvh] w-full flex font-sans bg-slate-50 overflow-hidden fixed inset-0">
+    <div className="h-screen h-[100dvh] w-full flex font-sans bg-slate-100 overflow-hidden fixed inset-0">
       {/* Left Pane - Branding & Visuals */}
       <div className="hidden lg:flex lg:w-1/2 bg-slate-900 relative overflow-hidden flex-col justify-between p-12 h-full">
         <motion.div 
@@ -247,7 +247,7 @@ export const Login = () => {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
               >
-                <label className="block text-xs font-medium text-slate-700 mb-1">
+                <label className="block text-sm font-bold text-slate-700 mb-1.5">
                   Username
                 </label>
                 <div className="relative group">
@@ -272,7 +272,7 @@ export const Login = () => {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
               >
-                <label className="block text-xs font-medium text-slate-700 mb-1">
+                <label className="block text-sm font-bold text-slate-700 mb-1.5">
                   Password
                 </label>
                 <div className="relative group">

@@ -21,7 +21,7 @@ export const SiswaLayout = () => {
   ];
 
   return (
-    <div className="flex h-screen bg-slate-50 font-sans overflow-hidden">
+    <div className="flex h-screen bg-slate-100 font-sans overflow-hidden">
       {/* Sidebar Mobile Overlay */}
       {isSidebarOpen && (
         <div
@@ -55,7 +55,7 @@ export const SiswaLayout = () => {
             </div>
             <div className="overflow-hidden">
               <p className="text-sm font-bold text-white truncate">{user?.nama || 'Siswa'}</p>
-              <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Rek: {user?.rekening || '-'}</p>
+              <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Rek: {user?.rekening || '-'}</p>
             </div>
           </div>
         </div>
@@ -100,7 +100,7 @@ export const SiswaLayout = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden relative">
         {/* Header - Mobile Banking Style */}
-        <header className="h-16 lg:h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 lg:px-10 z-10 sticky top-0">
+        <header className="h-16 lg:h-20 bg-slate-100/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 lg:px-10 z-10 sticky top-0">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsSidebarOpen(true)}
@@ -126,7 +126,7 @@ export const SiswaLayout = () => {
             </button>
             <div className="h-6 w-px bg-slate-200 hidden lg:block"></div>
             
-            <Link to="/siswa/profil" className="flex items-center gap-2 p-1.5 sm:p-2 sm:pr-4 bg-slate-50 sm:bg-transparent border border-slate-200 sm:border-transparent rounded-2xl sm:rounded-full transition-all">
+            <Link to="/siswa/profil" className="flex items-center gap-2 p-1.5 sm:p-2 sm:pr-4 bg-white sm:bg-transparent border border-slate-200 sm:border-transparent rounded-2xl sm:rounded-full transition-all">
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl sm:rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shadow-md shadow-emerald-600/20 overflow-hidden">
                 <img 
                   src="https://api.dicebear.com/7.x/avataaars/svg?seed=modern-user-123" 
@@ -137,7 +137,7 @@ export const SiswaLayout = () => {
               </div>
               <div className="text-left hidden sm:block">
                 <p className="text-xs font-bold text-slate-800 leading-none">{user?.nama?.split(' ')[0] || 'Siswa'}</p>
-                <p className="text-[10px] text-slate-500 leading-none mt-1 font-medium">Nasabah</p>
+                <p className="text-xs text-slate-500 leading-none mt-1 font-medium">Nasabah</p>
               </div>
             </Link>
 
@@ -151,7 +151,7 @@ export const SiswaLayout = () => {
           </div>
         </header>
 
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-slate-50/50 pb-24 lg:pb-10 p-4 lg:p-10">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-slate-100/50 pb-24 lg:pb-10 p-4 lg:p-10">
           <motion.div
             key={location.pathname}
             initial={{ opacity: 0, y: 10 }}
@@ -179,7 +179,7 @@ export const SiswaLayout = () => {
                 <div className={`${isActive ? 'text-emerald-600' : 'text-slate-400'}`}>
                   {React.cloneElement(item.icon as any, { size: 22, strokeWidth: isActive ? 2.5 : 2 })}
                 </div>
-                <span className={`text-[9px] font-bold uppercase tracking-tight ${isActive ? 'opacity-100' : 'opacity-70'}`}>
+                <span className={`text-[11px] font-bold uppercase tracking-tight ${isActive ? 'opacity-100' : 'opacity-70'}`}>
                   {item.label === 'Ringkasan' ? 'DASHBOARD' : 
                    item.label === 'Profil Saya' ? 'PROFIL' : 
                    item.label === 'Mutasi Rekening' ? 'RIWAYAT' : 'TENTANG'}

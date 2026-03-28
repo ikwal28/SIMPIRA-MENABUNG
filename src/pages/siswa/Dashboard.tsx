@@ -107,13 +107,13 @@ export const SiswaDashboard = () => {
             <div className="text-right">
               <div className="inline-flex items-center gap-1.5 bg-emerald-500/10 backdrop-blur-md px-3 py-1 rounded-full border border-emerald-500/20">
                 <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
-                <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">{user?.status || 'AKTIF'}</span>
+                <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">{user?.status || 'AKTIF'}</span>
               </div>
             </div>
           </div>
           
           <div className="space-y-1">
-            <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em]">Saldo Tersedia</p>
+            <p className="text-slate-400 text-xs font-bold uppercase tracking-[0.2em]">Saldo Tersedia</p>
             <div className="flex items-baseline gap-1">
               <span className="text-2xl font-medium text-emerald-500">Rp</span>
               <h2 className="text-4xl lg:text-5xl font-bold tracking-tight">
@@ -128,12 +128,12 @@ export const SiswaDashboard = () => {
                 <User size={16} className="text-slate-400" />
               </div>
               <div>
-                <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Pemilik Rekening</p>
+                <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Pemilik Rekening</p>
                 <p className="text-xs font-bold text-slate-200">{user?.nama || 'Siswa'}</p>
               </div>
             </div>
             <div className="text-right">
-              <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Kelas</p>
+              <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Kelas</p>
               <p className="text-xs font-bold text-slate-200">{user?.kelas || '-'}</p>
             </div>
           </div>

@@ -86,16 +86,16 @@ export const AdminDashboard = () => {
               {stat.icon}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[9px] sm:text-[10px] lg:text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5 lg:mb-1">{stat.label}</p>
+              <p className="text-[11px] sm:text-xs lg:text-xs font-bold text-slate-500 uppercase tracking-wider mb-0.5 lg:mb-1">{stat.label}</p>
               <p className="text-base sm:text-lg lg:text-xl font-bold text-slate-900 truncate">{stat.value}</p>
             </div>
             <div className="hidden lg:flex mt-3 items-center gap-1.5">
               <div className="w-1.5 h-1.5 bg-slate-300 rounded-full"></div>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{stat.trend}</p>
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">{stat.trend}</p>
             </div>
             <div className="lg:hidden flex items-center justify-end pl-1 sm:pl-2">
                <div className="bg-slate-50 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg border border-slate-100">
-                 <p className="text-[8px] sm:text-[9px] font-bold text-slate-500 uppercase tracking-widest whitespace-nowrap">{stat.trend}</p>
+                 <p className="text-[10px] sm:text-xs font-bold text-slate-600 uppercase tracking-widest whitespace-nowrap">{stat.trend}</p>
                </div>
             </div>
           </motion.div>
