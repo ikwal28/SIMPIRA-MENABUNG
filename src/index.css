@@ -4,11 +4,52 @@
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Remap indigo to emerald for a fresh, eye-friendly primary color */
+  --color-indigo-50: var(--color-emerald-50);
+  --color-indigo-100: var(--color-emerald-100);
+  --color-indigo-200: var(--color-emerald-200);
+  --color-indigo-300: var(--color-emerald-300);
+  --color-indigo-400: var(--color-emerald-400);
+  --color-indigo-500: var(--color-emerald-500);
+  --color-indigo-600: var(--color-emerald-600);
+  --color-indigo-700: var(--color-emerald-700);
+  --color-indigo-800: var(--color-emerald-800);
+  --color-indigo-900: var(--color-emerald-900);
+  --color-indigo-950: var(--color-emerald-950);
+
+  /* Remap slate to emerald tints for an "All-Green" eye-friendly theme that avoids white dominance */
+  --color-slate-50: #d1fae5; /* emerald-100 - Background */
+  --color-slate-100: #ecfdf5; /* emerald-50 - Surface/Card */
+  --color-slate-200: #a7f3d0; /* emerald-200 - Border */
+  --color-slate-300: #6ee7b7; /* emerald-300 */
+  --color-slate-400: #34d399; /* emerald-400 */
+  --color-slate-500: #10b981; /* emerald-500 */
+  --color-slate-600: #059669; /* emerald-600 */
+  --color-slate-700: #047857; /* emerald-700 */
+  --color-slate-800: #065f46; /* emerald-800 */
+  --color-slate-900: #064e3b; /* emerald-900 - Primary Text */
+  --color-slate-950: #022c22; /* emerald-950 */
 }
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900 antialiased selection:bg-indigo-500/30;
+    @apply bg-slate-50 text-slate-900 antialiased selection:bg-emerald-500/30;
+  }
+
+  /* Override bg-white to be a soft emerald tint for a "not white dominant" look */
+  .bg-white {
+    @apply bg-slate-100! border-slate-200!;
+  }
+
+  /* Fix common white-based utility classes */
+  .bg-white\/80, .bg-white\/90, .bg-white\/95 {
+    @apply bg-slate-100/90! backdrop-blur-md!;
+  }
+
+  /* Ensure inputs and cards don't look too bright */
+  input, select, textarea {
+    @apply bg-slate-100! text-slate-900! border-slate-200!;
   }
 }
 
