@@ -71,7 +71,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
             transition={{ delay: 0.3, duration: 0.6 }}
             className="text-3xl font-black tracking-tighter"
           >
-            SIMPIRA <span className="text-indigo-400">MENABUNG</span>
+            <span className="text-indigo-400">SIMPIRA</span> <span className="text-emerald-400">MENABUNG</span>
           </motion.h1>
           
           <motion.p
@@ -118,7 +118,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
         
         <div className="px-4 py-2 rounded-full bg-white/5 backdrop-blur-md border border-white/10 shadow-xl">
           <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-slate-300">
-            SIMPIRA <span className="text-indigo-400">MENABUNG</span> 
+            <span className="text-indigo-400">SIMPIRA</span> <span className="text-emerald-400">MENABUNG</span> 
             <span className="mx-2 text-slate-600">©</span> 
             2026 <span className="text-emerald-400 ml-1">IKWAL PRESETIAWAN</span>
           </p>
