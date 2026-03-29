@@ -47,7 +47,7 @@ export const AdminDashboard = () => {
   ];
 
   return (
-    <div className="space-y-4 lg:space-y-5 max-w-[1600px] mx-auto pb-4 lg:h-[calc(100vh-140px)] lg:flex lg:flex-col">
+    <div className="max-w-[1600px] mx-auto pb-4 lg:h-full lg:flex lg:flex-col lg:overflow-hidden space-y-4 lg:space-y-6">
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1 shrink-0">
         <div>

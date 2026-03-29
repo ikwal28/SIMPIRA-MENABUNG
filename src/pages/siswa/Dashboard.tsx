@@ -65,7 +65,7 @@ export const SiswaDashboard = () => {
   ];
 
   return (
-    <div className="space-y-4 lg:space-y-6 max-w-7xl mx-auto lg:h-[calc(100vh-140px)] lg:flex lg:flex-col">
+    <div className="max-w-[1600px] mx-auto lg:h-full lg:flex lg:flex-col lg:overflow-hidden space-y-4 lg:space-y-6">
       {/* Welcome Section - Mobile Optimized */}
       <div className="flex items-center justify-between px-1 sm:px-0 shrink-0">
         <div>

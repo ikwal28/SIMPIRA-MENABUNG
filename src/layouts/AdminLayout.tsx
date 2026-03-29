@@ -158,14 +158,14 @@ export const AdminLayout = () => {
           </div>
         </header>
 
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-slate-50/50 pb-24 lg:pb-6 p-4 lg:p-6">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto lg:overflow-y-hidden bg-slate-50/50 pb-24 lg:pb-0 p-4 lg:p-6">
           <motion.div
             key={location.pathname}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="max-w-[1600px] mx-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="max-w-[1600px] mx-auto h-full"
           >
             <Outlet />
           </motion.div>
