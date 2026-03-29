@@ -120,7 +120,7 @@ export const AdminDashboard = () => {
                 <div className="flex items-center gap-1.5 text-rose-600"><span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Tarik</div>
               </div>
             </div>
-            <div className="h-[200px] lg:h-[220px] w-full">
+            <div className="h-[200px] lg:h-[400px] w-full">
               {chartData.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -153,8 +153,8 @@ export const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Quick Actions & Security Info Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* Quick Actions & Security Info Row - Hidden on Laptop */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:hidden">
             {/* Quick Actions Grid */}
             <div className="grid grid-cols-3 gap-3">
               <Link 
