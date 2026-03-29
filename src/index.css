@@ -58,6 +58,18 @@
   input, select, textarea {
     @apply bg-white! text-slate-900! border-slate-200! placeholder-slate-400!;
   }
+
+  /* Custom Scrollbar Utility */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
+  }
 }
 
 /* Custom Scrollbar for a cleaner look */

@@ -47,9 +47,9 @@ export const AdminDashboard = () => {
   ];
 
   return (
-    <div className="space-y-6 lg:space-y-8 max-w-7xl mx-auto pb-10">
+    <div className="space-y-4 lg:space-y-5 max-w-[1600px] mx-auto pb-4 lg:h-[calc(100vh-140px)] lg:flex lg:flex-col">
       {/* Header Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1 shrink-0">
         <div>
           <h1 className="text-xl lg:text-2xl font-bold text-slate-900 tracking-tight">Ringkasan Sistem SIMPIRA MENABUNG</h1>
           <p className="text-slate-500 text-sm mt-0.5">Pantau aktivitas keuangan sekolah secara real-time dan profesional.</p>
@@ -72,113 +72,168 @@ export const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Stats Grid - Bento Style */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-3 lg:gap-6">
-        {stats.map((stat, idx) => (
-          <motion.div 
-            key={idx}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: idx * 0.1 }}
-            className="bg-white rounded-2xl lg:rounded-[2rem] p-3.5 sm:p-4 lg:p-6 shadow-sm border border-slate-200/60 relative overflow-hidden group hover:shadow-md transition-all flex items-center lg:block gap-3 sm:gap-4 lg:gap-0"
-          >
-            <div className={`w-10 h-10 sm:w-12 sm:h-12 lg:w-12 lg:h-12 shrink-0 rounded-xl sm:rounded-2xl ${stat.color} flex items-center justify-center text-white lg:mb-4 shadow-md`}>
-              {stat.icon}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[11px] sm:text-xs lg:text-xs font-bold text-slate-500 uppercase tracking-wider mb-0.5 lg:mb-1">{stat.label}</p>
-              <p className="text-base sm:text-lg lg:text-xl font-bold text-slate-900 truncate">{stat.value}</p>
-            </div>
-            <div className="hidden lg:flex mt-3 items-center gap-1.5">
-              <div className="w-1.5 h-1.5 bg-slate-300 rounded-full"></div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">{stat.trend}</p>
-            </div>
-            <div className="lg:hidden flex items-center justify-end pl-1 sm:pl-2">
-               <div className="bg-slate-50 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg border border-slate-100">
-                 <p className="text-[10px] sm:text-xs font-bold text-slate-600 uppercase tracking-widest whitespace-nowrap">{stat.trend}</p>
-               </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+      {/* Main Content Area */}
+      <div className="lg:flex-1 lg:grid lg:grid-cols-12 lg:gap-6 lg:overflow-hidden">
+        {/* Left & Middle Column (Stats + Chart) */}
+        <div className="lg:col-span-8 space-y-4 lg:space-y-6 lg:overflow-y-auto lg:pr-2 custom-scrollbar">
+          {/* Stats Grid - Bento Style */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+            {stats.map((stat, idx) => (
+              <motion.div 
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1 }}
+                className="bg-white rounded-2xl lg:rounded-[1.5rem] p-3.5 sm:p-4 lg:p-4 shadow-sm border border-slate-200/60 relative overflow-hidden group hover:shadow-md transition-all flex items-center lg:block gap-3 sm:gap-4 lg:gap-0"
+              >
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 lg:w-10 lg:h-10 shrink-0 rounded-xl sm:rounded-2xl ${stat.color} flex items-center justify-center text-white lg:mb-3 shadow-md`}>
+                  {stat.icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[11px] sm:text-xs lg:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-0.5 lg:mb-0.5">{stat.label}</p>
+                  <p className="text-base sm:text-lg lg:text-lg font-bold text-slate-900 truncate">{stat.value}</p>
+                </div>
+                <div className="hidden lg:flex mt-2 items-center gap-1.5">
+                  <div className="w-1.5 h-1.5 bg-slate-300 rounded-full"></div>
+                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{stat.trend}</p>
+                </div>
+                <div className="lg:hidden flex items-center justify-end pl-1 sm:pl-2">
+                   <div className="bg-slate-50 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg border border-slate-100">
+                     <p className="text-[10px] sm:text-xs font-bold text-slate-600 uppercase tracking-widest whitespace-nowrap">{stat.trend}</p>
+                   </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Chart Section */}
-        <div className="hidden lg:block bg-white rounded-[2.5rem] shadow-sm border border-slate-200/60 p-6 lg:p-8 lg:col-span-2 overflow-hidden">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-lg font-bold text-slate-900 flex items-center gap-3">
-              <div className="p-2 bg-indigo-50 rounded-xl text-indigo-600">
-                <Activity size={18} />
+          {/* Chart Section */}
+          <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200/60 p-5 lg:p-6 overflow-hidden">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-base font-bold text-slate-900 flex items-center gap-3">
+                <div className="p-2 bg-indigo-50 rounded-xl text-indigo-600">
+                  <Activity size={16} />
+                </div>
+                Arus Kas (14 Hari)
+              </h2>
+              <div className="flex items-center gap-3 text-[9px] font-bold uppercase tracking-wider">
+                <div className="flex items-center gap-1.5 text-emerald-600"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Setor</div>
+                <div className="flex items-center gap-1.5 text-rose-600"><span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Tarik</div>
               </div>
-              Arus Kas (14 Hari)
-            </h2>
-            <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-wider">
-              <div className="flex items-center gap-1.5 text-emerald-600"><span className="w-2 h-2 rounded-full bg-emerald-500"></span> Setor</div>
-              <div className="flex items-center gap-1.5 text-rose-600"><span className="w-2 h-2 rounded-full bg-rose-500"></span> Tarik</div>
+            </div>
+            <div className="h-[200px] lg:h-[220px] w-full">
+              {chartData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="colorSetor" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
+                        <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                      </linearGradient>
+                      <linearGradient id="colorTarik" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.2}/>
+                        <stop offset="95%" stopColor="#f43f5e" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 9, fontWeight: 600 }} dy={10} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 9, fontWeight: 600 }} tickFormatter={(value) => `Rp${value/1000}k`} />
+                    <Tooltip 
+                      contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', padding: '10px' }}
+                      labelStyle={{ fontWeight: 'bold', marginBottom: '2px', color: '#1e293b', fontSize: '12px' }}
+                      itemStyle={{ fontSize: '11px' }}
+                      formatter={(value: number) => [formatRupiah(value), '']}
+                    />
+                    <Area type="monotone" dataKey="Setor" stroke="#10b981" strokeWidth={2.5} fillOpacity={1} fill="url(#colorSetor)" />
+                    <Area type="monotone" dataKey="Tarik" stroke="#f43f5e" strokeWidth={2.5} fillOpacity={1} fill="url(#colorTarik)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-full flex items-center justify-center text-slate-400 text-sm font-medium">Belum ada data transaksi</div>
+              )}
             </div>
           </div>
-          <div className="h-[250px] lg:h-[300px] w-full">
-            {chartData.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="colorSetor" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                    </linearGradient>
-                    <linearGradient id="colorTarik" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.2}/>
-                      <stop offset="95%" stopColor="#f43f5e" stopOpacity={0}/>
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 600 }} dy={10} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 600 }} tickFormatter={(value) => `Rp${value/1000}k`} />
-                  <Tooltip 
-                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', padding: '12px' }}
-                    labelStyle={{ fontWeight: 'bold', marginBottom: '4px', color: '#1e293b' }}
-                    formatter={(value: number) => [formatRupiah(value), '']}
-                  />
-                  <Area type="monotone" dataKey="Setor" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorSetor)" />
-                  <Area type="monotone" dataKey="Tarik" stroke="#f43f5e" strokeWidth={3} fillOpacity={1} fill="url(#colorTarik)" />
-                </AreaChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="h-full flex items-center justify-center text-slate-400 text-sm font-medium">Belum ada data transaksi</div>
-            )}
+
+          {/* Quick Actions & Security Info Row */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Quick Actions Grid */}
+            <div className="grid grid-cols-3 gap-3">
+              <Link 
+                to="/admin/pengaturan/manajemen-kelas" 
+                className="bg-white p-3 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all group flex flex-col items-center text-center gap-2"
+              >
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                  <GraduationCap size={20} />
+                </div>
+                <h3 className="font-bold text-[11px] text-slate-900 leading-tight">Kenaikan Kelas</h3>
+              </Link>
+
+              <Link 
+                to="/admin/siswa" 
+                className="bg-white p-3 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all group flex flex-col items-center text-center gap-2"
+              >
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                  <Users size={20} />
+                </div>
+                <h3 className="font-bold text-[11px] text-slate-900 leading-tight">Data Nasabah</h3>
+              </Link>
+
+              <Link 
+                to="/admin/transaksi" 
+                className="bg-white p-3 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all group flex flex-col items-center text-center gap-2"
+              >
+                <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                  <ArrowUpRight size={20} />
+                </div>
+                <h3 className="font-bold text-[11px] text-slate-900 leading-tight">Transaksi Baru</h3>
+              </Link>
+            </div>
+
+            {/* Security Info - Admin View */}
+            <div className="bg-indigo-600 rounded-2xl p-4 text-white flex items-center gap-4 shadow-lg shadow-indigo-900/20">
+              <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                <ShieldCheck size={24} />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-xs">Keamanan Terpusat</h3>
+                <p className="text-[10px] text-indigo-100 opacity-80 mt-0.5 leading-tight">Data dienkripsi otomatis & dipantau 24/7.</p>
+              </div>
+              <Link to="/admin/pengaturan/audit-log" className="px-3 py-1.5 bg-white text-indigo-600 rounded-lg font-bold text-[10px] hover:bg-indigo-50 transition-colors shadow-sm">
+                Audit
+              </Link>
+            </div>
           </div>
         </div>
 
-        {/* Recent Transactions List */}
-        <div className="hidden lg:flex bg-white rounded-[2.5rem] shadow-sm border border-slate-200/60 overflow-hidden flex-col">
-          <div className="p-6 lg:p-8 flex items-center justify-between border-b border-slate-50">
-            <h2 className="text-lg font-bold text-slate-900 flex items-center gap-3">
+        {/* Right Column (Recent Transactions) */}
+        <div className="mt-6 lg:mt-0 lg:col-span-4 bg-white rounded-[2rem] shadow-sm border border-slate-200/60 overflow-hidden flex flex-col lg:h-full">
+          <div className="p-5 lg:p-6 flex items-center justify-between border-b border-slate-50 shrink-0">
+            <h2 className="text-base font-bold text-slate-900 flex items-center gap-3">
               <div className="p-2 bg-slate-50 rounded-xl text-slate-600">
-                <Activity size={18} />
+                <Activity size={16} />
               </div>
               Transaksi Terbaru
             </h2>
           </div>
           
-          <div className="flex-1 overflow-y-auto divide-y divide-slate-50">
-            {transaksi.slice(0, 8).map((trx: any, index: number) => (
-              <div key={index} className="flex items-center justify-between p-5 hover:bg-slate-50 transition-colors group">
-                <div className="flex items-center gap-4">
-                  <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${
+          <div className="flex-1 overflow-y-auto divide-y divide-slate-50 custom-scrollbar">
+            {transaksi.slice(0, 12).map((trx: any, index: number) => (
+              <div key={index} className="flex items-center justify-between p-4 hover:bg-slate-50 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
                     trx.jenis === 'Setor' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'
                   }`}>
-                    {trx.jenis === 'Setor' ? <ArrowUpRight size={18} /> : <ArrowDownRight size={18} />}
+                    {trx.jenis === 'Setor' ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
                   </div>
                   <div className="overflow-hidden">
-                    <p className="text-sm font-bold text-slate-900 truncate">{trx.nama}</p>
-                    <p className="text-[10px] text-slate-500 font-medium mt-0.5 uppercase tracking-wider">{formatDate(trx.tanggal)}</p>
+                    <p className="text-xs font-bold text-slate-900 truncate">{trx.nama}</p>
+                    <p className="text-[9px] text-slate-500 font-medium mt-0.5 uppercase tracking-wider">{formatDate(trx.tanggal)}</p>
                   </div>
                 </div>
                 <div className="text-right shrink-0 ml-2">
-                  <p className={`text-sm font-bold ${trx.jenis === 'Setor' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                  <p className={`text-xs font-bold ${trx.jenis === 'Setor' ? 'text-emerald-600' : 'text-rose-600'}`}>
                     {trx.jenis === 'Setor' ? '+' : '-'}{formatRupiah(trx.jumlah)}
                   </p>
-                  <p className="text-[10px] text-slate-400 font-mono mt-0.5">{trx.rekening}</p>
+                  <p className="text-[9px] text-slate-400 font-mono mt-0.5">{trx.rekening}</p>
                 </div>
               </div>
             ))}
@@ -191,67 +246,6 @@ export const AdminDashboard = () => {
               </div>
             )}
           </div>
-        </div>
-      </div>
-
-      {/* Quick Actions & Info */}
-      <div className="hidden lg:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Link 
-          to="/admin/pengaturan/manajemen-kelas" 
-          className="bg-white p-6 rounded-[2rem] border border-slate-200/60 shadow-sm hover:shadow-md transition-all group flex items-center gap-5"
-        >
-          <div className="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-            <GraduationCap size={28} />
-          </div>
-          <div className="flex-1">
-            <h3 className="font-bold text-slate-900">Kenaikan Kelas</h3>
-            <p className="text-xs text-slate-500 mt-0.5">Proses kenaikan tingkat & kelulusan tahunan.</p>
-          </div>
-          <ChevronRight size={20} className="text-slate-300 group-hover:text-indigo-500 transition-colors" />
-        </Link>
-
-        <Link 
-          to="/admin/siswa" 
-          className="bg-white p-6 rounded-[2rem] border border-slate-200/60 shadow-sm hover:shadow-md transition-all group flex items-center gap-5"
-        >
-          <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-            <Users size={28} />
-          </div>
-          <div className="flex-1">
-            <h3 className="font-bold text-slate-900">Data Nasabah</h3>
-            <p className="text-xs text-slate-500 mt-0.5">Kelola informasi dan status siswa.</p>
-          </div>
-          <ChevronRight size={20} className="text-slate-300 group-hover:text-emerald-500 transition-colors" />
-        </Link>
-
-        <Link 
-          to="/admin/transaksi" 
-          className="bg-white p-6 rounded-[2rem] border border-slate-200/60 shadow-sm hover:shadow-md transition-all group flex items-center gap-5"
-        >
-          <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-            <ArrowUpRight size={28} />
-          </div>
-          <div className="flex-1">
-            <h3 className="font-bold text-slate-900">Transaksi Baru</h3>
-            <p className="text-xs text-slate-500 mt-0.5">Input setoran atau tarikan tunai.</p>
-          </div>
-          <ChevronRight size={20} className="text-slate-300 group-hover:text-amber-500 transition-colors" />
-        </Link>
-      </div>
-
-      {/* Security Info - Admin View */}
-      <div className="hidden lg:flex bg-indigo-600 rounded-[2rem] p-6 lg:p-8 text-white flex-col sm:flex-row items-center gap-6 shadow-xl shadow-indigo-900/20">
-        <div className="w-16 h-16 rounded-[1.5rem] bg-white/20 flex items-center justify-center shrink-0">
-          <ShieldCheck size={32} />
-        </div>
-        <div className="text-center sm:text-left">
-          <h3 className="font-bold text-lg">Sistem Keamanan Terpusat</h3>
-          <p className="text-sm text-indigo-100 opacity-80 mt-1">Seluruh data nasabah dan transaksi dienkripsi secara otomatis dan dipantau 24/7 untuk menjamin integritas data sekolah.</p>
-        </div>
-        <div className="sm:ml-auto">
-          <Link to="/admin/pengaturan/audit-log" className="px-6 py-3 bg-white text-indigo-600 rounded-2xl font-bold text-sm hover:bg-indigo-50 transition-colors shadow-lg shadow-black/10 inline-block">
-            Audit Log
-          </Link>
         </div>
       </div>
     </div>
