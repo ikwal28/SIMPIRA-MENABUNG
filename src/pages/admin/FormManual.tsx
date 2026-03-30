@@ -77,10 +77,10 @@ export const AdminFormManual = () => {
 
     // Table Data
     const rows = [];
-    for (let i = 1; i <= 20; i++) {
+    for (let i = 1; i <= 25; i++) {
       rows.push([
         i, '', '', '', // Left side
-        i + 20, '', '', '' // Right side
+        i + 25, '', '', '' // Right side
       ]);
     }
 
@@ -90,8 +90,8 @@ export const AdminFormManual = () => {
       body: rows,
       theme: 'grid',
       styles: {
-        fontSize: 8,
-        cellPadding: 4,
+        fontSize: 7.5,
+        cellPadding: 2.2,
         halign: 'center',
         valign: 'middle',
         lineWidth: 0.1,
@@ -160,8 +160,8 @@ export const AdminFormManual = () => {
       doc.text(`SALDO TERAKHIR : ${formattedSaldo}`, 20, 60);
 
       const rows = [];
-      for (let i = 1; i <= 20; i++) {
-        rows.push([i, '', '', '', i + 20, '', '', '']);
+      for (let i = 1; i <= 25; i++) {
+        rows.push([i, '', '', '', i + 25, '', '', '']);
       }
 
       autoTable(doc, {
@@ -170,8 +170,8 @@ export const AdminFormManual = () => {
         body: rows,
         theme: 'grid',
         styles: { 
-          fontSize: 8, 
-          cellPadding: 4, 
+          fontSize: 7.5, 
+          cellPadding: 2.2, 
           halign: 'center', 
           valign: 'middle', 
           lineWidth: 0.1, 
