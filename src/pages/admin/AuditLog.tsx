@@ -168,7 +168,7 @@ export const AdminAuditLog = () => {
           )}
 
           {filteredLogs.length > limit && (
-            <div className="mt-10 text-center">
+            <div className="mt-10 pb-12 sm:pb-0 text-center">
               <button
                 onClick={handleLoadMore}
                 disabled={isLoadingData}

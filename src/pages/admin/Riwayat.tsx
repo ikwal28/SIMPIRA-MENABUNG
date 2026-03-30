@@ -190,7 +190,7 @@ export const AdminRiwayat = () => {
         </div>
 
         {transaksi.length < totalTransaksi && (
-          <div className="p-6 border-t border-slate-100 text-center">
+          <div className="p-6 pb-12 sm:pb-6 border-t border-slate-100 text-center">
             <button
               onClick={handleLoadMore}
               disabled={isLoadingData}

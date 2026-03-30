@@ -131,7 +131,7 @@ export const SiswaRiwayat = () => {
           </div>
 
           {transaksi.length < totalTransaksi && (
-            <div className="mt-8 text-center pb-4">
+            <div className="mt-8 text-center pb-12 sm:pb-4">
               <button
                 onClick={handleLoadMore}
                 disabled={isLoadingData}
