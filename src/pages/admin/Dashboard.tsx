@@ -17,8 +17,19 @@ export const AdminDashboard = () => {
 
   const totalSaldo = dashboardStats.totalSaldo || 0;
   const totalSiswa = dashboardStats.totalSiswa || 0;
-  const totalSetor = dashboardStats.totalSetor || 0;
-  const totalTarik = dashboardStats.totalTarik || 0;
+  
+  // Calculate daily and monthly totals from transaction list
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+
+  const totalSetorHarian = transaksi
+    .filter(t => t.jenis === 'Setor' && new Date(t.tanggal).getTime() >= today)
+    .reduce((acc, t) => acc + (parseFloat(t.jumlah) || 0), 0);
+
+  const totalSetorBulanan = transaksi
+    .filter(t => t.jenis === 'Setor' && new Date(t.tanggal).getTime() >= firstDayOfMonth)
+    .reduce((acc, t) => acc + (parseFloat(t.jumlah) || 0), 0);
 
   // Prepare chart data (group by date)
   const chartDataMap = new Map();
@@ -42,8 +53,8 @@ export const AdminDashboard = () => {
   const stats = [
     { label: 'Total Saldo', value: formatRupiah(totalSaldo), icon: <Wallet size={20} />, color: 'bg-indigo-500', trend: 'Sistem Aktif' },
     { label: 'Total Nasabah', value: `${totalSiswa} Siswa`, icon: <Users size={20} />, color: 'bg-sky-500', trend: 'Terdaftar' },
-    { label: 'Total Setoran', value: formatRupiah(totalSetor), icon: <TrendingUp size={20} />, color: 'bg-emerald-500', trend: 'Pemasukan' },
-    { label: 'Total Tarikan', value: formatRupiah(totalTarik), icon: <TrendingDown size={20} />, color: 'bg-rose-500', trend: 'Pengeluaran' },
+    { label: 'Total Setoran Harian', value: formatRupiah(totalSetorHarian), icon: <TrendingUp size={20} />, color: 'bg-emerald-500', trend: 'Hari Ini' },
+    { label: 'Total Setoran Bulanan', value: formatRupiah(totalSetorBulanan), icon: <TrendingUp size={20} />, color: 'bg-amber-500', trend: 'Bulan Ini' },
   ];
 
   return (
@@ -106,8 +117,8 @@ export const AdminDashboard = () => {
             ))}
           </div>
 
-          {/* Chart Section */}
-          <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200/60 p-5 lg:p-6 overflow-hidden">
+          {/* Chart Section - Hidden on Mobile */}
+          <div className="hidden lg:block bg-white rounded-[2rem] shadow-sm border border-slate-200/60 p-5 lg:p-6 overflow-hidden">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-base font-bold text-slate-900 flex items-center gap-3">
                 <div className="p-2 bg-indigo-50 rounded-xl text-indigo-600">
@@ -153,8 +164,8 @@ export const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Quick Actions & Security Info Row - Hidden on Laptop */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:hidden">
+          {/* Quick Actions & Security Info Row - Hidden on Mobile & Laptop */}
+          <div className="hidden grid-cols-1 lg:grid-cols-2 gap-4 lg:hidden">
             {/* Quick Actions Grid */}
             <div className="grid grid-cols-3 gap-3">
               <Link 
@@ -204,8 +215,8 @@ export const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* Right Column (Recent Transactions) */}
-        <div className="mt-6 lg:mt-0 lg:col-span-4 bg-white rounded-[2rem] shadow-sm border border-slate-200/60 overflow-hidden flex flex-col lg:h-full">
+        {/* Right Column (Recent Transactions) - Hidden on Mobile */}
+        <div className="hidden lg:flex mt-6 lg:mt-0 lg:col-span-4 bg-white rounded-[2rem] shadow-sm border border-slate-200/60 overflow-hidden flex-col lg:h-full">
           <div className="p-5 lg:p-6 flex items-center justify-between border-b border-slate-50 shrink-0">
             <h2 className="text-base font-bold text-slate-900 flex items-center gap-3">
               <div className="p-2 bg-slate-50 rounded-xl text-slate-600">
