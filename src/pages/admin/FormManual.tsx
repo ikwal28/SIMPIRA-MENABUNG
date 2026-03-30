@@ -77,10 +77,10 @@ export const AdminFormManual = () => {
 
     // Table Data
     const rows = [];
-    for (let i = 1; i <= 25; i++) {
+    for (let i = 1; i <= 20; i++) {
       rows.push([
         i, '', '', '', // Left side
-        i + 25, '', '', '' // Right side
+        i + 20, '', '', '' // Right side
       ]);
     }
 
@@ -90,8 +90,8 @@ export const AdminFormManual = () => {
       body: rows,
       theme: 'grid',
       styles: {
-        fontSize: 7,
-        cellPadding: 1,
+        fontSize: 8,
+        cellPadding: 4,
         halign: 'center',
         valign: 'middle',
         lineWidth: 0.1,
@@ -160,8 +160,8 @@ export const AdminFormManual = () => {
       doc.text(`SALDO TERAKHIR : ${formattedSaldo}`, 20, 60);
 
       const rows = [];
-      for (let i = 1; i <= 25; i++) {
-        rows.push([i, '', '', '', i + 25, '', '', '']);
+      for (let i = 1; i <= 20; i++) {
+        rows.push([i, '', '', '', i + 20, '', '', '']);
       }
 
       autoTable(doc, {
@@ -169,7 +169,14 @@ export const AdminFormManual = () => {
         head: [['No', 'Tanggal', 'Setoran', 'Saldo', 'No', 'Tanggal', 'Setoran', 'Saldo']],
         body: rows,
         theme: 'grid',
-        styles: { fontSize: 7, cellPadding: 1, halign: 'center', valign: 'middle', lineWidth: 0.1, lineColor: [0, 0, 0] },
+        styles: { 
+          fontSize: 8, 
+          cellPadding: 4, 
+          halign: 'center', 
+          valign: 'middle', 
+          lineWidth: 0.1, 
+          lineColor: [0, 0, 0] 
+        },
         headStyles: { fillColor: [240, 240, 240], textColor: [0, 0, 0], fontStyle: 'bold' },
         columnStyles: { 0: { cellWidth: 8 }, 1: { cellWidth: 20 }, 2: { cellWidth: 20 }, 3: { cellWidth: 30 }, 4: { cellWidth: 8 }, 5: { cellWidth: 20 }, 6: { cellWidth: 20 }, 7: { cellWidth: 30 } },
         margin: { left: 20, right: 20 }
@@ -236,16 +243,17 @@ export const AdminFormManual = () => {
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Rekening</th>
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Kelas</th>
                 <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Saldo Terakhir</th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {isLoadingData ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-10 text-center text-slate-400">Memuat data...</td>
+                  <td colSpan={5} className="px-6 py-10 text-center text-slate-400">Memuat data...</td>
                 </tr>
               ) : filteredSiswa.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-10 text-center text-slate-400">Tidak ada data nasabah</td>
+                  <td colSpan={5} className="px-6 py-10 text-center text-slate-400">Tidak ada data nasabah</td>
                 </tr>
               ) : (
                 filteredSiswa.map((s: any) => (
@@ -261,6 +269,18 @@ export const AdminFormManual = () => {
                     </td>
                     <td className="px-6 py-4 text-right font-bold text-indigo-600">
                       {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(s.saldo || 0)}
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <button
+                        onClick={() => {
+                          const doc = generatePDF(s);
+                          window.open(doc.output('bloburl'), '_blank');
+                        }}
+                        className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                        title="Cetak Form Manual"
+                      >
+                        <Download size={18} />
+                      </button>
                     </td>
                   </tr>
                 ))
