@@ -115,10 +115,10 @@ export const SiswaDashboard = () => {
               </div>
               
               <div className="space-y-1">
-                <p className="text-white/60 text-[10px] font-bold uppercase tracking-[0.2em]">Saldo Tersedia</p>
+                <p className="text-white/80 text-[10px] font-bold uppercase tracking-[0.2em]">Saldo Tersedia</p>
                 <div className="flex items-baseline gap-1">
                   <span className="text-xl font-medium text-emerald-500">Rp</span>
-                  <h2 className="text-3xl lg:text-4xl font-bold tracking-tight">
+                  <h2 className="text-3xl lg:text-4xl font-bold tracking-tight text-emerald-50">
                     {formatRupiah(user?.saldo || 0).replace('Rp', '').trim()}
                   </h2>
                 </div>
