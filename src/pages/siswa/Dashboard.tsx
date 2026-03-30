@@ -19,7 +19,7 @@ export const SiswaDashboard = () => {
   }, [user?.rekening]);
 
   const myTransaksi = transaksi.filter((t: any) => t.rekening?.toString() === user?.rekening?.toString());
-  const recentTransaksi = myTransaksi.slice(0, 5);
+  const recentTransaksi = myTransaksi.slice(0, 10);
 
   const quickActions = [
     { label: 'Mutasi', icon: <History size={24} />, path: '/siswa/riwayat', color: 'bg-blue-500' },
@@ -98,11 +98,11 @@ export const SiswaDashboard = () => {
             <div className="relative z-10">
               <div className="flex items-start justify-between mb-8">
                 <div className="space-y-1">
-                  <p className="text-slate-400 text-[9px] font-bold uppercase tracking-[0.2em]">Nomor Rekening</p>
+                  <p className="text-white/60 text-[9px] font-bold uppercase tracking-[0.2em]">Nomor Rekening</p>
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-base tracking-[0.15em] text-emerald-50">{user?.rekening || '----'}</span>
                     <button className="p-1 hover:bg-white/10 rounded-lg transition-colors">
-                      <CreditCard size={12} className="text-slate-500" />
+                      <CreditCard size={12} className="text-white/40" />
                     </button>
                   </div>
                 </div>
@@ -115,7 +115,7 @@ export const SiswaDashboard = () => {
               </div>
               
               <div className="space-y-1">
-                <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em]">Saldo Tersedia</p>
+                <p className="text-white/60 text-[10px] font-bold uppercase tracking-[0.2em]">Saldo Tersedia</p>
                 <div className="flex items-baseline gap-1">
                   <span className="text-xl font-medium text-emerald-500">Rp</span>
                   <h2 className="text-3xl lg:text-4xl font-bold tracking-tight">
@@ -127,15 +127,15 @@ export const SiswaDashboard = () => {
               <div className="mt-8 pt-6 border-t border-white/5 flex justify-between items-center">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-                    <User size={16} className="text-slate-400" />
+                    <User size={16} className="text-white/60" />
                   </div>
                   <div>
-                    <p className="text-[9px] text-slate-500 uppercase font-bold tracking-wider">Pemilik Rekening</p>
+                    <p className="text-[9px] text-white/40 uppercase font-bold tracking-wider">Pemilik Rekening</p>
                     <p className="text-[11px] font-bold text-slate-200">{user?.nama || 'Siswa'}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-[9px] text-slate-500 uppercase font-bold tracking-wider">Kelas</p>
+                  <p className="text-[9px] text-white/40 uppercase font-bold tracking-wider">Kelas</p>
                   <p className="text-[11px] font-bold text-slate-200">{user?.kelas || '-'}</p>
                 </div>
               </div>
@@ -162,17 +162,6 @@ export const SiswaDashboard = () => {
                 <span className="text-[9px] lg:text-[10px] font-bold text-slate-600 uppercase tracking-wider">{action.label}</span>
               </Link>
             ))}
-          </div>
-
-          {/* Security Banner */}
-          <div className="bg-emerald-600 rounded-2xl p-5 text-white flex items-center gap-4 shadow-lg shadow-emerald-900/10">
-            <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-              <ShieldCheck size={20} />
-            </div>
-            <div>
-              <p className="font-bold text-xs">Keamanan Terjamin</p>
-              <p className="text-[10px] text-emerald-100 opacity-80 mt-0.5">Transaksi dilindungi enkripsi SIMPIRA.</p>
-            </div>
           </div>
         </div>
 

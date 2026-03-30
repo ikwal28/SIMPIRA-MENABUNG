@@ -40,17 +40,17 @@ export const AboutPage = () => {
             <Cpu size={14} />
             Ditenagai oleh SIMPIRA MENABUNG Engine
           </div>
-          <h1 className="text-4xl lg:text-5xl font-bold tracking-tight text-white">SIMPIRA MENABUNG <span className="text-emerald-500">v{appInfo.version}</span></h1>
-          <p className="text-slate-300 text-lg leading-relaxed max-w-2xl">
+          <h1 className="text-4xl lg:text-5xl font-bold tracking-tight text-white">SIMPIRA MENABUNG <span className="text-emerald-400">v{appInfo.version}</span></h1>
+          <p className="text-white/80 text-lg leading-relaxed max-w-2xl">
             {appInfo.description}
           </p>
           <div className="flex flex-wrap gap-6 pt-4 border-t border-white/10">
             <div>
-              <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Update Terakhir</p>
-              <p className="font-semibold text-slate-200">{appInfo.updateDate}</p>
+              <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest">Update Terakhir</p>
+              <p className="font-semibold text-white/90">{appInfo.updateDate}</p>
             </div>
             <div>
-              <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Status Sistem</p>
+              <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest">Status Sistem</p>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
                 <p className="font-semibold text-emerald-400 text-sm">Operasional</p>
