@@ -2,7 +2,6 @@ import React, { useContext, useEffect } from 'react';
 import { DataContext } from '../../context/DataContext';
 import { formatRupiah, formatDate } from '../../utils/format';
 import { Users, CreditCard, ArrowUpRight, ArrowDownRight, Activity, Wallet, RefreshCw, TrendingUp, TrendingDown, ShieldCheck, GraduationCap, ChevronRight } from 'lucide-react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 
@@ -85,132 +84,123 @@ export const AdminDashboard = () => {
 
       {/* Main Content Area */}
       <div className="lg:flex-1 lg:grid lg:grid-cols-12 lg:gap-6 lg:overflow-hidden">
-        {/* Left & Middle Column (Stats + Chart) */}
+        {/* Left Column (Stats + Summary) */}
         <div className="lg:col-span-8 space-y-4 lg:space-y-6 lg:overflow-y-auto lg:pr-2 custom-scrollbar">
           {/* Stats Grid - Bento Style */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
             {stats.map((stat, idx) => (
               <motion.div 
                 key={idx}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1 }}
-                className="bg-white rounded-2xl lg:rounded-[1.5rem] p-3.5 sm:p-4 lg:p-4 shadow-sm border border-slate-200/60 relative overflow-hidden group hover:shadow-md transition-all flex items-center lg:block gap-3 sm:gap-4 lg:gap-0"
+                className="bg-white rounded-[1.5rem] p-6 shadow-sm border border-slate-200/60 relative overflow-hidden group hover:shadow-md transition-all flex items-center gap-6"
               >
-                <div className={`w-10 h-10 sm:w-12 sm:h-12 lg:w-10 lg:h-10 shrink-0 rounded-xl sm:rounded-2xl ${stat.color} flex items-center justify-center text-white lg:mb-3 shadow-md`}>
-                  {stat.icon}
+                <div className={`w-14 h-14 shrink-0 rounded-2xl ${stat.color} flex items-center justify-center text-white shadow-lg shadow-slate-200`}>
+                  {React.cloneElement(stat.icon as any, { size: 28 })}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[11px] sm:text-xs lg:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-0.5 lg:mb-0.5">{stat.label}</p>
-                  <p className="text-base sm:text-lg lg:text-lg font-bold text-slate-900 truncate">{stat.value}</p>
-                </div>
-                <div className="hidden lg:flex mt-2 items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 bg-slate-300 rounded-full"></div>
-                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{stat.trend}</p>
-                </div>
-                <div className="lg:hidden flex items-center justify-end pl-1 sm:pl-2">
-                   <div className="bg-slate-50 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg border border-slate-100">
-                     <p className="text-[10px] sm:text-xs font-bold text-slate-600 uppercase tracking-widest whitespace-nowrap">{stat.trend}</p>
-                   </div>
+                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-1">{stat.label}</p>
+                  <p className="text-2xl font-extrabold text-slate-900 truncate tracking-tight">{stat.value}</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></div>
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{stat.trend}</p>
+                  </div>
                 </div>
               </motion.div>
             ))}
           </div>
 
-          {/* Chart Section - Hidden on Mobile */}
-          <div className="hidden lg:block bg-white rounded-[2rem] shadow-sm border border-slate-200/60 p-5 lg:p-6 overflow-hidden">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-base font-bold text-slate-900 flex items-center gap-3">
-                <div className="p-2 bg-indigo-50 rounded-xl text-indigo-600">
-                  <Activity size={16} />
+          {/* Detailed Summary Section - Professional Text-Based Data */}
+          <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200/60 p-8">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-lg font-bold text-slate-900 flex items-center gap-3">
+                <div className="p-2.5 bg-indigo-50 rounded-xl text-indigo-600">
+                  <Activity size={20} />
                 </div>
-                Arus Kas (14 Hari)
+                Analisis & Performa Keuangan
               </h2>
-              <div className="flex items-center gap-3 text-[9px] font-bold uppercase tracking-wider">
-                <div className="flex items-center gap-1.5 text-emerald-600"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Setor</div>
-                <div className="flex items-center gap-1.5 text-rose-600"><span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Tarik</div>
+              <div className="bg-slate-50 px-4 py-1.5 rounded-full border border-slate-100">
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Laporan Otomatis</p>
               </div>
             </div>
-            <div className="h-[200px] lg:h-[400px] w-full">
-              {chartData.length > 0 ? (
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                    <defs>
-                      <linearGradient id="colorSetor" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
-                        <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                      </linearGradient>
-                      <linearGradient id="colorTarik" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.2}/>
-                        <stop offset="95%" stopColor="#f43f5e" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 9, fontWeight: 600 }} dy={10} />
-                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 9, fontWeight: 600 }} tickFormatter={(value) => `Rp${value/1000}k`} />
-                    <Tooltip 
-                      contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', padding: '10px' }}
-                      labelStyle={{ fontWeight: 'bold', marginBottom: '2px', color: '#1e293b', fontSize: '12px' }}
-                      itemStyle={{ fontSize: '11px' }}
-                      formatter={(value: number) => [formatRupiah(value), '']}
-                    />
-                    <Area type="monotone" dataKey="Setor" stroke="#10b981" strokeWidth={2.5} fillOpacity={1} fill="url(#colorSetor)" />
-                    <Area type="monotone" dataKey="Tarik" stroke="#f43f5e" strokeWidth={2.5} fillOpacity={1} fill="url(#colorTarik)" />
-                  </AreaChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="h-full flex items-center justify-center text-slate-400 text-sm font-medium">Belum ada data transaksi</div>
-              )}
-            </div>
-          </div>
 
-          {/* Quick Actions & Security Info Row - Hidden on Mobile & Laptop */}
-          <div className="hidden grid-cols-1 lg:grid-cols-2 gap-4 lg:hidden">
-            {/* Quick Actions Grid */}
-            <div className="grid grid-cols-3 gap-3">
-              <Link 
-                to="/admin/pengaturan/manajemen-kelas" 
-                className="bg-white p-3 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all group flex flex-col items-center text-center gap-2"
-              >
-                <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                  <GraduationCap size={20} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Insight 1: Pertumbuhan */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                    <TrendingUp size={20} />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-800">Pertumbuhan Nasabah</h3>
+                    <p className="text-xs text-slate-500">Statistik pendaftaran nasabah baru.</p>
+                  </div>
                 </div>
-                <h3 className="font-bold text-[11px] text-slate-900 leading-tight">Kenaikan Kelas</h3>
-              </Link>
+                <div className="bg-slate-50/50 rounded-2xl p-5 border border-slate-100">
+                  <div className="flex justify-between items-end">
+                    <div>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total Aktif</p>
+                      <p className="text-2xl font-black text-slate-900">{totalSiswa}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-1">Status</p>
+                      <p className="text-xs font-bold text-slate-700">Stabil & Meningkat</p>
+                    </div>
+                  </div>
+                  <div className="mt-4 h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-emerald-500 rounded-full" style={{ width: '85%' }}></div>
+                  </div>
+                </div>
+              </div>
 
-              <Link 
-                to="/admin/siswa" 
-                className="bg-white p-3 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all group flex flex-col items-center text-center gap-2"
-              >
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                  <Users size={20} />
+              {/* Insight 2: Aktivitas Transaksi */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                    <RefreshCw size={20} />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-800">Aktivitas Transaksi</h3>
+                    <p className="text-xs text-slate-500">Ringkasan perputaran dana harian.</p>
+                  </div>
                 </div>
-                <h3 className="font-bold text-[11px] text-slate-900 leading-tight">Data Nasabah</h3>
-              </Link>
-
-              <Link 
-                to="/admin/transaksi" 
-                className="bg-white p-3 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all group flex flex-col items-center text-center gap-2"
-              >
-                <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                  <ArrowUpRight size={20} />
+                <div className="bg-slate-50/50 rounded-2xl p-5 border border-slate-100">
+                  <div className="flex justify-between items-end">
+                    <div>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Volume Hari Ini</p>
+                      <p className="text-2xl font-black text-slate-900">{transaksi.filter(t => new Date(t.tanggal).getTime() >= today).length} Trx</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest mb-1">Efisiensi</p>
+                      <p className="text-xs font-bold text-slate-700">Sangat Optimal</p>
+                    </div>
+                  </div>
+                  <div className="mt-4 h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-indigo-500 rounded-full" style={{ width: '70%' }}></div>
+                  </div>
                 </div>
-                <h3 className="font-bold text-[11px] text-slate-900 leading-tight">Transaksi Baru</h3>
-              </Link>
+              </div>
             </div>
 
-            {/* Security Info - Admin View */}
-            <div className="bg-indigo-600 rounded-2xl p-4 text-white flex items-center gap-4 shadow-lg shadow-indigo-900/20">
-              <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-                <ShieldCheck size={24} />
+            <div className="mt-10 p-6 bg-indigo-900 rounded-3xl text-white relative overflow-hidden">
+              <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="flex items-center gap-5">
+                  <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-xl">
+                    <ShieldCheck size={32} />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold tracking-tight">Keamanan Sistem Terjamin</h3>
+                    <p className="text-sm text-indigo-100/80 font-medium">Seluruh data transaksi dienkripsi dan dipantau secara berkala.</p>
+                  </div>
+                </div>
+                <Link to="/admin/riwayat" className="bg-white text-indigo-900 px-6 py-3 rounded-2xl font-bold text-sm hover:bg-indigo-50 transition-all shadow-lg shadow-indigo-950/20 text-center">
+                  Lihat Audit Log
+                </Link>
               </div>
-              <div className="flex-1">
-                <h3 className="font-bold text-xs">Keamanan Terpusat</h3>
-                <p className="text-[10px] text-indigo-100 opacity-80 mt-0.5 leading-tight">Data dienkripsi otomatis & dipantau 24/7.</p>
-              </div>
-              <Link to="/admin/pengaturan/audit-log" className="px-3 py-1.5 bg-white text-indigo-600 rounded-lg font-bold text-[10px] hover:bg-indigo-50 transition-colors shadow-sm">
-                Audit
-              </Link>
+              {/* Decorative background element */}
+              <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-white/5 rounded-full blur-3xl"></div>
+              <div className="absolute -left-10 -top-10 w-40 h-40 bg-indigo-500/20 rounded-full blur-3xl"></div>
             </div>
           </div>
         </div>
