@@ -8,6 +8,7 @@ export const SiswaLayout = () => {
   const { user, logout } = useContext(AuthContext);
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
 
   if (!user || user.role !== 'siswa') {
     return <Navigate to="/login" replace />;
@@ -32,20 +33,30 @@ export const SiswaLayout = () => {
 
       {/* Sidebar (Desktop & Mobile Drawer) */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-72 bg-slate-900 text-slate-300 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 flex flex-col border-r border-slate-800 ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`fixed inset-y-0 left-0 z-50 bg-slate-900 text-slate-300 transform transition-all duration-300 ease-in-out lg:relative lg:translate-x-0 flex flex-col border-r border-slate-800 ${
+          isSidebarCollapsed ? 'lg:w-20' : 'lg:w-72'
+        } ${
+          isSidebarOpen ? 'translate-x-0 w-72' : '-translate-x-full w-72'
         }`}
       >
-        <div className="flex items-center gap-3 h-20 px-6 shrink-0 border-b border-slate-800">
-          <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center shadow-lg shadow-emerald-500/20">
+        <div className={`flex items-center h-20 px-6 shrink-0 border-b border-slate-800 transition-all duration-300 ${isSidebarCollapsed ? 'justify-center px-0' : 'gap-3'}`}>
+          <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center shadow-lg shadow-emerald-500/20 shrink-0">
             <ShieldCheck size={20} className="text-white" />
           </div>
-          <h1 className="text-xl font-bold tracking-tight text-white">SIMPIRA <span className="text-emerald-400">MENABUNG</span></h1>
+          {!isSidebarCollapsed && (
+            <motion.h1 
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="text-xl font-bold tracking-tight text-white truncate"
+            >
+              SIMPIRA <span className="text-emerald-400">MENABUNG</span>
+            </motion.h1>
+          )}
         </div>
 
-        <div className="px-6 py-6 border-b border-slate-800/50">
-          <div className="flex items-center gap-3 px-2">
-            <div className="w-12 h-12 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-emerald-400 font-bold text-lg shadow-inner overflow-hidden">
+        <div className={`px-6 py-6 border-b border-slate-800/50 transition-all duration-300 ${isSidebarCollapsed ? 'px-4' : ''}`}>
+          <div className={`flex items-center transition-all duration-300 ${isSidebarCollapsed ? 'justify-center' : 'gap-3 px-2'}`}>
+            <div className={`rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-emerald-400 font-bold shadow-inner overflow-hidden shrink-0 transition-all duration-300 ${isSidebarCollapsed ? 'w-10 h-10' : 'w-12 h-12'}`}>
               <img 
                 src="https://api.dicebear.com/7.x/avataaars/svg?seed=modern-user-123" 
                 alt="Avatar" 
@@ -53,15 +64,23 @@ export const SiswaLayout = () => {
                 referrerPolicy="no-referrer"
               />
             </div>
-            <div className="overflow-hidden">
-              <p className="text-sm font-bold text-white truncate">{user?.nama || 'Siswa'}</p>
-              <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Rek: {user?.rekening || '-'}</p>
-            </div>
+            {!isSidebarCollapsed && (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="overflow-hidden"
+              >
+                <p className="text-sm font-bold text-white truncate">{user?.nama || 'Siswa'}</p>
+                <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Rek: {user?.rekening || '-'}</p>
+              </motion.div>
+            )}
           </div>
         </div>
         
-        <div className="px-6 py-4 flex-1 overflow-y-auto custom-scrollbar">
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Menu Nasabah</p>
+        <div className={`py-4 flex-1 overflow-y-auto custom-scrollbar transition-all duration-300 ${isSidebarCollapsed ? 'px-2' : 'px-6'}`}>
+          {!isSidebarCollapsed && (
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4 px-4">Menu Nasabah</p>
+          )}
           <nav className="space-y-1.5 flex-1">
             {navItems.map((item) => {
               const isActive = location.pathname === item.path;
@@ -70,29 +89,43 @@ export const SiswaLayout = () => {
                   key={item.path}
                   to={item.path}
                   onClick={() => setIsSidebarOpen(false)}
-                  className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                  title={isSidebarCollapsed ? item.label : ''}
+                  className={`flex items-center rounded-xl transition-all duration-200 group ${
+                    isSidebarCollapsed ? 'justify-center p-3' : 'space-x-3 px-4 py-3'
+                  } ${
                     isActive
                       ? 'bg-emerald-500/10 text-emerald-400 font-medium'
                       : 'hover:bg-slate-800 hover:text-white'
                   }`}
                 >
-                  <div className={`${isActive ? 'text-emerald-400' : 'text-slate-400'}`}>
+                  <div className={`shrink-0 transition-transform duration-200 group-hover:scale-110 ${isActive ? 'text-emerald-400' : 'text-slate-400'}`}>
                     {item.icon}
                   </div>
-                  <span>{item.label}</span>
+                  {!isSidebarCollapsed && (
+                    <motion.span
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="truncate"
+                    >
+                      {item.label}
+                    </motion.span>
+                  )}
                 </Link>
               );
             })}
           </nav>
         </div>
 
-        <div className="mt-auto p-6 border-t border-slate-800 shrink-0">
+        <div className={`mt-auto p-6 border-t border-slate-800 shrink-0 transition-all duration-300 ${isSidebarCollapsed ? 'p-4' : ''}`}>
           <button
             onClick={logout}
-            className="flex items-center justify-center space-x-2 w-full px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-rose-500/10 hover:text-rose-400 transition-all border border-slate-800 hover:border-rose-500/20"
+            title={isSidebarCollapsed ? 'Keluar Sistem' : ''}
+            className={`flex items-center justify-center rounded-xl text-sm font-bold text-slate-400 hover:bg-rose-500/10 hover:text-rose-400 transition-all border border-slate-800 hover:border-rose-500/20 w-full ${
+              isSidebarCollapsed ? 'p-3' : 'space-x-2 px-4 py-3'
+            }`}
           >
-            <LogOut size={18} />
-            <span>Keluar Sistem</span>
+            <LogOut size={18} className="shrink-0" />
+            {!isSidebarCollapsed && <span>Keluar Sistem</span>}
           </button>
         </div>
       </aside>
@@ -108,15 +141,27 @@ export const SiswaLayout = () => {
             >
               <Menu size={22} />
             </button>
+            <button
+              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+              className="hidden lg:flex p-2 -ml-1 rounded-xl text-slate-500 hover:bg-slate-200 transition-colors"
+              title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+            >
+              <Menu size={22} />
+            </button>
             <div className="flex items-center gap-2 lg:hidden">
               <div className="w-7 h-7 bg-emerald-500 rounded-lg flex items-center justify-center shadow-sm">
                 <ShieldCheck size={16} className="text-white" />
               </div>
               <span className="font-bold text-slate-900 tracking-tight">SIMPIRA <span className="text-emerald-600">MENABUNG</span></span>
             </div>
-            <h2 className="text-xl font-bold text-slate-800 hidden lg:block tracking-tight">
-              {navItems.find(item => item.path === location.pathname)?.label || 'Panel Nasabah'}
-            </h2>
+            <div className="hidden lg:flex flex-col">
+              <h2 className="text-lg font-bold text-slate-800 tracking-tight leading-none">
+                {navItems.find(item => item.path === location.pathname)?.label || 'Panel Nasabah'}
+              </h2>
+              <p className="text-[10px] text-slate-500 font-semibold uppercase tracking-widest mt-1">
+                {location.pathname === '/siswa' ? 'Informasi Rekening & Saldo' : 'Manajemen Akun Nasabah'}
+              </p>
+            </div>
           </div>
           
           <div className="flex items-center space-x-2 lg:space-x-4">
