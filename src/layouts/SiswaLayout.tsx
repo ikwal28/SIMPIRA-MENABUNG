@@ -22,19 +22,19 @@ export const SiswaLayout = () => {
   ];
 
   return (
-    <div className="flex h-screen bg-slate-100 font-sans overflow-hidden">
+    <div className="flex h-screen h-[100dvh] bg-slate-100 font-sans overflow-hidden">
       {/* Sidebar Mobile Overlay */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 lg:hidden"
+          className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 md:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar (Desktop & Mobile Drawer) */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 bg-slate-900 text-slate-300 transform transition-all duration-300 ease-in-out lg:relative lg:translate-x-0 flex flex-col border-r border-slate-800 ${
-          isSidebarCollapsed ? 'lg:w-20' : 'lg:w-72'
+        className={`fixed inset-y-0 left-0 z-50 bg-slate-900 text-slate-300 transform transition-all duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col border-r border-slate-800 ${
+          isSidebarCollapsed ? 'md:w-20' : 'md:w-72'
         } ${
           isSidebarOpen ? 'translate-x-0 w-72' : '-translate-x-full w-72'
         }`}
@@ -133,28 +133,28 @@ export const SiswaLayout = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden relative">
         {/* Header - Mobile Banking Style */}
-        <header className="h-16 lg:h-20 bg-slate-100/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 lg:px-10 z-10 sticky top-0">
+        <header className="h-16 md:h-20 bg-slate-100/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 md:px-10 z-10 sticky top-0">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsSidebarOpen(true)}
-              className="lg:hidden p-2 -ml-1 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors"
+              className="md:hidden p-2 -ml-1 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors"
             >
               <Menu size={22} />
             </button>
             <button
               onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-              className="hidden lg:flex p-2 -ml-1 rounded-xl text-slate-500 hover:bg-slate-200 transition-colors"
+              className="hidden md:flex p-2 -ml-1 rounded-xl text-slate-500 hover:bg-slate-200 transition-colors"
               title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
             >
               <Menu size={22} />
             </button>
-            <div className="flex items-center gap-2 lg:hidden">
+            <div className="flex items-center gap-2 md:hidden">
               <div className="w-7 h-7 bg-emerald-500 rounded-lg flex items-center justify-center shadow-sm">
                 <ShieldCheck size={16} className="text-white" />
               </div>
               <span className="font-bold text-slate-900 tracking-tight">SIMPIRA <span className="text-emerald-600">MENABUNG</span></span>
             </div>
-            <div className="hidden lg:flex flex-col">
+            <div className="hidden md:flex flex-col">
               <h2 className="text-lg font-bold text-slate-800 tracking-tight leading-none">
                 {navItems.find(item => item.path === location.pathname)?.label || 'Panel Nasabah'}
               </h2>
@@ -164,12 +164,12 @@ export const SiswaLayout = () => {
             </div>
           </div>
           
-          <div className="flex items-center space-x-2 lg:space-x-4">
+          <div className="flex items-center space-x-2 md:space-x-4">
             <button className="hidden sm:flex p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-full transition-colors relative">
               <Bell size={20} />
               <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
             </button>
-            <div className="h-6 w-px bg-slate-200 hidden lg:block"></div>
+            <div className="h-6 w-px bg-slate-200 hidden md:block"></div>
             
             <Link to="/siswa/profil" className="flex items-center gap-2 p-1.5 sm:p-2 sm:pr-4 bg-white sm:bg-transparent border border-slate-200 sm:border-transparent rounded-2xl sm:rounded-full transition-all">
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl sm:rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shadow-md shadow-emerald-600/20 overflow-hidden">
@@ -196,7 +196,7 @@ export const SiswaLayout = () => {
           </div>
         </header>
 
-        <main className="flex-1 overflow-x-hidden overflow-y-auto lg:overflow-y-hidden bg-slate-100/50 pb-32 lg:pb-0 p-4 lg:p-6">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto md:overflow-y-hidden bg-slate-100/50 pb-32 md:pb-0 p-4 md:p-6">
           <motion.div
             key={location.pathname}
             initial={{ opacity: 0 }}
@@ -210,7 +210,7 @@ export const SiswaLayout = () => {
         </main>
 
         {/* Bottom Navigation - Mobile Banking Essential */}
-        <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-slate-200 px-4 py-3 flex items-center justify-around z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-slate-200 px-4 py-3 flex items-center justify-around z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
