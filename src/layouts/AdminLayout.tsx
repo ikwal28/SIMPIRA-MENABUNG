@@ -36,12 +36,10 @@ export const AdminLayout = () => {
         />
       )}
 
-      {/* Sidebar (Desktop & Mobile Drawer) */}
+      {/* Sidebar (Mobile Drawer Only) */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 bg-slate-900 text-slate-300 transform transition-all duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col border-r border-slate-800 ${
-          isSidebarCollapsed ? 'md:w-20' : 'md:w-72'
-        } ${
-          isSidebarOpen ? 'translate-x-0 w-72' : '-translate-x-full w-72'
+        className={`fixed inset-y-0 left-0 z-50 bg-slate-900 text-slate-300 transform transition-all duration-300 ease-in-out md:hidden flex flex-col border-r border-slate-800 w-72 ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         <div className={`flex items-center h-20 px-6 shrink-0 border-b border-slate-800 transition-all duration-300 ${isSidebarCollapsed ? 'justify-center px-0' : 'gap-3'}`}>
@@ -137,73 +135,87 @@ export const AdminLayout = () => {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden relative">
-        {/* Header - Mobile Banking Style */}
-        <header className="h-16 md:h-20 bg-slate-100/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 md:px-10 z-10 sticky top-0">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setIsSidebarOpen(true)}
-              className="md:hidden p-2 -ml-1 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors"
-            >
-              <Menu size={22} />
-            </button>
-            <button
-              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-              className="hidden md:flex p-2 -ml-1 rounded-xl text-slate-500 hover:bg-slate-200 transition-colors"
-              title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
-            >
-              <Menu size={22} />
-            </button>
-            <div className="flex items-center gap-2 md:hidden">
-              <div className="w-7 h-7 bg-indigo-500 rounded-lg flex items-center justify-center shadow-sm">
-                <ShieldCheck size={16} className="text-white" />
+        {/* Header - Modern Horizontal Style */}
+        <header className="h-16 md:h-24 bg-white border-b border-slate-200 flex flex-col z-20 sticky top-0 shadow-sm">
+          {/* Top Bar */}
+          <div className="flex-1 flex items-center justify-between px-4 md:px-8 border-b border-slate-100/50 md:border-none">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setIsSidebarOpen(true)}
+                className="md:hidden p-2 -ml-1 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors"
+              >
+                <Menu size={22} />
+              </button>
+              
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-600/20">
+                  <ShieldCheck size={22} className="text-white" />
+                </div>
+                <div className="flex flex-col">
+                  <h1 className="text-lg font-black tracking-tight text-slate-900 leading-none">
+                    SIMPIRA <span className="text-indigo-600">MENABUNG</span>
+                  </h1>
+                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1 hidden md:block">Sistem Informasi Manajemen Perbankan</p>
+                </div>
               </div>
-              <span className="font-bold text-slate-900 tracking-tight">SIMPIRA <span className="text-indigo-600">MENABUNG</span></span>
             </div>
-            <div className="hidden md:flex flex-col">
-              <h2 className="text-lg font-bold text-slate-800 tracking-tight leading-none">
-                {location.pathname.startsWith('/admin/pengaturan') 
-                  ? 'Pengaturan Sistem' 
-                  : navItems.find(item => item.path === location.pathname)?.label || 'Panel Administrator'}
-              </h2>
-              <p className="text-[10px] text-slate-500 font-semibold uppercase tracking-widest mt-1">
-                {location.pathname === '/admin' ? 'Overview & Analytics' : 'Manajemen Data & Keuangan'}
-              </p>
+            
+            <div className="flex items-center space-x-2 md:space-x-4">
+              <div className="hidden md:flex items-center gap-3 px-4 py-2 bg-slate-50 rounded-2xl border border-slate-200">
+                <div className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs overflow-hidden">
+                  <img 
+                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=200&auto=format&fit=crop" 
+                    alt="Avatar" 
+                    className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
+                <div className="text-left">
+                  <p className="text-xs font-bold text-slate-800 leading-none">{user?.nama || 'Admin'}</p>
+                  <p className="text-[9px] text-slate-500 font-bold uppercase tracking-tighter mt-1">Administrator</p>
+                </div>
+              </div>
+
+              <button className="p-2 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all relative">
+                <Bell size={20} />
+                <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
+              </button>
+
+              <button 
+                onClick={logout}
+                className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
+                title="Keluar"
+              >
+                <LogOut size={20} />
+              </button>
             </div>
           </div>
-          
-          <div className="flex items-center space-x-2 md:space-x-4">
-            <button className="hidden sm:flex p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-full transition-colors relative">
-              <Bell size={20} />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
-            </button>
-            <div className="h-6 w-px bg-slate-200 hidden md:block"></div>
-            
-            <div className="flex items-center gap-2 p-1.5 sm:p-2 sm:pr-4 bg-white sm:bg-transparent border border-slate-200 sm:border-transparent rounded-2xl sm:rounded-full transition-all">
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl sm:rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-md shadow-indigo-600/20 overflow-hidden">
-                <img 
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=200&auto=format&fit=crop" 
-                  alt="Avatar" 
-                  className="w-full h-full object-cover"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-              <div className="text-left hidden sm:block">
-                <p className="text-xs font-bold text-slate-800 leading-none">{user?.nama?.split(' ')[0] || 'Admin'}</p>
-                <p className="text-xs text-slate-500 leading-none mt-1 font-medium">Administrator</p>
-              </div>
-            </div>
 
-            <button 
-              onClick={logout}
-              className="flex p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-full transition-colors"
-              title="Keluar"
-            >
-              <LogOut size={20} />
-            </button>
+          {/* Horizontal Navigation - Desktop & Tablet */}
+          <div className="hidden md:flex h-12 bg-white px-8 items-center border-t border-slate-100">
+            <nav className="flex items-center space-x-1 overflow-x-auto no-scrollbar py-1">
+              {navItems.map((item) => {
+                const isActive = location.pathname === item.path || (item.path === '/admin/pengaturan' && location.pathname.startsWith('/admin/pengaturan'));
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+                      isActive
+                        ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20'
+                        : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900'
+                    }`}
+                  >
+                    {React.cloneElement(item.icon as any, { size: 16, strokeWidth: isActive ? 2.5 : 2 })}
+                    <span>{item.label.toUpperCase()}</span>
+                  </Link>
+                );
+              })}
+            </nav>
           </div>
         </header>
 
-        <main className="flex-1 overflow-x-hidden overflow-y-auto md:overflow-y-hidden bg-slate-50/50 pb-32 md:pb-0 p-4 md:p-6">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-slate-50 pb-32 md:pb-8 p-4 md:p-8">
           <motion.div
             key={location.pathname}
             initial={{ opacity: 0 }}
