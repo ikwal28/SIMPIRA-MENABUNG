@@ -94,8 +94,6 @@ export default function App() {
               <Route path="transaksi" element={<AdminTransaksi />} />
               <Route path="riwayat" element={<AdminRiwayat />} />
               <Route path="cetak" element={<AdminCetakRekening />} />
-              <Route path="cetak-kartu" element={<AdminCetakKartu />} />
-              <Route path="form-manual" element={<AdminFormManual />} />
               <Route path="about" element={<AboutPage />} />
               
               {/* Pengaturan Routes */}
@@ -103,6 +101,8 @@ export default function App() {
                 <Route index element={<Navigate to="manajemen-kelas" replace />} />
                 <Route path="manajemen-kelas" element={<AdminManajemenKelas />} />
                 <Route path="audit-log" element={<AdminAuditLog />} />
+                <Route path="cetak-kartu" element={<AdminCetakKartu />} />
+                <Route path="form-manual" element={<AdminFormManual />} />
               </Route>
             </Route>
 

@@ -20,8 +20,6 @@ export const AdminLayout = () => {
     { path: '/admin/transaksi', label: 'Transaksi', icon: <ArrowRightLeft size={20} /> },
     { path: '/admin/riwayat', label: 'Riwayat', icon: <History size={20} /> },
     { path: '/admin/cetak', label: 'Cetak Rekening', icon: <Printer size={20} /> },
-    { path: '/admin/cetak-kartu', label: 'Cetak Kartu', icon: <CreditCard size={20} /> },
-    { path: '/admin/form-manual', label: 'Form Manual', icon: <FileText size={20} /> },
     { path: '/admin/pengaturan', label: 'Pengaturan', icon: <Settings size={20} /> },
     { path: '/admin/about', label: 'Tentang', icon: <Info size={20} /> },
   ];

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Settings, GraduationCap, ShieldCheck, ChevronRight } from 'lucide-react';
+import { Settings, GraduationCap, ShieldCheck, ChevronRight, CreditCard, FileText } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export const AdminPengaturan = () => {
@@ -28,6 +28,28 @@ export const AdminPengaturan = () => {
       bg: 'bg-emerald-50',
       border: 'border-emerald-100',
       activeBg: 'bg-emerald-600',
+    },
+    {
+      id: 'kartu',
+      path: '/admin/pengaturan/cetak-kartu',
+      label: 'Cetak Kartu',
+      description: 'Cetak kartu nasabah digital',
+      icon: <CreditCard size={20} />,
+      color: 'text-amber-600',
+      bg: 'bg-amber-50',
+      border: 'border-amber-100',
+      activeBg: 'bg-amber-600',
+    },
+    {
+      id: 'manual',
+      path: '/admin/pengaturan/form-manual',
+      label: 'Form Manual',
+      description: 'Input data nasabah secara manual',
+      icon: <FileText size={20} />,
+      color: 'text-rose-600',
+      bg: 'bg-rose-50',
+      border: 'border-rose-100',
+      activeBg: 'bg-rose-600',
     }
   ];
 
