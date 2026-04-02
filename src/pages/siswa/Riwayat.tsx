@@ -4,9 +4,9 @@ import { DataContext } from '../../context/DataContext';
 import { formatRupiah, formatDate } from '../../utils/format';
 import { Filter, ArrowUpRight, ArrowDownRight, Calendar, Download, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { createRoot } from 'react-dom/client';
-import { RiwayatTransaksiPDF } from '../../components/RiwayatTransaksiPDF';
 import Swal from 'sweetalert2';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 export const SiswaRiwayat = () => {
   const { user } = useContext(AuthContext);
@@ -47,37 +47,120 @@ export const SiswaRiwayat = () => {
 
     setIsPrinting(true);
     
-    const printWindow = window.open('', '_blank', 'width=800,height=600');
-    if (!printWindow) {
-      Swal.fire('Error', 'Gagal membuka jendela cetak. Pastikan popup diizinkan.', 'error');
-      setIsPrinting(false);
-      return;
-    }
+    try {
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      
+      // Header
+      doc.setFillColor(5, 150, 105); // Emerald 600
+      doc.rect(0, 0, pageWidth, 40, 'F');
+      
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(22);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Laporan Transaksi Nasabah', 15, 20);
+      
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.text('SIMPIRA MENABUNG - SD NEGERI 2 LAOT TADU', 15, 28);
+      
+      doc.setFontSize(8);
+      doc.text(`Dicetak pada: ${formatDate(new Date().toISOString())}`, pageWidth - 15, 20, { align: 'right' });
 
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Laporan Transaksi - ${user?.nama || 'Nasabah'}</title>
-          <style>
-            body { margin: 0; padding: 0; }
-          </style>
-        </head>
-        <body>
-          <div id="root"></div>
-        </body>
-      </html>
-    `);
-    
-    const container = printWindow.document.getElementById('root');
-    if (container) {
-      const root = createRoot(container);
-      root.render(<RiwayatTransaksiPDF user={user} transaksi={myTransaksi} />);
-    }
+      // User Info Box
+      doc.setTextColor(30, 41, 59); // Slate 800
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      doc.text('DATA NASABAH', 15, 50);
+      
+      doc.setDrawColor(226, 232, 240); // Slate 200
+      doc.line(15, 52, pageWidth - 15, 52);
 
-    setTimeout(() => {
-      printWindow.print();
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.text('Nama Nasabah', 15, 60);
+      doc.text('Nomor Rekening', 15, 66);
+      doc.text('Kelas', 15, 72);
+      doc.text('Status Rekening', 15, 78);
+
+      doc.setFont('helvetica', 'bold');
+      doc.text(`: ${user?.nama || '-'}`, 45, 60);
+      doc.text(`: ${user?.rekening || '-'}`, 45, 66);
+      doc.text(`: ${user?.kelas || '-'}`, 45, 72);
+      doc.setTextColor(5, 150, 105);
+      doc.text(`: ${user?.status || 'AKTIF'}`, 45, 78);
+
+      // Table
+      const tableData = myTransaksi.map(trx => [
+        formatDate(trx.tanggal),
+        trx.id_trx,
+        trx.jenis === 'Setor' ? 'SETORAN' : 'PENARIKAN',
+        trx.keterangan || '-',
+        { 
+          content: `${trx.jenis === 'Setor' ? '+' : '-'}${formatRupiah(trx.jumlah)}`,
+          styles: { textColor: trx.jenis === 'Setor' ? [5, 150, 105] : [220, 38, 38] }
+        }
+      ]);
+
+      autoTable(doc, {
+        startY: 85,
+        head: [['Tanggal', 'ID Transaksi', 'Jenis', 'Keterangan', 'Jumlah']],
+        body: tableData,
+        headStyles: { fillColor: [241, 245, 249], textColor: [71, 85, 105], fontStyle: 'bold' },
+        alternateRowStyles: { fillColor: [248, 250, 252] },
+        styles: { fontSize: 8, cellPadding: 3 },
+        columnStyles: {
+          4: { halign: 'right', fontStyle: 'bold' }
+        }
+      });
+
+      // Summary
+      const finalY = (doc as any).lastAutoTable.finalY + 10;
+      const totalSetor = myTransaksi.filter(t => t.jenis === 'Setor').reduce((acc, curr) => acc + (curr.jumlah || 0), 0);
+      const totalTarik = myTransaksi.filter(t => t.jenis === 'Tarik').reduce((acc, curr) => acc + (curr.jumlah || 0), 0);
+
+      doc.setFillColor(248, 250, 252);
+      doc.rect(15, finalY, pageWidth - 30, 25, 'F');
+      doc.setDrawColor(226, 232, 240);
+      doc.rect(15, finalY, pageWidth - 30, 25, 'S');
+
+      doc.setFontSize(8);
+      doc.setTextColor(100, 116, 139);
+      doc.setFont('helvetica', 'normal');
+      doc.text('Total Setoran', 20, finalY + 10);
+      doc.text('Total Penarikan', pageWidth / 2, finalY + 10, { align: 'center' });
+      doc.text('Saldo Akhir', pageWidth - 20, finalY + 10, { align: 'right' });
+
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(5, 150, 105);
+      doc.text(formatRupiah(totalSetor), 20, finalY + 18);
+      doc.setTextColor(220, 38, 38);
+      doc.text(formatRupiah(totalTarik), pageWidth / 2, finalY + 18, { align: 'center' });
+      doc.setTextColor(15, 23, 42);
+      doc.text(formatRupiah(user?.saldo || 0), pageWidth - 20, finalY + 18, { align: 'right' });
+
+      // Footer
+      doc.setFontSize(7);
+      doc.setTextColor(148, 163, 184);
+      doc.text('Dokumen ini dihasilkan secara otomatis oleh Sistem Informasi Tabungan Siswa (SIMPIRA).', pageWidth / 2, pageWidth > 200 ? 285 : 275, { align: 'center' });
+      doc.text('© 2026 SD NEGERI 2 LAOT TADU - SIMPIRA MENABUNG', pageWidth / 2, pageWidth > 200 ? 290 : 280, { align: 'center' });
+
+      doc.save(`Laporan_Transaksi_${user?.nama?.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`);
+      
+      Swal.fire({
+        title: 'Berhasil',
+        text: 'Laporan transaksi berhasil diunduh.',
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false
+      });
+    } catch (error) {
+      console.error('PDF Generation Error:', error);
+      Swal.fire('Error', 'Gagal menghasilkan PDF. Silakan coba lagi.', 'error');
+    } finally {
       setIsPrinting(false);
-    }, 1000);
+    }
   };
 
   return (
