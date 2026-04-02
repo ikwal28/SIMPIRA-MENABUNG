@@ -2,8 +2,11 @@ import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { DataContext } from '../../context/DataContext';
 import { formatRupiah, formatDate } from '../../utils/format';
-import { Filter, ArrowUpRight, ArrowDownRight, Calendar, Download } from 'lucide-react';
+import { Filter, ArrowUpRight, ArrowDownRight, Calendar, Download, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { createRoot } from 'react-dom/client';
+import { RiwayatTransaksiPDF } from '../../components/RiwayatTransaksiPDF';
+import Swal from 'sweetalert2';
 
 export const SiswaRiwayat = () => {
   const { user } = useContext(AuthContext);
@@ -11,6 +14,7 @@ export const SiswaRiwayat = () => {
   const [filterJenis, setFilterJenis] = useState('Semua');
   const [filterTanggal, setFilterTanggal] = useState('');
   const [offset, setOffset] = useState(0);
+  const [isPrinting, setIsPrinting] = useState(false);
   const LIMIT_PER_PAGE = 50;
 
   useEffect(() => {
@@ -35,6 +39,47 @@ export const SiswaRiwayat = () => {
     return matchJenis && matchTanggal;
   });
 
+  const handleDownload = () => {
+    if (myTransaksi.length === 0) {
+      Swal.fire('Info', 'Tidak ada transaksi untuk diunduh.', 'info');
+      return;
+    }
+
+    setIsPrinting(true);
+    
+    const printWindow = window.open('', '_blank', 'width=800,height=600');
+    if (!printWindow) {
+      Swal.fire('Error', 'Gagal membuka jendela cetak. Pastikan popup diizinkan.', 'error');
+      setIsPrinting(false);
+      return;
+    }
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Laporan Transaksi - ${user?.nama || 'Nasabah'}</title>
+          <style>
+            body { margin: 0; padding: 0; }
+          </style>
+        </head>
+        <body>
+          <div id="root"></div>
+        </body>
+      </html>
+    `);
+    
+    const container = printWindow.document.getElementById('root');
+    if (container) {
+      const root = createRoot(container);
+      root.render(<RiwayatTransaksiPDF user={user} transaksi={myTransaksi} />);
+    }
+
+    setTimeout(() => {
+      printWindow.print();
+      setIsPrinting(false);
+    }, 1000);
+  };
+
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
@@ -42,9 +87,13 @@ export const SiswaRiwayat = () => {
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Mutasi Rekening SIMPIRA MENABUNG</h1>
           <p className="text-slate-500 mt-1">Riwayat lengkap transaksi tabungan Anda secara transparan.</p>
         </div>
-        <button className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-sm font-medium">
-          <Download size={18} />
-          Unduh Laporan
+        <button 
+          onClick={handleDownload}
+          disabled={isPrinting}
+          className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-sm font-medium disabled:opacity-50"
+        >
+          {isPrinting ? <Loader2 size={18} className="animate-spin" /> : <Download size={18} />}
+          Unduh Semua Transaksi
         </button>
       </div>
 
