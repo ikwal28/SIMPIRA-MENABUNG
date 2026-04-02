@@ -21,9 +21,9 @@ export default defineConfig(({mode}) => {
           globPatterns: ['**/*.{js,css,html,ico,png,svg,json}']
         },
         manifest: {
-          name: 'SIMPIRA MENABUNG v3.2.1',
-          short_name: 'SIMPIRA v3.2.1',
-          description: 'Simpanan Pintar Rajin Menabung - Platform Perbankan Sekolah Modern v3.2.1',
+          name: 'SIMPIRA MENABUNG v3.2.3',
+          short_name: 'SIMPIRA v3.2.3',
+          description: 'Simpanan Pintar Rajin Menabung - Platform Perbankan Sekolah Modern v3.2.3',
           theme_color: '#4f46e5',
           background_color: '#ffffff',
           display: 'standalone',

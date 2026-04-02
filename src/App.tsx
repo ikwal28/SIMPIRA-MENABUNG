@@ -40,7 +40,7 @@ export default function App() {
 
   useEffect(() => {
     try {
-      const CURRENT_VERSION = '3.2.2';
+      const CURRENT_VERSION = '3.2.3';
       const savedVersion = localStorage.getItem('app_version');
       if (savedVersion && savedVersion !== CURRENT_VERSION) {
         localStorage.setItem('app_version', CURRENT_VERSION);
