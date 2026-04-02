@@ -114,8 +114,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
       
       const avatarUrl = response.role === 'admin' 
-        ? "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=200&auto=format&fit=crop"
-        : "https://api.dicebear.com/7.x/avataaars/svg?seed=modern-user-123";
+        ? "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+        : "https://api.dicebear.com/7.x/icons/svg?seed=graduation-cap";
 
       Swal.fire({
         title: 'Berhasil Masuk',
@@ -160,8 +160,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = async () => {
     const avatarUrl = user?.role === 'admin' 
-      ? "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=200&auto=format&fit=crop"
-      : "https://api.dicebear.com/7.x/avataaars/svg?seed=modern-user-123";
+      ? "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+      : "https://api.dicebear.com/7.x/icons/svg?seed=graduation-cap";
 
     const result = await Swal.fire({
       title: 'Konfirmasi Keluar',

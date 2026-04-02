@@ -56,9 +56,9 @@ export const SiswaLayout = () => {
           <div className={`flex items-center transition-all duration-300 ${isSidebarCollapsed ? 'justify-center' : 'gap-3 px-2'}`}>
             <div className={`rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-emerald-400 font-bold shadow-inner overflow-hidden shrink-0 transition-all duration-300 ${isSidebarCollapsed ? 'w-10 h-10' : 'w-12 h-12'}`}>
               <img 
-                src="https://api.dicebear.com/7.x/avataaars/svg?seed=modern-user-123" 
+                src="https://api.dicebear.com/7.x/icons/svg?seed=graduation-cap" 
                 alt="Avatar" 
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover p-1"
                 referrerPolicy="no-referrer"
               />
             </div>
@@ -159,9 +159,9 @@ export const SiswaLayout = () => {
               <Link to="/siswa/profil" className="hidden md:flex items-center gap-3 px-4 py-2 bg-slate-50 rounded-2xl border border-slate-200 hover:bg-slate-100 transition-all">
                 <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs overflow-hidden">
                   <img 
-                    src="https://api.dicebear.com/7.x/avataaars/svg?seed=modern-user-123" 
+                    src="https://api.dicebear.com/7.x/icons/svg?seed=graduation-cap" 
                     alt="Avatar" 
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover p-1"
                     referrerPolicy="no-referrer"
                   />
                 </div>
