@@ -132,7 +132,7 @@ export const KartuTabunganPDF = ({ siswa }: { siswa: any[] }) => {
               <div className="space-y-2">
                 <div className="instruction-item">
                   <div className="step-num">1</div>
-                  <div>Buka browser di HP/Laptop dan akses alamat URL aplikasi SIMPIRA.</div>
+                  <div>Buka browser di HP/Laptop dan akses alamat URL <b>simpira.my.id</b></div>
                 </div>
                 <div className="instruction-item">
                   <div className="step-num">2</div>
