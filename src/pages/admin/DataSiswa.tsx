@@ -12,6 +12,7 @@ export const AdminDataSiswa = () => {
   const [editingSiswa, setEditingSiswa] = useState<any>(null);
   const [nipd, setNipd] = useState('');
   const [selectedKelas, setSelectedKelas] = useState('Semua');
+  const [selectedStatus, setSelectedStatus] = useState('Semua');
   const [limit, setLimit] = useState(50);
   const NO_INSTANSI = '10104711';
 
@@ -35,12 +36,16 @@ export const AdminDataSiswa = () => {
   const filteredSiswa = siswa.filter((s: any) => {
     const name = String(s.nama || '');
     const kelas = String(s.kelas || '');
+    const status = String(s.status || 'AKTIF').toUpperCase();
     const search = String(searchTerm || '').toLowerCase();
 
-    return (selectedKelas === 'Semua' || s.kelas === selectedKelas) &&
-      (name.toLowerCase().includes(search) ||
-       String(s.rekening || '').includes(searchTerm) ||
-       kelas.toLowerCase().includes(search));
+    const matchesKelas = selectedKelas === 'Semua' || kelas === selectedKelas;
+    const matchesStatus = selectedStatus === 'Semua' || status === selectedStatus;
+    const matchesSearch = name.toLowerCase().includes(search) ||
+                         String(s.rekening || '').includes(searchTerm) ||
+                         kelas.toLowerCase().includes(search);
+
+    return matchesKelas && matchesStatus && matchesSearch;
   });
 
 
@@ -116,15 +121,16 @@ export const AdminDataSiswa = () => {
 
   const handleEdit = (s: any) => {
     setEditingSiswa(s);
-    const currentNipd = s.rekening.endsWith(NO_INSTANSI) 
-      ? s.rekening.slice(0, -NO_INSTANSI.length) 
-      : s.rekening;
+    const rekStr = String(s.rekening || '');
+    const currentNipd = rekStr.endsWith(NO_INSTANSI) 
+      ? rekStr.slice(0, -NO_INSTANSI.length) 
+      : rekStr;
     setNipd(currentNipd);
     setFormData({
-      rekening: s.rekening,
-      nama: s.nama,
-      kelas: s.kelas,
-      username: s.username,
+      rekening: rekStr,
+      nama: s.nama || '',
+      kelas: s.kelas || '',
+      username: s.username || '',
       password: '',
       status: s.status || 'AKTIF'
     });
@@ -199,16 +205,40 @@ export const AdminDataSiswa = () => {
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden">
-        <div className="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="relative w-full sm:w-96">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-            <input
-              type="text"
-              placeholder="Cari berdasarkan nama, rekening, atau kelas..."
-              className="w-full pl-11 pr-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow text-sm"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+        <div className="p-6 border-b border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
+            <div className="relative w-full sm:w-80">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+              <input
+                type="text"
+                placeholder="Cari nama, rekening..."
+                className="w-full pl-11 pr-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow text-sm"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <select
+                className="flex-1 sm:w-32 px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
+                value={selectedKelas}
+                onChange={(e) => setSelectedKelas(e.target.value)}
+              >
+                <option value="Semua">Semua Kelas</option>
+                {[1, 2, 3, 4, 5, 6].map(num => (
+                  <option key={num} value={num.toString()}>Kelas {num}</option>
+                ))}
+              </select>
+              <select
+                className="flex-1 sm:w-32 px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+              >
+                <option value="Semua">Semua Status</option>
+                <option value="AKTIF">AKTIF</option>
+                <option value="TIDAK AKTIF">NON-AKTIF</option>
+                <option value="LULUS">LULUS</option>
+              </select>
+            </div>
           </div>
           {isLoadingData && (
             <span className="text-sm font-medium text-indigo-600 flex items-center gap-2 bg-indigo-50 px-3 py-1.5 rounded-full">
