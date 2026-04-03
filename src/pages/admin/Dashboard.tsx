@@ -17,6 +17,21 @@ export const AdminDashboard = () => {
   const totalSaldo = dashboardStats.totalSaldo || 0;
   const totalSiswa = dashboardStats.totalSiswa || 0;
   
+  const nasabahAktif = siswa.filter((s: any) => s.status === 'AKTIF' || !s.status).length;
+  
+  const statsPerKelas = siswa.reduce((acc: any, s: any) => {
+    const kelas = s.kelas || 'N/A';
+    const saldo = parseFloat(s.saldo) || 0;
+    const isAktif = s.status === 'AKTIF' || !s.status;
+    
+    if (!acc[kelas]) acc[kelas] = { saldo: 0, aktif: 0 };
+    acc[kelas].saldo += saldo;
+    if (isAktif) acc[kelas].aktif += 1;
+    return acc;
+  }, {});
+
+  const sortedKelas = Object.keys(statsPerKelas).sort((a, b) => a.localeCompare(b));
+
   // Calculate daily and monthly totals from transaction list
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
@@ -52,6 +67,7 @@ export const AdminDashboard = () => {
   const stats = [
     { label: 'Total Saldo', value: formatRupiah(totalSaldo), icon: <Wallet size={20} />, color: 'bg-indigo-500', trend: 'Sistem Aktif' },
     { label: 'Total Nasabah', value: `${totalSiswa} Siswa`, icon: <Users size={20} />, color: 'bg-sky-500', trend: 'Terdaftar' },
+    { label: 'Nasabah Aktif', value: `${nasabahAktif} Siswa`, icon: <Activity size={20} />, color: 'bg-emerald-500', trend: 'Status Aktif' },
     { label: 'Total Setoran Harian', value: formatRupiah(totalSetorHarian), icon: <TrendingUp size={20} />, color: 'bg-emerald-500', trend: 'Hari Ini' },
     { label: 'Total Setoran Bulanan', value: formatRupiah(totalSetorBulanan), icon: <TrendingUp size={20} />, color: 'bg-amber-500', trend: 'Bulan Ini' },
   ];
@@ -87,7 +103,7 @@ export const AdminDashboard = () => {
         {/* Left Column (Stats + Summary) */}
         <div className="lg:col-span-8 space-y-4 lg:space-y-6 lg:overflow-y-auto lg:pr-2 custom-scrollbar">
           {/* Stats Grid - Bento Style */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
             {stats.map((stat, idx) => (
               <motion.div 
                 key={idx}
@@ -111,96 +127,77 @@ export const AdminDashboard = () => {
             ))}
           </div>
 
-          {/* Detailed Summary Section - Professional Text-Based Data */}
-          <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200/60 p-8">
-            <div className="flex items-center justify-between mb-8">
+          {/* Detailed Summary Section - Table Style for Class Stats */}
+          <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200/60 overflow-hidden">
+            <div className="p-8 border-b border-slate-50 flex items-center justify-between">
               <h2 className="text-lg font-bold text-slate-900 flex items-center gap-3">
                 <div className="p-2.5 bg-indigo-50 rounded-xl text-indigo-600">
-                  <Activity size={20} />
+                  <GraduationCap size={20} />
                 </div>
-                Analisis & Performa Keuangan
+                Statistik Per Kelas
               </h2>
               <div className="bg-slate-50 px-4 py-1.5 rounded-full border border-slate-100">
-                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Laporan Otomatis</p>
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Data Real-time</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Insight 1: Pertumbuhan */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                    <TrendingUp size={20} />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-bold text-slate-800">Pertumbuhan Nasabah</h3>
-                    <p className="text-xs text-slate-500">Statistik pendaftaran nasabah baru.</p>
-                  </div>
-                </div>
-                <div className="bg-slate-50/50 rounded-2xl p-5 border border-slate-100">
-                  <div className="flex justify-between items-end">
-                    <div>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total Aktif</p>
-                      <p className="text-2xl font-black text-slate-900">{totalSiswa}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-1">Status</p>
-                      <p className="text-xs font-bold text-slate-700">Stabil & Meningkat</p>
-                    </div>
-                  </div>
-                  <div className="mt-4 h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
-                    <div className="h-full bg-emerald-500 rounded-full" style={{ width: '85%' }}></div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Insight 2: Aktivitas Transaksi */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-                    <RefreshCw size={20} />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-bold text-slate-800">Aktivitas Transaksi</h3>
-                    <p className="text-xs text-slate-500">Ringkasan perputaran dana harian.</p>
-                  </div>
-                </div>
-                <div className="bg-slate-50/50 rounded-2xl p-5 border border-slate-100">
-                  <div className="flex justify-between items-end">
-                    <div>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Volume Hari Ini</p>
-                      <p className="text-2xl font-black text-slate-900">{transaksi.filter(t => new Date(t.tanggal).getTime() >= today).length} Trx</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest mb-1">Efisiensi</p>
-                      <p className="text-xs font-bold text-slate-700">Sangat Optimal</p>
-                    </div>
-                  </div>
-                  <div className="mt-4 h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
-                    <div className="h-full bg-indigo-500 rounded-full" style={{ width: '70%' }}></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-10 p-6 bg-indigo-900 rounded-3xl text-white relative overflow-hidden">
-              <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div className="flex items-center gap-5">
-                  <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-xl">
-                    <ShieldCheck size={32} />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold tracking-tight">Keamanan Sistem Terjamin</h3>
-                    <p className="text-sm text-indigo-100/80 font-medium">Seluruh data transaksi dienkripsi dan dipantau secara berkala.</p>
-                  </div>
-                </div>
-                <Link to="/admin/riwayat" className="bg-white text-indigo-900 px-6 py-3 rounded-2xl font-bold text-sm hover:bg-indigo-50 transition-all shadow-lg shadow-indigo-950/20 text-center">
-                  Lihat Audit Log
-                </Link>
-              </div>
-              {/* Decorative background element */}
-              <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-white/5 rounded-full blur-3xl"></div>
-              <div className="absolute -left-10 -top-10 w-40 h-40 bg-indigo-500/20 rounded-full blur-3xl"></div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-slate-50/50 text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+                    <th className="px-8 py-4">Kelas</th>
+                    <th className="px-8 py-4 text-center">Nasabah Aktif</th>
+                    <th className="px-8 py-4 text-right">Total Saldo</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {sortedKelas.map((kelas, idx) => (
+                    <motion.tr
+                      key={kelas}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.05 }}
+                      className="hover:bg-slate-50/50 transition-colors group"
+                    >
+                      <td className="px-8 py-5">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs">
+                            {kelas}
+                          </div>
+                          <span className="font-bold text-slate-700">Kelas {kelas}</span>
+                        </div>
+                      </td>
+                      <td className="px-8 py-5 text-center">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700">
+                          {statsPerKelas[kelas].aktif} Nasabah
+                        </span>
+                      </td>
+                      <td className="px-8 py-5 text-right">
+                        <span className="font-mono font-bold text-slate-900">
+                          {formatRupiah(statsPerKelas[kelas].saldo)}
+                        </span>
+                      </td>
+                    </motion.tr>
+                  ))}
+                  {sortedKelas.length === 0 && (
+                    <tr>
+                      <td colSpan={3} className="px-8 py-12 text-center text-slate-400">
+                        <Activity size={32} className="mx-auto mb-3 opacity-20" />
+                        <p className="text-sm font-medium">Belum ada data kelas</p>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+                {sortedKelas.length > 0 && (
+                  <tfoot>
+                    <tr className="bg-slate-50/30 font-bold text-slate-900 border-t border-slate-100">
+                      <td className="px-8 py-4 text-xs uppercase tracking-wider text-slate-500">Total Keseluruhan</td>
+                      <td className="px-8 py-4 text-center text-sm">{nasabahAktif} Nasabah</td>
+                      <td className="px-8 py-4 text-right text-indigo-600 font-mono">{formatRupiah(totalSaldo)}</td>
+                    </tr>
+                  </tfoot>
+                )}
+              </table>
             </div>
           </div>
         </div>
