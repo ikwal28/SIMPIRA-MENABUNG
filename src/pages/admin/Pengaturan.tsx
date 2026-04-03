@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Settings, GraduationCap, ShieldCheck, ChevronRight, CreditCard, FileText } from 'lucide-react';
+import { Settings, GraduationCap, ShieldCheck, ChevronRight, CreditCard, FileText, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export const AdminPengaturan = () => {
@@ -50,6 +50,17 @@ export const AdminPengaturan = () => {
       bg: 'bg-rose-50',
       border: 'border-rose-100',
       activeBg: 'bg-rose-600',
+    },
+    {
+      id: 'maintenance',
+      path: '/admin/pengaturan/maintenance',
+      label: 'Pemeliharaan',
+      description: 'Sinkronisasi saldo dan audit data',
+      icon: <RefreshCw size={20} />,
+      color: 'text-slate-600',
+      bg: 'bg-slate-100',
+      border: 'border-slate-200',
+      activeBg: 'bg-slate-800',
     }
   ];
 

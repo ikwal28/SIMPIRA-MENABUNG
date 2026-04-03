@@ -20,6 +20,7 @@ import { AdminPengaturan } from './pages/admin/Pengaturan';
 import { AdminCetakRekening } from './pages/admin/CetakRekening';
 import { AdminCetakKartu } from './pages/admin/CetakKartu';
 import { AdminFormManual } from './pages/admin/FormManual';
+import { AdminMaintenance } from './pages/admin/Maintenance';
 import { AboutPage } from './pages/About';
 import { SiswaLayout } from './layouts/SiswaLayout';
 import { SiswaDashboard } from './pages/siswa/Dashboard';
@@ -103,6 +104,7 @@ export default function App() {
                 <Route path="audit-log" element={<AdminAuditLog />} />
                 <Route path="cetak-kartu" element={<AdminCetakKartu />} />
                 <Route path="form-manual" element={<AdminFormManual />} />
+                <Route path="maintenance" element={<AdminMaintenance />} />
               </Route>
             </Route>
 
