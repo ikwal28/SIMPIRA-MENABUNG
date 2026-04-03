@@ -1,12 +1,13 @@
 import React, { useContext, useState } from 'react';
 import { DataContext } from '../../context/DataContext';
+import { apiCall } from '../../services/api';
 import { formatRupiah } from '../../utils/format';
 import { RefreshCw, AlertTriangle, CheckCircle2, ShieldAlert, Database, ArrowRight } from 'lucide-react';
 import { motion } from 'motion/react';
 import Swal from 'sweetalert2';
 
 export const AdminMaintenance = () => {
-  const { siswa, transaksi, fetchSiswa, fetchTransaksi, bulkUpdateSiswa, isLoadingData } = useContext(DataContext);
+  const { siswa, transaksi, fetchSiswa, fetchTransaksi, bulkUpdateSiswa, isLoadingData, refreshAll } = useContext(DataContext);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [discrepancies, setDiscrepancies] = useState<any[]>([]);
   const [isFixed, setIsFixed] = useState(false);
@@ -72,30 +73,33 @@ export const AdminMaintenance = () => {
   };
 
   const fixDiscrepancies = async () => {
-    if (discrepancies.length === 0) return;
-
     const confirm = await Swal.fire({
-      title: 'Perbaiki Selisih Saldo?',
-      text: `Sistem akan memperbarui saldo ${discrepancies.length} nasabah agar sesuai dengan riwayat transaksi mereka.`,
+      title: 'Sinkronisasi Saldo?',
+      text: `Sistem akan menghitung ulang seluruh saldo nasabah berdasarkan riwayat transaksi di server.`,
       icon: 'question',
       showCancelButton: true,
-      confirmButtonText: 'Ya, Perbaiki Sekarang',
+      confirmButtonText: 'Ya, Sinkronkan Sekarang',
       cancelButtonText: 'Batal',
       confirmButtonColor: '#4f46e5'
     });
 
     if (!confirm.isConfirmed) return;
 
-    const updates = discrepancies.map(d => ({
-      rekening: d.rekening,
-      saldo: d.calculatedSaldo
-    }));
-
-    const success = await bulkUpdateSiswa(updates);
-    if (success) {
-      setIsFixed(true);
-      setDiscrepancies([]);
-      Swal.fire('Berhasil', 'Saldo nasabah telah disinkronkan dengan riwayat transaksi.', 'success');
+    setIsAnalyzing(true);
+    try {
+      const res = await apiCall({ action: 'syncAllBalances' });
+      if (res.status === 'success') {
+        setIsFixed(true);
+        setDiscrepancies([]);
+        await refreshAll();
+        Swal.fire('Berhasil', res.message, 'success');
+      } else {
+        throw new Error(res.message);
+      }
+    } catch (error: any) {
+      Swal.fire('Gagal', 'Gagal sinkronisasi: ' + error.message, 'error');
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 

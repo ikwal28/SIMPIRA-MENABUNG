@@ -110,6 +110,8 @@ function doPost(e) {
       result = deleteTransaksi(data.idTrx || data.id);
     } else if (action === "logAudit") {
       result = logAudit(data.admin, data.aksi, data.detail);
+    } else if (action === "syncAllBalances") {
+      result = syncAllBalances();
     } else {
       result = { status: "error", message: "Action '" + action + "' not found." };
     }
@@ -570,4 +572,68 @@ function logAudit(admin, aksi, detail) {
     return { status: "success" };
   }
   return { status: "error" };
+}
+
+/**
+ * Sinkronisasi seluruh saldo siswa berdasarkan akumulasi transaksi
+ */
+function syncAllBalances() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const siswaSheet = ss.getSheetByName("Siswa");
+  const transSheet = ss.getSheetByName("Transaksi");
+  
+  if (!siswaSheet || !transSheet) {
+    return { status: "error", message: "Sheet Siswa atau Transaksi tidak ditemukan" };
+  }
+  
+  const sData = siswaSheet.getDataRange().getValues();
+  const tData = transSheet.getDataRange().getValues();
+  
+  if (sData.length <= 1) return { status: "success", message: "Tidak ada data siswa", updated: 0 };
+  
+  const sHeaders = sData[0];
+  const rekIdx = sHeaders.findIndex(h => safeString(h) === "rekening");
+  const saldoIdx = sHeaders.findIndex(h => safeString(h) === "saldo");
+  
+  const tHeaders = tData[0];
+  const tRekIdx = tHeaders.findIndex(h => safeString(h) === "rekening");
+  const tJenisIdx = tHeaders.findIndex(h => safeString(h) === "jenis" || safeString(h) === "tipe");
+  const tJumlahIdx = tHeaders.findIndex(h => safeString(h) === "jumlah");
+  
+  // Map untuk menyimpan akumulasi saldo per rekening
+  const balanceMap = {};
+  
+  // Hitung akumulasi dari transaksi
+  for (let i = 1; i < tData.length; i++) {
+    const rek = String(tData[i][tRekIdx]);
+    const jenis = safeString(tData[i][tJenisIdx]);
+    const jumlah = Number(tData[i][tJumlahIdx]) || 0;
+    
+    if (!balanceMap[rek]) balanceMap[rek] = 0;
+    
+    if (jenis === "setor" || jenis === "setoran") {
+      balanceMap[rek] += jumlah;
+    } else if (jenis === "tarik" || jenis === "penarikan") {
+      balanceMap[rek] -= jumlah;
+    }
+  }
+  
+  let updatedCount = 0;
+  // Update saldo di sheet Siswa
+  for (let i = 1; i < sData.length; i++) {
+    const rek = String(sData[i][rekIdx]);
+    const calculatedSaldo = balanceMap[rek] || 0;
+    const currentSaldo = Number(sData[i][saldoIdx]) || 0;
+    
+    if (calculatedSaldo !== currentSaldo) {
+      siswaSheet.getRange(i + 1, saldoIdx + 1).setValue(calculatedSaldo);
+      updatedCount++;
+    }
+  }
+  
+  return { 
+    status: "success", 
+    message: "Sinkronisasi selesai. " + updatedCount + " saldo nasabah diperbarui.",
+    updated: updatedCount
+  };
 }
