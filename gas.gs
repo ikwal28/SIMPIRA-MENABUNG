@@ -330,6 +330,24 @@ function addSiswaV2(siswa) {
     return { status: "error", message: "Nomor rekening wajib diisi" };
   }
 
+  // Check for duplicate rekening
+  const data = sheet.getDataRange().getValues();
+  const headersData = data[0];
+  const rekIdx = headersData.findIndex(h => safeString(h) === "rekening");
+  const namaIdx = headersData.findIndex(h => safeString(h) === "nama");
+  const kelasIdx = headersData.findIndex(h => safeString(h) === "kelas");
+  
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][rekIdx]) === String(normalizedSiswa.rekening)) {
+      const existingNama = data[i][namaIdx];
+      const existingKelas = data[i][kelasIdx];
+      return { 
+        status: "error", 
+        message: "Nomor rekening sudah digunakan oleh nasabah lain: " + existingNama + " (Rek: " + normalizedSiswa.rekening + ", Kelas: " + existingKelas + ")" 
+      };
+    }
+  }
+
   const newRow = headers.map(h => {
     const key = safeString(h);
     return normalizedSiswa[key] !== undefined ? normalizedSiswa[key] : "";
@@ -353,6 +371,24 @@ function updateSiswaV2(rekening, updates) {
       Object.keys(updates).forEach(k => {
         normalizedUpdates[safeString(k)] = updates[k];
       });
+
+      // If rekening is being updated, check if the new rekening already exists
+      if (normalizedUpdates.rekening && String(normalizedUpdates.rekening) !== String(rekening)) {
+        const newRek = String(normalizedUpdates.rekening);
+        const namaIdx = headers.findIndex(h => safeString(h) === "nama");
+        const kelasIdx = headers.findIndex(h => safeString(h) === "kelas");
+        
+        for (let j = 1; j < data.length; j++) {
+          if (String(data[j][rekIdx]) === newRek) {
+            const existingNama = data[j][namaIdx];
+            const existingKelas = data[j][kelasIdx];
+            return { 
+              status: "error", 
+              message: "Nomor rekening sudah digunakan oleh nasabah lain: " + existingNama + " (Rek: " + newRek + ", Kelas: " + existingKelas + ")" 
+            };
+          }
+        }
+      }
 
       headers.forEach((h, idx) => {
         const key = safeString(h);
