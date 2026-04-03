@@ -26,6 +26,9 @@ export const AdminFormManual = () => {
 
   const filteredSiswa = useMemo(() => {
     return siswa.filter((s: any) => {
+      // Filter out TIDAK AKTIF students
+      if (s.status === 'TIDAK AKTIF') return false;
+
       const sKelas = String(s.kelas || '').trim();
       const matchKelas = selectedKelas === 'Semua' || sKelas === selectedKelas;
       const name = String(s.nama || '');

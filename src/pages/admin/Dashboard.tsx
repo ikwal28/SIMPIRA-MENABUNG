@@ -102,14 +102,57 @@ export const AdminDashboard = () => {
       <div className="lg:flex-1 lg:grid lg:grid-cols-12 lg:gap-6 lg:overflow-hidden">
         {/* Left Column (Stats + Summary) */}
         <div className="lg:col-span-8 space-y-4 lg:space-y-6 lg:overflow-y-auto lg:pr-2 custom-scrollbar">
-          {/* Stats Grid - Bento Style */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-            {stats.map((stat, idx) => (
+          
+          {/* Row 1: Total Saldo (Large & Clear) */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-indigo-600 rounded-[2rem] p-8 shadow-xl shadow-indigo-200 relative overflow-hidden text-white"
+          >
+            <div className="relative z-10">
+              <p className="text-indigo-100 text-xs font-bold uppercase tracking-[0.2em] mb-2">Total Saldo Keseluruhan</p>
+              <h2 className="text-4xl lg:text-5xl font-black tracking-tight">{formatRupiah(totalSaldo)}</h2>
+              <div className="flex items-center gap-2 mt-4">
+                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                <p className="text-indigo-100 text-xs font-bold uppercase tracking-widest">Sistem Aktif & Terpantau</p>
+              </div>
+            </div>
+            <Wallet className="absolute right-[-20px] bottom-[-20px] text-white/10 w-48 h-48 -rotate-12" />
+          </motion.div>
+
+          {/* Row 2: Total Nasabah & Nasabah Aktif */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {[stats[1], stats[2]].map((stat, idx) => (
               <motion.div 
                 key={idx}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
+                transition={{ delay: 0.1 + idx * 0.1 }}
+                className="bg-white rounded-[1.5rem] p-6 shadow-sm border border-slate-200/60 relative overflow-hidden group hover:shadow-md transition-all flex items-center gap-6"
+              >
+                <div className={`w-14 h-14 shrink-0 rounded-2xl ${stat.color} flex items-center justify-center text-white shadow-lg shadow-slate-200`}>
+                  {React.cloneElement(stat.icon as any, { size: 28 })}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-1">{stat.label}</p>
+                  <p className="text-2xl font-extrabold text-slate-900 truncate tracking-tight">{stat.value}</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></div>
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{stat.trend}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Row 3: Total Setoran Harian & Bulanan */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {[stats[3], stats[4]].map((stat, idx) => (
+              <motion.div 
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 + idx * 0.1 }}
                 className="bg-white rounded-[1.5rem] p-6 shadow-sm border border-slate-200/60 relative overflow-hidden group hover:shadow-md transition-all flex items-center gap-6"
               >
                 <div className={`w-14 h-14 shrink-0 rounded-2xl ${stat.color} flex items-center justify-center text-white shadow-lg shadow-slate-200`}>

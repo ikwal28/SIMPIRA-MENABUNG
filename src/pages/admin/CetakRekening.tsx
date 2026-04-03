@@ -25,6 +25,9 @@ export const AdminCetakRekening = () => {
   }, []);
 
   const filteredSiswa = siswa.filter((s: any) => {
+    // Filter out TIDAK AKTIF students
+    if (s.status === 'TIDAK AKTIF') return false;
+
     const name = String(s.nama || '');
     const search = String(searchTerm || '').toLowerCase();
     return name.toLowerCase().includes(search) ||
@@ -133,9 +136,9 @@ export const AdminCetakRekening = () => {
   };
 
   const handleCetakLaporanKelas = () => {
-    let dataToPrint = siswa;
+    let dataToPrint = siswa.filter((s: any) => s.status !== 'TIDAK AKTIF');
     if (selectedKelas !== 'Semua') {
-      dataToPrint = siswa.filter((s: any) => s.kelas.toString() === selectedKelas);
+      dataToPrint = dataToPrint.filter((s: any) => s.kelas.toString() === selectedKelas);
     }
 
     // Sort by class descending (6 to 1) then name

@@ -26,7 +26,8 @@ export const AdminCetakKartu = () => {
     }
     
     setIsPrinting(true);
-    const dataToPrint = (selectedKelas === 'Semua' ? [...siswa] : siswa.filter((s: any) => s.kelas.toString() === selectedKelas)).sort((a: any, b: any) => {
+    const activeSiswa = siswa.filter((s: any) => s.status !== 'TIDAK AKTIF');
+    const dataToPrint = (selectedKelas === 'Semua' ? [...activeSiswa] : activeSiswa.filter((s: any) => s.kelas.toString() === selectedKelas)).sort((a: any, b: any) => {
       const classA = parseInt(a.kelas);
       const classB = parseInt(b.kelas);
       if (classA !== classB) {
