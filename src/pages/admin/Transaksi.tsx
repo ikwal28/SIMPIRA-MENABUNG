@@ -231,6 +231,7 @@ export const AdminTransaksi = () => {
                     placeholder="0"
                     value={jumlah}
                     onChange={(e) => setJumlah(e.target.value)}
+                    onWheel={(e) => (e.target as HTMLInputElement).blur()}
                   />
                 </div>
               </div>
